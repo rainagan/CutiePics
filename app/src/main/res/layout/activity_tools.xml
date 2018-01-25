@@ -30,7 +30,7 @@
         android:text="Frames"/>
 
     <Button
-        android:id="@+id/layout"
+        android:id="@+id/layouts"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_layout_24dp"
@@ -49,7 +49,7 @@
         android:drawableStart="@drawable/ic_overlay_24dp"
         android:background="@drawable/my_button"
         android:layout_below="@id/frames"
-        android:layout_alignBaseline="@id/layout"
+        android:layout_alignBaseline="@id/layouts"
         android:layout_alignStart="@id/frames"
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
