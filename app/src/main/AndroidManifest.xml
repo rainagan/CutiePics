@@ -17,6 +17,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ToolsActivity"
+            android:theme="@style/newAppTheme"></activity>
     </application>
 
 </manifest>
