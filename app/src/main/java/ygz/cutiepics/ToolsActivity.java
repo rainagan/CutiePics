@@ -1,4 +1,4 @@
-package cutiepicsuwaterloo.cutiepics;
+package ygz.cutiepics;
 
 import android.app.Activity;
 import android.os.Bundle;

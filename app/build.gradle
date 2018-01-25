@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "cutiepicsuwaterloo.cutiepics"
-        minSdkVersion 26
+        applicationId "ygz.cutiepics"
+        minSdkVersion 22
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"

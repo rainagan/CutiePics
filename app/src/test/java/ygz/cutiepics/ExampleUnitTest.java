@@ -1,4 +1,4 @@
-package cutiepicsuwaterloo.cutiepics;
+package ygz.cutiepics;
 
 import org.junit.Test;
 
