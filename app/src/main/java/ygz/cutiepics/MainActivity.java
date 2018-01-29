@@ -27,8 +27,15 @@ public class MainActivity extends AppCompatActivity {
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // do staff here
-            }
+                Intent intent = new Intent(MainActivity.this, GalleryActivity.class);
+                startActivity(intent);            }
         });
+    }
+
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }

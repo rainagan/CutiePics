@@ -1,6 +1,7 @@
 package ygz.cutiepics;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -48,5 +49,10 @@ public class ToolsActivity extends Activity {
                 // do staff here
             }
         });
+    }
+
+    public void onBackPressed() {
+        Intent intent = new Intent(ToolsActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 }
