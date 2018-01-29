@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
@@ -80,6 +82,10 @@ public class CameraActivity extends Activity {
 
         if (resultCode == Activity.RESULT_OK) {
             onCaptureImageResult(data);
+            Intent intent = new Intent(CameraActivity.this, ToolsActivity.class);
+            intent.putExtra("image", mCurrentPhotoPath);
+            intent.putExtra("type", "camera");
+            startActivity(intent);
         }
     }
 

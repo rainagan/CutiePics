@@ -33,6 +33,7 @@
         <activity android:name=".CameraActivity"></activity>
         <activity android:name=".ToolsActivity"></activity>
         <activity android:name=".GalleryActivity"></activity>
+        <activity android:name=".StickerActivity"></activity>
     </application>
 
 </manifest>
