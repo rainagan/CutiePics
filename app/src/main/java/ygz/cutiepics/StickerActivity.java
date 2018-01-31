@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -24,6 +26,8 @@ public class StickerActivity extends Activity {
     private String mCurrentPath;
     private String uri;
     private String type;
+    private SelectStickerPopupWindow stickerWindow;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,7 +41,6 @@ public class StickerActivity extends Activity {
         if (type.equals("camera")) {
             Bundle captured = getIntent().getExtras();
             this.mCurrentPath = (String) captured.get("image");
-//            Log.d("path", mCurrentPath);
             File imgFile = new File(mCurrentPath);
             if (imgFile.exists()) {
                 Bitmap mBitMap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -46,10 +49,33 @@ public class StickerActivity extends Activity {
         } else {
             Bundle imported = getIntent().getExtras();
             this.uri = (String) imported.get("image");
-//            Log.d("uri", uri);
             Uri uriFromPath = Uri.fromFile(new File(uri));
             img.setImageURI(uriFromPath);
         }
+
+        img.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // initialize a popup window
+                stickerWindow = new SelectStickerPopupWindow(StickerActivity.this, itemsOnClick);
+                // show popup window
+                stickerWindow.showAtLocation(StickerActivity.this.findViewById(R.id.ivImage), Gravity.BOTTOM| Gravity.CENTER_HORIZONTAL, 0, 0); //设置layout在PopupWindow中显示的位置
+            }
+        });
     }
+
+    private View.OnClickListener itemsOnClick = new View.OnClickListener(){
+
+        public void onClick(View v) {
+            stickerWindow.dismiss();
+            switch (v.getId()) {
+//                case R.id.btn1:
+//                    break;
+//                case R.id.btn2:
+//                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }
 
