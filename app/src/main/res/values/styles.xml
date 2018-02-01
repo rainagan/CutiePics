@@ -14,5 +14,8 @@
         <item name="android:navigationBarColor">@color/colorLightPink</item>
     </style>
 
-
+    <style name="Animation">
+        <item name="android:windowEnterAnimation">@animator/fade_in_animation</item>
+        <item name="android:windowExitAnimation">@animator/fade_out_animation</item>
+    </style>
 </resources>

@@ -1081,7 +1081,7 @@
             android:layout_alignBaseline="@+id/yellowheart"
             android:layout_marginBottom="10dp"
             android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/wrong"
+            android:layout_toEndOf="@+id/silverquestionmark"
             android:background="@drawable/questionnexclamation" />
 
         <Button

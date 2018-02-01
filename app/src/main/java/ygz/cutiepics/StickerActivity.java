@@ -11,7 +11,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +29,7 @@ public class StickerActivity extends Activity {
     private String uri;
     private String type;
     private SelectStickerPopupWindow stickerWindow;
-
+    private Button yellowBook;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +37,8 @@ public class StickerActivity extends Activity {
         setContentView(R.layout.activity_stickers);
 
         img = (ImageView) findViewById(R.id.ivImage);
+
+        yellowBook = (Button) findViewById(R.id.yellowbook);
 
         Bundle data = getIntent().getExtras();
         this.type = (String) data.get("type");
@@ -58,18 +62,18 @@ public class StickerActivity extends Activity {
                 // initialize a popup window
                 stickerWindow = new SelectStickerPopupWindow(StickerActivity.this, itemsOnClick);
                 // show popup window
-                stickerWindow.showAtLocation(StickerActivity.this.findViewById(R.id.ivImage), Gravity.BOTTOM| Gravity.CENTER_HORIZONTAL, 0, 0); //设置layout在PopupWindow中显示的位置
+                stickerWindow.showAtLocation(StickerActivity.this.findViewById(R.id.ivImage), Gravity.BOTTOM| Gravity.CENTER_HORIZONTAL, 0, 0);
             }
         });
     }
 
     private View.OnClickListener itemsOnClick = new View.OnClickListener(){
-
         public void onClick(View v) {
             stickerWindow.dismiss();
             switch (v.getId()) {
-//                case R.id.btn1:
-//                    break;
+                case R.id.yellowbook:
+                    Log.d("button press", "yellowbook is pressed");
+                    break;
 //                case R.id.btn2:
 //                    break;
                 default:
