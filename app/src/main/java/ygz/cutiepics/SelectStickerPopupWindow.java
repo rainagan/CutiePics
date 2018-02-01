@@ -25,13 +25,13 @@ public class SelectStickerPopupWindow extends PopupWindow {
 
         this.setContentView(mStickerView);
         // set width of layout
-        this.setWidth(RelativeLayout.LayoutParams.FILL_PARENT);
+//        this.setWidth(RelativeLayout.LayoutParams.FILL_PARENT);
         // set height of the layout
         this.setHeight(RelativeLayout.LayoutParams.WRAP_CONTENT);
         // let the popup window be clickable
         this.setFocusable(true);
         // set popup animation
-        this.setAnimationStyle(R.style.Animation);
+//        this.setAnimationStyle(R.style.AnimBottom);
         // create a half transparent color
         ColorDrawable dw = new ColorDrawable(0xb0000000);
         // set background color of popup window

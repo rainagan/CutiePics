@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ToolsActivity.class);
+                Intent intent = new Intent(MainActivity.this, MultiPhotoSelectActivity.class);
                 intent.putExtra("type", "layout");
                 startActivity(intent);            }
         });
