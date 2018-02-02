@@ -1,6 +1,8 @@
 package ygz.cutiepics;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +37,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         ProductObject productObject = productList.get(position);
         int imageRes = getResourceId(context, productObject.getName(), "drawable", context.getPackageName());
+        holder.emoji.setBackgroundColor(Color.TRANSPARENT);
         holder.emoji.setImageResource(imageRes);
     }
 
