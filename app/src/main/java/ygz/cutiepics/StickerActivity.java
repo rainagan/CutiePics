@@ -86,6 +86,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("yellowbook"));
         featuredProducts.add(new ProductObject("redbook"));
         featuredProducts.add(new ProductObject("bluebook"));
+        featuredProducts.add(new ProductObject("greenbook"));
         featuredProducts.add(new ProductObject("cardspade"));
         featuredProducts.add(new ProductObject("cardclub"));
         featuredProducts.add(new ProductObject("cardheart"));
