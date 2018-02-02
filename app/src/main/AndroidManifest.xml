@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ygz.cutiepics">
 
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -15,14 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/newAppTheme">
         <provider
-            android:authorities="com.example.android.fileprovider"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,9 +33,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ToolsActivity"></activity>
-        <activity android:name=".StickerActivity"></activity>
-        <activity android:name=".MultiPhotoSelectActivity"></activity>
+        <activity android:name=".ToolsActivity" />
+        <activity android:name=".StickerActivity" />
+        <activity android:name=".MultiPhotoSelectActivity" />
+        <activity android:name=".FrameActivity"></activity>
     </application>
 
 </manifest>

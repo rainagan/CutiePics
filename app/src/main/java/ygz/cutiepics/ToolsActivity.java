@@ -92,10 +92,10 @@ public class ToolsActivity extends Activity {
                     intent.putExtra("type", "camera");
                     startActivity(intent);
                 } else if (type.equals("frame")) {
-//                    Intent intent = new Intent(ToolsActivity.this, FrameActivity.class);
-//                    intent.putExtra("image", mCurrentPhotoPath);
-//                    intent.putExtra("type", "camera");
-//                    startActivity(intent);
+                    Intent intent = new Intent(ToolsActivity.this, FrameActivity.class);
+                    intent.putExtra("image", mCurrentPhotoPath);
+                    intent.putExtra("type", "camera");
+                    startActivity(intent);
                 } else if (type.equals("layout")) {
 //                    Intent intent = new Intent(ToolsActivity.this, LayoutActivity.class);
 //                    intent.putExtra("image", mCurrentPhotoPath);
@@ -207,10 +207,10 @@ public class ToolsActivity extends Activity {
             intent.putExtra("type", "camera");
             startActivity(intent);
         } else if (type.equals("frame")) {
-//                    Intent intent = new Intent(ToolsActivity.this, FrameActivity.class);
-//                    intent.putExtra("image", mCurrentPhotoPath);
-//                    intent.putExtra("type", "camera");
-//                    startActivity(intent);
+            Intent intent = new Intent(ToolsActivity.this, FrameActivity.class);
+            intent.putExtra("image", mCurrentPhotoPath);
+            intent.putExtra("type", "camera");
+            startActivity(intent);
         } else if (type.equals("layout")) {
 //                    Intent intent = new Intent(ToolsActivity.this, LayoutActivity.class);
 //                    intent.putExtra("image", mCurrentPhotoPath);
