@@ -210,20 +210,5 @@ public class StickerActivity extends Activity {
 
         return featuredProducts;
     }
-
-//    private View.OnClickListener itemsOnClick = new View.OnClickListener(){
-//        public void onClick(View v) {
-//            stickerWindow.dismiss();
-//            switch (v.getId()) {
-////                case R.id.yellowbook:
-////                    Log.d("button press", "yellowbook is pressed");
-////                    break;
-////                case R.id.btn2:
-////                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    };
 }
 
