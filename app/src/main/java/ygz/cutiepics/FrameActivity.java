@@ -41,7 +41,7 @@ public class FrameActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stickers);
+        setContentView(R.layout.activity_frame);
 
         img = (ImageView) findViewById(R.id.ivImage);
 
@@ -63,18 +63,24 @@ public class FrameActivity extends Activity {
         }
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
+
+        // use a grid layout manager
         GridLayoutManager mGrid = new GridLayoutManager(this, 4);
         rv.setLayoutManager(mGrid);
-        rv.setHasFixedSize(true);
+        // rv.setHasFixedSize(true);
         rv.setNestedScrollingEnabled(false);
-        ProductAdapter mAdapter = new ProductAdapter(FrameActivity.this, getFrameTestData());
+
+        // specify an adapter
+        FrameAdapter mAdapter = new FrameAdapter(FrameActivity.this, getFrameTestData());
         rv.setAdapter(mAdapter);
+
+        //Log.d("Debug", "Finish Frame Activity");
     }
 
-    private ArrayList<ProductObject> getFrameTestData() {
-        ArrayList<ProductObject> featuredFrame = new ArrayList<ProductObject>();
-        featuredFrame.add(new ProductObject("frame_pure1"));
-        featuredFrame.add(new ProductObject("frame_pure2"));
+    private ArrayList<FrameObject> getFrameTestData() {
+        ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
+        featuredFrame.add(new FrameObject("frame_pure1"));
+        featuredFrame.add(new FrameObject("frame_pure2"));
 
         return featuredFrame;
     }

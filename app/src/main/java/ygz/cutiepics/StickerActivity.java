@@ -63,6 +63,7 @@ public class StickerActivity extends Activity {
             img.setImageURI(uriFromPath);
         }
 
+
         RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
         GridLayoutManager mGrid = new GridLayoutManager(this, 8);
         rv.setLayoutManager(mGrid);
@@ -70,7 +71,7 @@ public class StickerActivity extends Activity {
         rv.setNestedScrollingEnabled(false);
         ProductAdapter mAdapter = new ProductAdapter(StickerActivity.this, getProductTestData());
         rv.setAdapter(mAdapter);
-
+        
 //        img.setOnClickListener(new View.OnClickListener() {
 //            public void onClick(View v) {
 //                // initialize a popup window
