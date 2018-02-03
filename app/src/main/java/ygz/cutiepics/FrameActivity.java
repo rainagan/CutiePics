@@ -34,8 +34,6 @@ import java.util.List;
 public class FrameActivity extends Activity {
     private ImageView img;
     private String mCurrentPath;
-    private String uri;
-    private String type;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,22 +43,10 @@ public class FrameActivity extends Activity {
 
         img = (ImageView) findViewById(R.id.ivImage);
 
-        Bundle data = getIntent().getExtras();
-        this.type = (String) data.get("type");
-        if (type.equals("camera")) {
-            Bundle captured = getIntent().getExtras();
-            this.mCurrentPath = (String) captured.get("image");
-            File imgFile = new File(mCurrentPath);
-            if (imgFile.exists()) {
-                Bitmap mBitMap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                img.setImageBitmap(mBitMap);
-            }
-        } else {
-            Bundle imported = getIntent().getExtras();
-            this.uri = (String) imported.get("image");
-            Uri uriFromPath = Uri.fromFile(new File(uri));
-            img.setImageURI(uriFromPath);
-        }
+        Bundle captured = getIntent().getExtras();
+        this.mCurrentPath = (String) captured.get("image");
+        Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
+        img.setImageURI(uriFromPath);
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
 
