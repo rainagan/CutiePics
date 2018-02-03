@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -37,6 +38,8 @@ public class ToolsActivity extends Activity {
     public final int PHOTO_GALLERY_REQUEST = 20;
     private String mCurrentPhotoPath;
     private String type;
+    private final Handler handler = new Handler();
+    private File photoFile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,12 @@ public class ToolsActivity extends Activity {
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cameraIntent();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        cameraIntent();
+                    }
+                }, 0);
             }
         });
 
@@ -61,7 +69,12 @@ public class ToolsActivity extends Activity {
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                galleryIntent();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        galleryIntent();
+                    }
+                }, 0);
             }
         });
     }
@@ -73,7 +86,7 @@ public class ToolsActivity extends Activity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     cameraIntent();
                 } else {
-                    Toast.makeText(ToolsActivity.this,"Taking photo permision is denined", Toast.LENGTH_SHORT);
+                    Toast.makeText(ToolsActivity.this, "Taking photo permision is denined", Toast.LENGTH_SHORT);
                 }
                 break;
         }
@@ -85,41 +98,47 @@ public class ToolsActivity extends Activity {
 
         if (requestCode == REQUEST_CAMERA) {
             if (resultCode == Activity.RESULT_OK) {
-                onCaptureImageResult(data);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onCaptureImageResult();
+                    }
+                }, 0);
                 if (type.equals("sticker")) {
                     Intent intent = new Intent(ToolsActivity.this, StickerActivity.class);
                     intent.putExtra("image", mCurrentPhotoPath);
-                    intent.putExtra("type", "camera");
                     startActivity(intent);
                 } else if (type.equals("frame")) {
                     Intent intent = new Intent(ToolsActivity.this, FrameActivity.class);
                     intent.putExtra("image", mCurrentPhotoPath);
-                    intent.putExtra("type", "camera");
                     startActivity(intent);
                 } else if (type.equals("layout")) {
 //                    Intent intent = new Intent(ToolsActivity.this, LayoutActivity.class);
 //                    intent.putExtra("image", mCurrentPhotoPath);
-//                    intent.putExtra("type", "camera");
 //                    startActivity(intent);
                 } else {
 //                    Intent intent = new Intent(ToolsActivity.this, DoubleExposureActivity.class);
 //                    intent.putExtra("image", mCurrentPhotoPath);
-//                    intent.putExtra("type", "camera");
 //                    startActivity(intent);
                 }
             }
         } else {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 // onSelectFromGalleryResult(data);
-                Uri imageUri = data.getData();
-                this.mCurrentPhotoPath = getRealPathFromURI(imageUri);
-                returnURI(this.mCurrentPhotoPath);
+                final Uri imageUri = data.getData();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCurrentPhotoPath = getRealPathFromURI(imageUri);
+                        returnURI(mCurrentPhotoPath);
+                    }
+                }, 0);
             }
         }
     }
 
-    private void onCaptureImageResult(Intent data) {
-        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+    private void onCaptureImageResult() {
+
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
         File destination = new File(Environment.getExternalStorageDirectory(),
@@ -139,26 +158,29 @@ public class ToolsActivity extends Activity {
     }
 
 
-
     private void cameraIntent() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // ensure that htere's a camera activity to hadle the intent
         if (intent.resolveActivity(getPackageManager()) != null) {
-            // create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException e) {
-                // error occurred while creating the File
-                Log.e("IOException", "unable to create image file");
-                e.printStackTrace();
-            }
-            // continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(intent, REQUEST_CAMERA);
-            }
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // create the File where the photo should go
+                        photoFile = createImageFile();
+                    } catch (IOException e) {
+                        // error occurred while creating the File
+                        Log.e("IOException", "unable to create image file");
+                        e.printStackTrace();
+                    }
+                    // continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(ToolsActivity.this, "com.example.android.fileprovider", photoFile);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(intent, REQUEST_CAMERA);
+                    }
+                }
+            }, 0);
         }
     }
 
@@ -204,22 +226,18 @@ public class ToolsActivity extends Activity {
         if (type.equals("sticker")) {
             Intent intent = new Intent(ToolsActivity.this, StickerActivity.class);
             intent.putExtra("image", mCurrentPhotoPath);
-            intent.putExtra("type", "camera");
             startActivity(intent);
         } else if (type.equals("frame")) {
             Intent intent = new Intent(ToolsActivity.this, FrameActivity.class);
             intent.putExtra("image", mCurrentPhotoPath);
-            intent.putExtra("type", "camera");
             startActivity(intent);
         } else if (type.equals("layout")) {
 //                    Intent intent = new Intent(ToolsActivity.this, LayoutActivity.class);
 //                    intent.putExtra("image", mCurrentPhotoPath);
-//                    intent.putExtra("type", "camera");
 //                    startActivity(intent);
         } else {
 //                    Intent intent = new Intent(ToolsActivity.this, DoubleExposureActivity.class);
 //                    intent.putExtra("image", mCurrentPhotoPath);
-//                    intent.putExtra("type", "camera");
 //                    startActivity(intent);
         }
     }

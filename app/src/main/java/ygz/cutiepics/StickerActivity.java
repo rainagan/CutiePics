@@ -34,10 +34,6 @@ import java.util.List;
 public class StickerActivity extends Activity {
     private ImageView img;
     private String mCurrentPath;
-    private String uri;
-    private String type;
-    private SelectStickerPopupWindow stickerWindow;
-    private Button yellowBook;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,28 +42,19 @@ public class StickerActivity extends Activity {
 
         img = (ImageView) findViewById(R.id.ivImage);
 
-        Bundle data = getIntent().getExtras();
-        this.type = (String) data.get("type");
-        if (type.equals("camera")) {
-            Bundle captured = getIntent().getExtras();
-            this.mCurrentPath = (String) captured.get("image");
-            File imgFile = new File(mCurrentPath);
-            if (imgFile.exists()) {
-                Bitmap mBitMap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                img.setImageBitmap(mBitMap);
-            }
-        } else {
-            Bundle imported = getIntent().getExtras();
-            this.uri = (String) imported.get("image");
-            Uri uriFromPath = Uri.fromFile(new File(uri));
-            img.setImageURI(uriFromPath);
-        }
+        Bundle captured = getIntent().getExtras();
+        this.mCurrentPath = (String) captured.get("image");
+        Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
+        img.setImageURI(uriFromPath);
 
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
         GridLayoutManager mGrid = new GridLayoutManager(this, 8);
         rv.setLayoutManager(mGrid);
         rv.setHasFixedSize(true);
+        rv.setItemViewCacheSize(32);
+        rv.setDrawingCacheEnabled(true);
+        rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         rv.setNestedScrollingEnabled(false);
         ProductAdapter mAdapter = new ProductAdapter(StickerActivity.this, getProductTestData());
         rv.setAdapter(mAdapter);
@@ -152,7 +139,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("libra"));
         featuredProducts.add(new ProductObject("anchor"));
 
-        featuredProducts.add(new ProductObject("key"));   
+        featuredProducts.add(new ProductObject("key"));
         featuredProducts.add(new ProductObject("yellowbook"));
         featuredProducts.add(new ProductObject("redbook"));
         featuredProducts.add(new ProductObject("bluebook"));
