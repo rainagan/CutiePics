@@ -85,15 +85,6 @@ public class StickerActivity extends Activity {
                     }
                 })
         );
-
-//        img.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                // initialize a popup window
-//                stickerWindow = new SelectStickerPopupWindow(StickerActivity.this, itemsOnClick);
-//                // show popup window
-//                stickerWindow.showAtLocation(StickerActivity.this.findViewById(R.id.ivImage), Gravity.BOTTOM| Gravity.CENTER_HORIZONTAL, 0, 0);
-//            }
-//        });
     }
 
     private ArrayList<ProductObject> getProductTestData() {
