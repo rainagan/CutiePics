@@ -3,4 +3,8 @@
     <string name="permission_rationale">"Storage permission is needed for fetching images from Gallery."</string>
     <string name="emoji">Emoji</string>
     <string name="frames">Frames</string>
+    <string name="sticker">Sticker</string>
+    <string name="layout">Layout</string>
+    <string name="tag">Tag</string>
+    <string name="text">Text</string>
 </resources>

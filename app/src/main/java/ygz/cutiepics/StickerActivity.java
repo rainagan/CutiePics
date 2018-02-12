@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -38,6 +40,8 @@ import java.util.List;
 public class StickerActivity extends Activity {
     private ImageView img;
     private String mCurrentPath;
+    private Button emoji;
+    private PopupWindow pw;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,9 +55,64 @@ public class StickerActivity extends Activity {
         Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
         img.setImageURI(uriFromPath);
 
-        final RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
+        emoji = (Button) findViewById(R.id.sticker_emoji);
+        emoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupWindow();
+            }
+        });
+
+//        final RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
+//        GridLayoutManager mGrid = new GridLayoutManager(this, 8);
+//        rv.setLayoutManager(mGrid);
+//        rv.setHasFixedSize(true);
+//        rv.setItemViewCacheSize(32);
+//        rv.setDrawingCacheEnabled(true);
+//        rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+//        rv.setNestedScrollingEnabled(false);
+//        ProductAdapter mAdapter = new ProductAdapter(StickerActivity.this, getProductTestData());
+//        rv.setAdapter(mAdapter);
+//        rv.addOnItemTouchListener(
+//                new RecyclerItemClickListener(this, rv ,new RecyclerItemClickListener.OnItemClickListener() {
+//                    @Override public void onItemClick(View view, int position) {
+//                        if(position != RecyclerView.NO_POSITION){
+////                            FrameLayout stickerPhoto = (FrameLayout) findViewById(R.id.stickerPhoto);
+//
+//                            ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
+//                            ImageView temp = pvh.getEmoji();
+//                            Drawable drawable = temp.getDrawable();
+//
+//                            ImageView image = new ImageView(StickerActivity.this);
+//                            LinearLayout.LayoutParams centerParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+//                            centerParams.gravity=Gravity.CENTER;
+//                            image.setLayoutParams(centerParams);
+//                            image.setBackground(drawable);
+////                            stickerPhoto.addView(image);
+//                        }
+//                    }
+//
+//                    @Override public void onLongItemClick(View view, int position) {
+//                        // do whatever
+//                    }
+//                })
+//        );
+    }
+
+    private void showPopupWindow() {
+        View view = LayoutInflater.from(StickerActivity.this).inflate(R.layout.sticker_popup, null);
+        pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 450);
+        pw.setFocusable(true);
+        pw.setBackgroundDrawable(new ColorDrawable(0x00000000));
+        pw.setOutsideTouchable(true);
+        pw.setAnimationStyle(R.style.Animation);
+        pw.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+
+        RecyclerView rv = (RecyclerView) view.findViewById(R.id.pop_sticker);
         GridLayoutManager mGrid = new GridLayoutManager(this, 8);
         rv.setLayoutManager(mGrid);
+//        ScoreTeamAdapter scoreTeamAdapter = new ScoreTeamAdapter(yearList);
+//        rv.setAdapter(scoreTeamAdapter);
         rv.setHasFixedSize(true);
         rv.setItemViewCacheSize(32);
         rv.setDrawingCacheEnabled(true);
@@ -61,30 +120,6 @@ public class StickerActivity extends Activity {
         rv.setNestedScrollingEnabled(false);
         ProductAdapter mAdapter = new ProductAdapter(StickerActivity.this, getProductTestData());
         rv.setAdapter(mAdapter);
-        rv.addOnItemTouchListener(
-                new RecyclerItemClickListener(this, rv ,new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        if(position != RecyclerView.NO_POSITION){
-//                            FrameLayout stickerPhoto = (FrameLayout) findViewById(R.id.stickerPhoto);
-
-                            ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
-                            ImageView temp = pvh.getEmoji();
-                            Drawable drawable = temp.getDrawable();
-
-                            ImageView image = new ImageView(StickerActivity.this);
-                            LinearLayout.LayoutParams centerParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                            centerParams.gravity=Gravity.CENTER;
-                            image.setLayoutParams(centerParams);
-                            image.setBackground(drawable);
-//                            stickerPhoto.addView(image);
-                        }
-                    }
-
-                    @Override public void onLongItemClick(View view, int position) {
-                        // do whatever
-                    }
-                })
-        );
     }
 
     private ArrayList<ProductObject> getProductTestData() {
@@ -215,6 +250,12 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("skull"));
 
         return featuredProducts;
+    }
+
+    @Override
+    protected void onStop() {
+        pw.dismiss();
+        super.onStop();
     }
 }
 
