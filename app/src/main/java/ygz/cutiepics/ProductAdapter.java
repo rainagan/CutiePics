@@ -37,7 +37,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         ProductObject productObject = productList.get(position);
         int imageRes = getResourceId(context, productObject.getName(), "drawable", context.getPackageName());
-        holder.emoji.setBackgroundColor(Color.TRANSPARENT);
         holder.emoji.setImageResource(imageRes);
     }
 

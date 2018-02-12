@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,10 +15,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -47,7 +51,7 @@ public class StickerActivity extends Activity {
         Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
         img.setImageURI(uriFromPath);
 
-        RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
+        final RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
         GridLayoutManager mGrid = new GridLayoutManager(this, 8);
         rv.setLayoutManager(mGrid);
         rv.setHasFixedSize(true);
@@ -57,6 +61,30 @@ public class StickerActivity extends Activity {
         rv.setNestedScrollingEnabled(false);
         ProductAdapter mAdapter = new ProductAdapter(StickerActivity.this, getProductTestData());
         rv.setAdapter(mAdapter);
+        rv.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, rv ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        if(position != RecyclerView.NO_POSITION){
+//                            FrameLayout stickerPhoto = (FrameLayout) findViewById(R.id.stickerPhoto);
+
+                            ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
+                            ImageView temp = pvh.getEmoji();
+                            Drawable drawable = temp.getDrawable();
+
+                            ImageView image = new ImageView(StickerActivity.this);
+                            LinearLayout.LayoutParams centerParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+                            centerParams.gravity=Gravity.CENTER;
+                            image.setLayoutParams(centerParams);
+                            image.setBackground(drawable);
+//                            stickerPhoto.addView(image);
+                        }
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
 
 //        img.setOnClickListener(new View.OnClickListener() {
 //            public void onClick(View v) {

@@ -16,4 +16,6 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         emoji = (ImageView) itemView.findViewById(R.id.emoji);
     }
+
+    public ImageView getEmoji() {return emoji;}
 }
