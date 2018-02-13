@@ -271,7 +271,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("peace5"));
         featuredProducts.add(new ProductObject("peace6"));
         featuredProducts.add(new ProductObject("poop"));
-                featuredProducts.add(new ProductObject("fire"));
+        featuredProducts.add(new ProductObject("fire"));
         featuredProducts.add(new ProductObject("whateverfem1"));
         featuredProducts.add(new ProductObject("coverfacefem1"));
         featuredProducts.add(new ProductObject("coverfacefem2"));
@@ -413,7 +413,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("dancinggirl"));
         featuredProducts.add(new ProductObject("lipbalm"));
         featuredProducts.add(new ProductObject("bell"));
-                featuredProducts.add(new ProductObject("net"));
+        featuredProducts.add(new ProductObject("net"));
 
         featuredProducts.add(new ProductObject("redheart"));
         featuredProducts.add(new ProductObject("redheart2"));
@@ -458,9 +458,9 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("sunflower"));
         featuredProducts.add(new ProductObject("sakura"));
         featuredProducts.add(new ProductObject("rose"));
-                featuredProducts.add(new ProductObject("fallingrose"));
-                featuredProducts.add(new ProductObject("mapleleaf"));
-                featuredProducts.add(new ProductObject("leaf"));
+        featuredProducts.add(new ProductObject("fallingrose"));
+        featuredProducts.add(new ProductObject("mapleleaf"));
+        featuredProducts.add(new ProductObject("leaf"));
         featuredProducts.add(new ProductObject("tree"));
         featuredProducts.add(new ProductObject("tree2"));
         featuredProducts.add(new ProductObject("tree3"));
@@ -582,12 +582,12 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("flowerpot"));
         featuredProducts.add(new ProductObject("koalahead"));
         featuredProducts.add(new ProductObject("bunnyhead"));
-                featuredProducts.add(new ProductObject("cockhead"));
-                featuredProducts.add(new ProductObject("monkeyhead"));
-                featuredProducts.add(new ProductObject("doghead"));
-                featuredProducts.add(new ProductObject("mousehead"));
-                featuredProducts.add(new ProductObject("whalehead"));
-                featuredProducts.add(new ProductObject("butterfly"));
+        featuredProducts.add(new ProductObject("cockhead"));
+        featuredProducts.add(new ProductObject("monkeyhead"));
+        featuredProducts.add(new ProductObject("doghead"));
+        featuredProducts.add(new ProductObject("mousehead"));
+        featuredProducts.add(new ProductObject("whalehead"));
+        featuredProducts.add(new ProductObject("butterfly"));
         featuredProducts.add(new ProductObject("hedgehog"));
         featuredProducts.add(new ProductObject("zebra"));
         featuredProducts.add(new ProductObject("giraffe"));
@@ -619,9 +619,9 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("cow"));
         featuredProducts.add(new ProductObject("tiger"));
         featuredProducts.add(new ProductObject("wolf"));
-                featuredProducts.add(new ProductObject("fox"));
-                featuredProducts.add(new ProductObject("deer"));
-                featuredProducts.add(new ProductObject("rhino"));
+        featuredProducts.add(new ProductObject("fox"));
+        featuredProducts.add(new ProductObject("deer"));
+        featuredProducts.add(new ProductObject("rhino"));
         featuredProducts.add(new ProductObject("bear"));
         featuredProducts.add(new ProductObject("panda"));
         featuredProducts.add(new ProductObject("whale"));
@@ -641,7 +641,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("chinesetakeout"));
         featuredProducts.add(new ProductObject("fortunecookie"));
         featuredProducts.add(new ProductObject("wrap"));
-                featuredProducts.add(new ProductObject("wrap2"));
+        featuredProducts.add(new ProductObject("wrap2"));
         featuredProducts.add(new ProductObject("curry"));
         featuredProducts.add(new ProductObject("salad"));
         featuredProducts.add(new ProductObject("baguette"));
@@ -688,7 +688,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("tomato"));
         featuredProducts.add(new ProductObject("eggplant"));
         featuredProducts.add(new ProductObject("potato"));
-                featuredProducts.add(new ProductObject("sweetpotato"));
+        featuredProducts.add(new ProductObject("sweetpotato"));
         featuredProducts.add(new ProductObject("chectnut"));
         featuredProducts.add(new ProductObject("chili"));
         featuredProducts.add(new ProductObject("bacon"));
@@ -702,7 +702,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("wiskey"));
         featuredProducts.add(new ProductObject("cocktail"));
         featuredProducts.add(new ProductObject("sake"));
-                featuredProducts.add(new ProductObject("meat"));
+        featuredProducts.add(new ProductObject("meat"));
         featuredProducts.add(new ProductObject("chocolate"));
         featuredProducts.add(new ProductObject("candy"));
         featuredProducts.add(new ProductObject("lolipop"));

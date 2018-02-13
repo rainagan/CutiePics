@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -42,11 +44,13 @@ public class FrameActivity extends Activity {
 //    private String mCurrentPath;
     private GridView gridView1;              //网格显示缩略图
     private Button addFramePic;            //发布按钮
+    private Button addFrame;
     private final int IMAGE_OPEN = 1;        //打开图片标记
     private String pathImage;                //选择图片路径
     private Bitmap bmp;                      //导入临时图片
     private ArrayList<HashMap<String, Object>> imageItem;
     private SimpleAdapter simpleAdapter;     //适配器
+    private PopupWindow pw;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +72,14 @@ public class FrameActivity extends Activity {
                     startActivityForResult(intent, IMAGE_OPEN);
                     //refresh data when calling onResume()
                 }
+            }
+        });
+
+        addFrame = (Button) findViewById(R.id.addFrame);
+        addFrame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupWindow();
             }
         });
 
@@ -138,14 +150,6 @@ public class FrameActivity extends Activity {
         //Log.d("Debug", "Finish Frame Activity");
     }
 
-    private ArrayList<FrameObject> getFrameTestData() {
-        ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
-        featuredFrame.add(new FrameObject("frame_pure1"));
-        featuredFrame.add(new FrameObject("frame_pure2"));
-
-        return featuredFrame;
-    }
-
     //获取图片路径 响应startActivityForResult
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -204,5 +208,35 @@ public class FrameActivity extends Activity {
         }
     }
 
+    private void showPopupWindow() {
+        View view = LayoutInflater.from(FrameActivity.this).inflate(R.layout.sticker_popup, null);
+        pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 450);
+        pw.setFocusable(true);
+        pw.setBackgroundDrawable(new ColorDrawable(0x969b9b));
+        pw.setOutsideTouchable(true);
+        pw.setAnimationStyle(R.style.Animation);
+        pw.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+
+        RecyclerView rv = (RecyclerView) view.findViewById(R.id.pop_sticker);
+        GridLayoutManager mGrid = new GridLayoutManager(this, 8);
+        rv.setLayoutManager(mGrid);
+//        ScoreTeamAdapter scoreTeamAdapter = new ScoreTeamAdapter(yearList);
+//        rv.setAdapter(scoreTeamAdapter);
+        rv.setHasFixedSize(true);
+        rv.setItemViewCacheSize(32);
+        rv.setDrawingCacheEnabled(true);
+        rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        rv.setNestedScrollingEnabled(false);
+        FrameAdapter mAdapter = new FrameAdapter(FrameActivity.this, getFrameTestData());
+        rv.setAdapter(mAdapter);
+    }
+
+    private ArrayList<FrameObject> getFrameTestData() {
+        ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
+        featuredFrame.add(new FrameObject("frame_pure1"));
+        featuredFrame.add(new FrameObject("frame_pure2"));
+
+        return featuredFrame;
+    }
 }
 

@@ -36,7 +36,17 @@
         android:id="@+id/addFramePic"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/gridView1"
+        android:layout_marginStart="52dp"
         android:background="@drawable/ic_add_circle_24dp" />
+
+    <Button
+        android:id="@+id/addFrame"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignEnd="@+id/gridView1"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/ic_frame_24dp" />
 </RelativeLayout>
