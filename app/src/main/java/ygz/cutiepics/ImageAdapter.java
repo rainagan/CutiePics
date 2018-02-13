@@ -59,10 +59,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.multiphoto_item, parent, false);
+//        View itemView = LayoutInflater.from(parent.getContext())
+//                .inflate(R.layout.multiphoto_item, parent, false);
 
-        return new MyViewHolder(itemView);
+//        return new MyViewHolder(itemView);
+        return null;
     }
 
     @Override
@@ -95,7 +96,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
         public MyViewHolder(View view) {
             super(view);
 
-            checkBox = (CheckBox) view.findViewById(R.id.checkBox1);
+//            checkBox = (CheckBox) view.findViewById(R.id.checkBox1);
             imageView = (ImageView) view.findViewById(R.id.imageView1);
         }
     }

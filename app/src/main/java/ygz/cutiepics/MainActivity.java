@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ToolsActivity.class);
+                Intent intent = new Intent(MainActivity.this, FrameActivity.class);
                 intent.putExtra("type", "frame");
                 startActivity(intent);            }
         });
@@ -57,9 +57,10 @@ public class MainActivity extends AppCompatActivity {
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MultiPhotoSelectActivity.class);
-                intent.putExtra("type", "layout");
-                startActivity(intent);            }
+//                Intent intent = new Intent(MainActivity.this, MultiPhotoSelectActivity.class);
+//                intent.putExtra("type", "layout");
+//                startActivity(intent);
+            }
         });
 
         doubleExpose = (Button) findViewById(R.id.doubleExposure);
