@@ -9,13 +9,16 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -43,6 +46,26 @@ public class StickerActivity extends Activity {
     private Button emoji;
     private PopupWindow pw;
 
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.nav_emoji:
+                    showPopupWindow();
+                    return true;
+                case R.id.nav_sticker:
+                    return true;
+                case R.id.nav_label:
+                    return true;
+                case R.id.nav_text:
+                    return true;
+            }
+            return false;
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,13 +78,17 @@ public class StickerActivity extends Activity {
         Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
         img.setImageURI(uriFromPath);
 
-        emoji = (Button) findViewById(R.id.sticker_emoji);
-        emoji.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopupWindow();
-            }
-        });
+//        emoji = (Button) findViewById(R.id.sticker_emoji);
+//        emoji.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showPopupWindow();
+//            }
+//        });
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.sticker_navigation);
+        BottomNavigationViewHelper.disableShiftMode(navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 //        final RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
 //        GridLayoutManager mGrid = new GridLayoutManager(this, 8);
@@ -103,7 +130,7 @@ public class StickerActivity extends Activity {
         View view = LayoutInflater.from(StickerActivity.this).inflate(R.layout.sticker_popup, null);
         pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 450);
         pw.setFocusable(true);
-        pw.setBackgroundDrawable(new ColorDrawable(0x969b9b));
+        pw.setBackgroundDrawable(new ColorDrawable(0xffffffff));
         pw.setOutsideTouchable(true);
         pw.setAnimationStyle(R.style.Animation);
         pw.showAtLocation(view, Gravity.BOTTOM, 0, 0);
@@ -114,7 +141,7 @@ public class StickerActivity extends Activity {
 //        ScoreTeamAdapter scoreTeamAdapter = new ScoreTeamAdapter(yearList);
 //        rv.setAdapter(scoreTeamAdapter);
         rv.setHasFixedSize(true);
-        rv.setItemViewCacheSize(32);
+        rv.setItemViewCacheSize(24);
         rv.setDrawingCacheEnabled(true);
         rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         rv.setNestedScrollingEnabled(false);
@@ -134,7 +161,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("bigsmile5"));
         featuredProducts.add(new ProductObject("blink"));
         featuredProducts.add(new ProductObject("naughty"));
-        featuredProducts.add(new ProductObject("hearyeyes"));
+        featuredProducts.add(new ProductObject("hearteyes"));
         featuredProducts.add(new ProductObject("sunglasses"));
         featuredProducts.add(new ProductObject("smile3"));
         featuredProducts.add(new ProductObject("smile2"));
@@ -385,7 +412,6 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("redmask"));
         featuredProducts.add(new ProductObject("ghost"));
         featuredProducts.add(new ProductObject("cupid"));
-        featuredProducts.add(new ProductObject("monster"));
         featuredProducts.add(new ProductObject("diamondring"));
         featuredProducts.add(new ProductObject("diamond"));
         featuredProducts.add(new ProductObject("thermometer"));
@@ -422,7 +448,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("redheart5"));
         featuredProducts.add(new ProductObject("redheart6"));
         featuredProducts.add(new ProductObject("redheart7"));
-        featuredProducts.add(new ProductObject("heartbroken"));
+        featuredProducts.add(new ProductObject("brokenheart"));
         featuredProducts.add(new ProductObject("yellowheart"));
         featuredProducts.add(new ProductObject("greenheart"));
         featuredProducts.add(new ProductObject("blueheart"));
@@ -655,7 +681,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("fies"));
         featuredProducts.add(new ProductObject("cookie"));
         featuredProducts.add(new ProductObject("cookie2"));
-        featuredProducts.add(new ProductObject("onigilri"));
+        featuredProducts.add(new ProductObject("onigiri"));
         featuredProducts.add(new ProductObject("bbq"));
         featuredProducts.add(new ProductObject("bbq2"));
         featuredProducts.add(new ProductObject("sushi"));
@@ -689,7 +715,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("eggplant"));
         featuredProducts.add(new ProductObject("potato"));
         featuredProducts.add(new ProductObject("sweetpotato"));
-        featuredProducts.add(new ProductObject("chectnut"));
+        featuredProducts.add(new ProductObject("chestnut"));
         featuredProducts.add(new ProductObject("chili"));
         featuredProducts.add(new ProductObject("bacon"));
         featuredProducts.add(new ProductObject("avacado"));
