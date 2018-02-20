@@ -104,23 +104,10 @@ public class ToolsActivity extends Activity {
                         onCaptureImageResult();
                     }
                 }, 0);
-                if (type.equals("sticker")) {
-                    Intent intent = new Intent(ToolsActivity.this, StickerActivity.class);
-                    intent.putExtra("image", mCurrentPhotoPath);
-                    startActivity(intent);
-                } else if (type.equals("frame")) {
-                    Intent intent = new Intent(ToolsActivity.this, FrameActivity.class);
-                    intent.putExtra("image", mCurrentPhotoPath);
-                    startActivity(intent);
-                } else if (type.equals("layout")) {
-//                    Intent intent = new Intent(ToolsActivity.this, LayoutActivity.class);
-//                    intent.putExtra("image", mCurrentPhotoPath);
-//                    startActivity(intent);
-                } else {
-//                    Intent intent = new Intent(ToolsActivity.this, DoubleExposureActivity.class);
-//                    intent.putExtra("image", mCurrentPhotoPath);
-//                    startActivity(intent);
-                }
+                Intent intent = new Intent(ToolsActivity.this, StickerActivity.class);
+                intent.putExtra("image", mCurrentPhotoPath);
+                startActivity(intent);
+
             }
         } else {
             if (resultCode == Activity.RESULT_OK && data != null) {
@@ -223,23 +210,9 @@ public class ToolsActivity extends Activity {
     }
 
     public void returnURI(String uri) {
-        if (type.equals("sticker")) {
-            Intent intent = new Intent(ToolsActivity.this, StickerActivity.class);
-            intent.putExtra("image", mCurrentPhotoPath);
-            startActivity(intent);
-        } else if (type.equals("frame")) {
-            Intent intent = new Intent(ToolsActivity.this, FrameActivity.class);
-            intent.putExtra("image", mCurrentPhotoPath);
-            startActivity(intent);
-        } else if (type.equals("layout")) {
-//                    Intent intent = new Intent(ToolsActivity.this, LayoutActivity.class);
-//                    intent.putExtra("image", mCurrentPhotoPath);
-//                    startActivity(intent);
-        } else {
-//                    Intent intent = new Intent(ToolsActivity.this, DoubleExposureActivity.class);
-//                    intent.putExtra("image", mCurrentPhotoPath);
-//                    startActivity(intent);
-        }
+        Intent intent = new Intent(ToolsActivity.this, StickerActivity.class);
+        intent.putExtra("image", mCurrentPhotoPath);
+        startActivity(intent);
     }
 
     public void onBackPressed() {
