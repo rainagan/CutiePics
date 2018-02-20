@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MultiPhotoSelectActivity2.class);
+                Intent intent = new Intent(MainActivity.this, MultiPhotoSelectActivity.class);
                 intent.putExtra("type", "frame");
                 startActivity(intent);            }
         });
@@ -57,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, MultiPhotoSelectActivity.class);
-//                intent.putExtra("type", "layout");
-//                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, MultiPhotoSelectActivity.class);
+                intent.putExtra("type", "layout");
+                startActivity(intent);
             }
         });
 
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         doubleExpose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ToolsActivity.class);
+                Intent intent = new Intent(MainActivity.this, MultiPhotoSelectActivity.class);
                 intent.putExtra("type", "doubleExposure");
                 startActivity(intent);            }
         });

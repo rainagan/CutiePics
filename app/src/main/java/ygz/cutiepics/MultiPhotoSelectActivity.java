@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import com.scrat.app.selectorlibrary.ImageSelector;
 
@@ -14,7 +13,7 @@ import java.util.List;
  * Created by Raina on 2018-02-20.
  */
 
-public class MultiPhotoSelectActivity2 extends Activity {
+public class MultiPhotoSelectActivity extends Activity {
     private static final int REQUEST_CODE_SELECT_IMG = 1;
     private static final int MAX_SELECT_COUNT = 4;
 
@@ -37,7 +36,7 @@ public class MultiPhotoSelectActivity2 extends Activity {
     private void showContent(Intent data) {
         List<String> paths = ImageSelector.getImagePaths(data);
 
-        Intent intent = new Intent(MultiPhotoSelectActivity2.this, FrameActivity.class);
+        Intent intent = new Intent(MultiPhotoSelectActivity.this, FrameActivity.class);
         String[] patharray = paths.toArray(new String[0]);
         intent.putExtra("photos", patharray);
         startActivity(intent);

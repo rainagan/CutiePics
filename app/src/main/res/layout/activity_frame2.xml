@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".MultiPhotoSelectActivity2">
+    tools:context=".MultiPhotoSelectActivity">
 
     <Button
         android:id="@+id/frame_add_photo"

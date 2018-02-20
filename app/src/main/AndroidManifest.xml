@@ -36,7 +36,7 @@
         </activity>
         <activity android:name=".ToolsActivity" />
         <activity android:name=".StickerActivity" />
-        <activity android:name=".MultiPhotoSelectActivity2" />
+        <activity android:name=".MultiPhotoSelectActivity" />
         <activity android:name=".FrameActivity" />
     </application>
 
