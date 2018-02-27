@@ -43,7 +43,6 @@ import java.util.List;
 public class StickerActivity extends Activity {
     private ImageView img;
     private String mCurrentPath;
-    private Button emoji;
     private PopupWindow pw;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -128,7 +127,7 @@ public class StickerActivity extends Activity {
 
     private void showPopupWindow() {
         View view = LayoutInflater.from(StickerActivity.this).inflate(R.layout.sticker_popup, null);
-        pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 450);
+        pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 480);
         pw.setFocusable(true);
         pw.setBackgroundDrawable(new ColorDrawable(0xffffffff));
         pw.setOutsideTouchable(true);

@@ -104,10 +104,14 @@ public class ToolsActivity extends Activity {
                         onCaptureImageResult();
                     }
                 }, 0);
-                Intent intent = new Intent(ToolsActivity.this, StickerActivity.class);
+                Intent intent;
+                if (type.equals("sticker")) {
+                    intent = new Intent(ToolsActivity.this, StickerActivity.class);
+                } else {
+                    intent = new Intent(ToolsActivity.this, FrameActivity.class);
+                }
                 intent.putExtra("image", mCurrentPhotoPath);
                 startActivity(intent);
-
             }
         } else {
             if (resultCode == Activity.RESULT_OK && data != null) {
@@ -210,7 +214,12 @@ public class ToolsActivity extends Activity {
     }
 
     public void returnURI(String uri) {
-        Intent intent = new Intent(ToolsActivity.this, StickerActivity.class);
+        Intent intent;
+        if (type.equals("sticker")) {
+            intent = new Intent(ToolsActivity.this, StickerActivity.class);
+        } else {
+            intent = new Intent(ToolsActivity.this, FrameActivity.class);
+        }
         intent.putExtra("image", mCurrentPhotoPath);
         startActivity(intent);
     }

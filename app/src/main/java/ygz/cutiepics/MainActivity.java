@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MultiPhotoSelectActivity.class);
+                Intent intent = new Intent(MainActivity.this, ToolsActivity.class);
                 intent.putExtra("type", "frame");
                 startActivity(intent);            }
         });
