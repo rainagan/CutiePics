@@ -23,12 +23,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.637" />
 
+    <!-- the height of ImageView should be adjustable to different android phone -->
+    <!-- We can realize this after -->
+
     <ImageView
         android:id="@+id/frameImage"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="450dp"
         android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY"
+        android:scaleType="fitCenter"
         android:contentDescription="@string/app_name" />
 </RelativeLayout>
