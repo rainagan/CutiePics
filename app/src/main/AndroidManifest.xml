@@ -38,6 +38,7 @@
         <activity android:name=".StickerActivity" />
         <activity android:name=".MultiPhotoSelectActivity" />
         <activity android:name=".FrameActivity" />
+        <activity android:name=".LayoutActivity" />
     </application>
 
 </manifest>
