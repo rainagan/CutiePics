@@ -31,12 +31,13 @@ public class MultiPhotoSelectActivity extends Activity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     private void showContent(Intent data) {
         List<String> paths = ImageSelector.getImagePaths(data);
 
-        Intent intent = new Intent(MultiPhotoSelectActivity.this, FrameActivity.class);
+        Intent intent = new Intent(MultiPhotoSelectActivity.this, LayoutActivity.class);
         String[] patharray = paths.toArray(new String[0]);
         intent.putExtra("photos", patharray);
         startActivity(intent);
