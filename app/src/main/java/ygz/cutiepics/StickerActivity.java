@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -159,15 +161,28 @@ public class StickerActivity extends Activity {
                     public void onItemClick(View view, int position) {
                         ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
                         ImageView temp = pvh.getEmoji();
+                        BitmapDrawable emoji_BD = (BitmapDrawable) temp.getDrawable();
+                        Bitmap emoji_Bitmap = emoji_BD.getBitmap();
 
-                        Drawable emoji_drawable = temp.getDrawable();
-                        Drawable origin_drawable = img.getDrawable();
+                        String out = "Emoji height now is "+emoji_Bitmap.getHeight()+" and width is "+emoji_Bitmap.getWidth();
+                        Log.d("Debug", out);
 
+
+                        //Right now, stickers can be clicked and show up on image, but cannot be removed.
+                        //need new functionality to remove the emoji.
                         if (position!= RecyclerView.NO_POSITION){
+                            Drawable origin_drawable = img.getDrawable();
+//                          Drawable emoji_drawable = temp.getDrawable();
+//                          Bitmap origin_bm = ((BitmapDrawable)origin_drawable).getBitmap();
+                            Bitmap emoji_bm = resize(emoji_Bitmap, 50, 50);
+                            out = "Emoji after resize height now is "+emoji_bm.getHeight()+" and width is "+emoji_bm.getWidth();
+                            Log.d("Debug", out);
+
                             Drawable[] array = new Drawable[2];
                             array[0] = origin_drawable;
-                            array[1] = emoji_drawable;
+                            array[1] = new BitmapDrawable(getResources(), emoji_bm);
                             LayerDrawable layer = new LayerDrawable(array);
+                            layer.setLayerInset(1, 60, 200, 60, 200);
                             img.setImageDrawable(layer);
                         }
                     }
@@ -176,6 +191,33 @@ public class StickerActivity extends Activity {
                     public void onLongItemClick(View view, int position) {}
                 })
         );
+    }
+
+    // This is a helper function copied from on line
+    public Bitmap resize(Bitmap bm, int w, int h)
+    {
+
+        Bitmap BitmapOrg = bm;
+
+        int width = BitmapOrg.getWidth();
+        int height = BitmapOrg.getHeight();
+        int newWidth = w;
+        int newHeight = h;
+
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // if you want to rotate the Bitmap
+        // matrix.postRotate(45);
+
+        // recreate the new Bitmap
+        Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
+                height, matrix, true);
+        return resizedBitmap;
+
     }
 
     private ArrayList<ProductObject> getProductTestData() {
@@ -196,7 +238,6 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("smile2"));
         featuredProducts.add(new ProductObject("smile4"));
         featuredProducts.add(new ProductObject("smile5"));
-        /*
         featuredProducts.add(new ProductObject("stickingtongueout"));
         featuredProducts.add(new ProductObject("stickingtongueout2"));
         featuredProducts.add(new ProductObject("stickingtongueout3"));
@@ -303,6 +344,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("rightpunch4"));
         featuredProducts.add(new ProductObject("rightpunch5"));
         featuredProducts.add(new ProductObject("rightpunch6"));
+        /*
         featuredProducts.add(new ProductObject("rock1"));
         featuredProducts.add(new ProductObject("rock2"));
         featuredProducts.add(new ProductObject("rock3"));
