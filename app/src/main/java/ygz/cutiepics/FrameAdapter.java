@@ -27,13 +27,11 @@ public class FrameAdapter extends RecyclerView.Adapter<FrameViewHolder> {
         this.frameList = frameList;
     }
 
-    @Override
     public FrameViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.frame_list, parent, false);
         return new FrameViewHolder(view);
     }
 
-    @Override
     public void onBindViewHolder(FrameViewHolder holder, int position) {
         FrameObject FrameObject = frameList.get(position);
         int imageRes = getResourceId(context, FrameObject.getName(), "drawable", context.getPackageName());
@@ -41,7 +39,6 @@ public class FrameAdapter extends RecyclerView.Adapter<FrameViewHolder> {
         holder.frames.setImageResource(imageRes);
     }
 
-    @Override
     public int getItemCount() {
         return frameList.size();
     }
