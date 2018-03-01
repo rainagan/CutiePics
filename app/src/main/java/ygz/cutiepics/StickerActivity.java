@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -44,6 +45,7 @@ public class StickerActivity extends Activity {
     private ImageView img;
     private String mCurrentPath;
     private PopupWindow pw;
+//    private ProductViewHolder ProductViewHolder;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -77,52 +79,57 @@ public class StickerActivity extends Activity {
         Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
         img.setImageURI(uriFromPath);
 
-//        emoji = (Button) findViewById(R.id.sticker_emoji);
-//        emoji.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showPopupWindow();
-//            }
-//        });
+        /*
+        Button emoji = ProductViewHolder.getEmoji();
+        emoji = (Button)findViewById(R.id.emoji);
+        emoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupWindow();
+            }
+        });
+*/
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.sticker_navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-//        final RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
-//        GridLayoutManager mGrid = new GridLayoutManager(this, 8);
-//        rv.setLayoutManager(mGrid);
-//        rv.setHasFixedSize(true);
-//        rv.setItemViewCacheSize(32);
-//        rv.setDrawingCacheEnabled(true);
-//        rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-//        rv.setNestedScrollingEnabled(false);
-//        ProductAdapter mAdapter = new ProductAdapter(StickerActivity.this, getProductTestData());
-//        rv.setAdapter(mAdapter);
-//        rv.addOnItemTouchListener(
-//                new RecyclerItemClickListener(this, rv ,new RecyclerItemClickListener.OnItemClickListener() {
-//                    @Override public void onItemClick(View view, int position) {
-//                        if(position != RecyclerView.NO_POSITION){
-////                            FrameLayout stickerPhoto = (FrameLayout) findViewById(R.id.stickerPhoto);
-//
-//                            ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
-//                            ImageView temp = pvh.getEmoji();
-//                            Drawable drawable = temp.getDrawable();
-//
-//                            ImageView image = new ImageView(StickerActivity.this);
-//                            LinearLayout.LayoutParams centerParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-//                            centerParams.gravity=Gravity.CENTER;
-//                            image.setLayoutParams(centerParams);
-//                            image.setBackground(drawable);
-////                            stickerPhoto.addView(image);
-//                        }
-//                    }
-//
-//                    @Override public void onLongItemClick(View view, int position) {
-//                        // do whatever
-//                    }
-//                })
-//        );
+        /*
+        final RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
+        GridLayoutManager mGrid = new GridLayoutManager(this, 8);
+        rv.setLayoutManager(mGrid);
+        rv.setHasFixedSize(true);
+        rv.setItemViewCacheSize(32);
+        rv.setDrawingCacheEnabled(true);
+        rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        rv.setNestedScrollingEnabled(false);
+        ProductAdapter mAdapter = new ProductAdapter(StickerActivity.this, getProductTestData());
+        rv.setAdapter(mAdapter);
+        rv.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, rv ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        if(position != RecyclerView.NO_POSITION){
+                            FrameLayout stickerPhoto = (FrameLayout) findViewById(R.id.stickerPhoto);
+
+                            ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
+                            ImageView temp = pvh.getEmoji();
+                            Drawable drawable = temp.getDrawable();
+
+                            ImageView image = new ImageView(StickerActivity.this);
+                            LinearLayout.LayoutParams centerParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+                            centerParams.gravity=Gravity.CENTER;
+                            image.setLayoutParams(centerParams);
+                            image.setBackground(drawable);
+                            stickerPhoto.addView(image);
+                        }
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
+        */
     }
 
     private void showPopupWindow() {
@@ -134,7 +141,7 @@ public class StickerActivity extends Activity {
         pw.setAnimationStyle(R.style.Animation);
         pw.showAtLocation(view, Gravity.BOTTOM, 0, 0);
 
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.pop_sticker);
+        final RecyclerView rv = (RecyclerView) view.findViewById(R.id.pop_sticker);
         GridLayoutManager mGrid = new GridLayoutManager(this, 8);
         rv.setLayoutManager(mGrid);
 //        ScoreTeamAdapter scoreTeamAdapter = new ScoreTeamAdapter(yearList);
@@ -146,6 +153,29 @@ public class StickerActivity extends Activity {
         rv.setNestedScrollingEnabled(false);
         ProductAdapter mAdapter = new ProductAdapter(StickerActivity.this, getProductTestData());
         rv.setAdapter(mAdapter);
+        rv.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, rv, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
+                        ImageView temp = pvh.getEmoji();
+
+                        Drawable emoji_drawable = temp.getDrawable();
+                        Drawable origin_drawable = img.getDrawable();
+
+                        if (position!= RecyclerView.NO_POSITION){
+                            Drawable[] array = new Drawable[2];
+                            array[0] = origin_drawable;
+                            array[1] = emoji_drawable;
+                            LayerDrawable layer = new LayerDrawable(array);
+                            img.setImageDrawable(layer);
+                        }
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {}
+                })
+        );
     }
 
     private ArrayList<ProductObject> getProductTestData() {
@@ -166,6 +196,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("smile2"));
         featuredProducts.add(new ProductObject("smile4"));
         featuredProducts.add(new ProductObject("smile5"));
+        /*
         featuredProducts.add(new ProductObject("stickingtongueout"));
         featuredProducts.add(new ProductObject("stickingtongueout2"));
         featuredProducts.add(new ProductObject("stickingtongueout3"));
@@ -734,6 +765,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new ProductObject("pudding"));
         featuredProducts.add(new ProductObject("honey"));
         featuredProducts.add(new ProductObject("popcorn"));
+        */
         return featuredProducts;
     }
 
