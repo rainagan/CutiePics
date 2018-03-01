@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,12 +27,12 @@ import java.util.List;
 
 public class LayoutActivity extends Activity {
     private PopupWindow pw;
+    private int picNum = 0;
 
-    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_frame);
+        setContentView(R.layout.layout_frame);
 
         Bundle captured = getIntent().getExtras();
         List<String> patharr = new ArrayList<>();
@@ -50,9 +51,11 @@ public class LayoutActivity extends Activity {
             tr.addView(img);
             table.addView(tr);
         }
+
         table.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("Debug", "On click check");
                 showPopupWindow();
             }
         });
