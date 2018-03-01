@@ -182,7 +182,7 @@ public class StickerActivity extends Activity {
                             array[0] = origin_drawable;
                             array[1] = new BitmapDrawable(getResources(), emoji_bm);
                             LayerDrawable layer = new LayerDrawable(array);
-                            layer.setLayerInset(1, 60, 200, 60, 200);
+                            layer.setLayerInset(1, 400, 800, 250, 600);
                             img.setImageDrawable(layer);
                         }
                     }
@@ -222,6 +222,7 @@ public class StickerActivity extends Activity {
 
     private ArrayList<ProductObject> getProductTestData() {
         ArrayList<ProductObject> featuredProducts = new ArrayList<ProductObject>();
+        featuredProducts.add(new ProductObject("strawberry"));
         featuredProducts.add(new ProductObject("happyface"));
         featuredProducts.add(new ProductObject("happy"));
         featuredProducts.add(new ProductObject("politesmile"));
