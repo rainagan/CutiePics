@@ -41,5 +41,7 @@ public class SavePhoto extends AppCompatActivity {
 
     public void sharePhoto(View view) {
         // TODO: share photo to groups
+        Intent intent = new Intent(this, SearchUserActivity.class);
+        startActivity(intent);
     }
 }
