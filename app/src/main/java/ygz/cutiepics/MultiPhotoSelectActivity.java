@@ -15,12 +15,18 @@ import java.util.List;
 
 public class MultiPhotoSelectActivity extends Activity {
     private static final int REQUEST_CODE_SELECT_IMG = 1;
-    private static final int MAX_SELECT_COUNT = 4;
+    private static final int MAX_SELECT_COUNT_LAYOUT = 4;
+    private static final int MAX_SELECT_COUNT_OVERLAY = 2;
+
+    private String type = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frame2);
+
+        Bundle temp = getIntent().getExtras();
+        type = (String) temp.get("type");
     }
 
     @Override
@@ -36,14 +42,24 @@ public class MultiPhotoSelectActivity extends Activity {
     private void showContent(Intent data) {
         List<String> paths = ImageSelector.getImagePaths(data);
 
-        Intent intent = new Intent(MultiPhotoSelectActivity.this, FrameActivity.class);
+        Intent intent;
+        if (type.equals("layout")) {
+            intent = new Intent(MultiPhotoSelectActivity.this, FrameActivity.class);
+        } else {
+            intent = new Intent(MultiPhotoSelectActivity.this, OverlayActivity.class);
+        }
         String[] patharray = paths.toArray(new String[0]);
         intent.putExtra("photos", patharray);
         startActivity(intent);
     }
 
     public void selectImg(View v) {
-        ImageSelector.show(this, REQUEST_CODE_SELECT_IMG, MAX_SELECT_COUNT);
+        if (type.equals("layout")) {
+            ImageSelector.show(this, REQUEST_CODE_SELECT_IMG, MAX_SELECT_COUNT_LAYOUT);
+        } else {
+            ImageSelector.show(this, REQUEST_CODE_SELECT_IMG, MAX_SELECT_COUNT_OVERLAY);
+
+        }
     }
 }
 
