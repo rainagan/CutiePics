@@ -83,7 +83,6 @@ public class EmailPasswordActivity extends BaseActivity implements
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
-//        onAuthSuccess(currentUser);
     }
     // [END on_start_check_user]
 
@@ -106,8 +105,10 @@ public class EmailPasswordActivity extends BaseActivity implements
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             UserModel um = new UserModel(user.getEmail());
-
-                            onAuthSuccess(task.getResult().getUser());
+                            updateUI(user);
+                            String username = usernameFromEmail(user.getEmail());
+                            // add user to server
+                            writeNewUser(user.getUid(),username,user.getEmail(),"");
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -144,9 +145,7 @@ public class EmailPasswordActivity extends BaseActivity implements
 
 //                            updateUI(user);
                             UserModel um = new UserModel(user.getEmail());
-
-                            Intent intent = new Intent(EmailPasswordActivity.this, MainActivity.class);
-                            startActivity(intent);
+                            updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -239,17 +238,6 @@ public class EmailPasswordActivity extends BaseActivity implements
             findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
             findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
         }
-    }
-
-    private void onAuthSuccess(FirebaseUser user) {
-        String username = usernameFromEmail(user.getEmail());
-
-        // Write new user
-        writeNewUser(user.getUid(), username, user.getEmail(), "");
-
-        // Go to MainActivity
-        startActivity(new Intent(EmailPasswordActivity.this, MainActivity.class));
-        finish();
     }
 
     private String usernameFromEmail(String email) {
