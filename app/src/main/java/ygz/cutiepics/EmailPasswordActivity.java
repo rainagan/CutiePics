@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class EmailPasswordActivity extends BaseActivity implements
         View.OnClickListener {
@@ -48,10 +50,17 @@ public class EmailPasswordActivity extends BaseActivity implements
     private FirebaseAuth mAuth;
     // [END declare_auth]
 
+    private DatabaseReference mDatabase;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emailpassword);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        // [START initialize_auth]
+        mAuth = FirebaseAuth.getInstance();
+        // [END initialize_auth]
 
         // Views
         mEmailField = findViewById(R.id.field_email);
@@ -65,9 +74,6 @@ public class EmailPasswordActivity extends BaseActivity implements
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.verify_email_button).setOnClickListener(this);
 
-        // [START initialize_auth]
-        mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
     }
 
     // [START on_start_check_user]
@@ -77,6 +83,7 @@ public class EmailPasswordActivity extends BaseActivity implements
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+//        onAuthSuccess(currentUser);
     }
     // [END on_start_check_user]
 
@@ -100,11 +107,7 @@ public class EmailPasswordActivity extends BaseActivity implements
 
                             UserModel um = new UserModel(user.getEmail());
 
-                            // go back to MainActivity
-                            Intent intent = new Intent(EmailPasswordActivity.this, MainActivity.class);
-                            intent.putExtra("user",um);
-                            startActivity(intent);
-
+                            onAuthSuccess(task.getResult().getUser());
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -142,9 +145,7 @@ public class EmailPasswordActivity extends BaseActivity implements
 //                            updateUI(user);
                             UserModel um = new UserModel(user.getEmail());
 
-                            // go back to MainActivity
                             Intent intent = new Intent(EmailPasswordActivity.this, MainActivity.class);
-                            intent.putExtra("user",um);
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -240,6 +241,31 @@ public class EmailPasswordActivity extends BaseActivity implements
         }
     }
 
+    private void onAuthSuccess(FirebaseUser user) {
+        String username = usernameFromEmail(user.getEmail());
+
+        // Write new user
+        writeNewUser(user.getUid(), username, user.getEmail(), "");
+
+        // Go to MainActivity
+        startActivity(new Intent(EmailPasswordActivity.this, MainActivity.class));
+        finish();
+    }
+
+    private String usernameFromEmail(String email) {
+        if (email.contains("@")) {
+            return email.split("@")[0];
+        } else {
+            return email;
+        }
+    }
+
+    private void writeNewUser(String userId, String name, String email, String photo) {
+        User user = new User(name, email, photo);
+
+        mDatabase.child("users").child(userId).setValue(user);
+    }
+
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -252,5 +278,11 @@ public class EmailPasswordActivity extends BaseActivity implements
         } else if (i == R.id.verify_email_button) {
             sendEmailVerification();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(EmailPasswordActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 }
