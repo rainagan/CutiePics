@@ -300,8 +300,8 @@ public class StickerActivity extends Activity {
                         Canvas tempCanvas = new Canvas(tempBitmap);
 
                         //Draw the image bitmap into the canvas
-                        //tempCanvas.drawBitmap(origin_bitmap, 0, 0, null);
-                        tempCanvas.drawBitmap(emoji_Bitmap, 10, 10, null);
+                        tempCanvas.drawBitmap(origin_bitmap, 0, 0, null);
+                        //tempCanvas.drawBitmap(emoji_Bitmap, 10, 10, null);
 
                         //Attach the canvas to the ImageView
                         img.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
