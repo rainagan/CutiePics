@@ -7,14 +7,25 @@
     android:orientation="vertical"
     tools:context=".FrameActivity">
 
+    <Button
+        android:id="@+id/save_photo"
+        android:layout_width="45dp"
+        android:layout_height="46dp"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="right"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/save"
+        android:onClick="saveImg"
+        android:textSize="24sp" />
+
     <!-- the height of ImageView should be adjustable to different android phone -->
     <!-- We can realize this after -->
     <ImageView
         android:id="@+id/ivImage"
         android:layout_width="wrap_content"
-        android:layout_height="385dp"
+        android:layout_height="380dp"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
