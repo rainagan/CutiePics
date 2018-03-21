@@ -1,6 +1,10 @@
 package ygz.cutiepics;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +21,9 @@ import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,69 +33,127 @@ import java.util.List;
  */
 
 public class LayoutActivity extends Activity {
-    private PopupWindow pw;
+    private ImageView img;
     private int picNum = 0;
+    private List<String> patharr = new ArrayList<>();;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_frame);
+        setContentView(R.layout.activity_frame);
+        img = (ImageView) findViewById(R.id.ivImage);
 
         Bundle captured = getIntent().getExtras();
-        List<String> patharr = new ArrayList<>();
         String[] temparr = (String[]) captured.get("photos");
         patharr = Arrays.asList(temparr);
 
-        TableLayout table = (TableLayout) findViewById(R.id.table);
-        for (int i = 0; i < patharr.size(); i++) {
-            final String temp = patharr.get(i);
-            final Uri tempUri = Uri.parse(temp);
-
-            final ImageView img = new ImageView(this);
-            img.setImageURI(tempUri);
-
-            final TableRow tr = new TableRow(this);
-            tr.addView(img);
-            table.addView(tr);
+        // For the recycler view part, layout will reuse the code of frame
+        RecyclerView rv = (RecyclerView) findViewById(R.id.frame_view);
+        GridLayoutManager mGrid = new GridLayoutManager(this, 4);
+        rv.setLayoutManager(mGrid);
+        rv.setHasFixedSize(true);
+        FrameAdapter mAdapter;
+        if (patharr.size() == 2) {
+            mAdapter = new FrameAdapter(LayoutActivity.this, getFrameTestData2());
+        } else if (patharr.size() == 3) {
+            mAdapter = new FrameAdapter(LayoutActivity.this, getFrameTestData3());
+        } else {
+            mAdapter = new FrameAdapter(LayoutActivity.this, getFrameTestData4());
         }
 
-        table.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Debug", "On click check");
-                showPopupWindow();
-            }
-        });
-    }
-
-    private void showPopupWindow() {
-        View view = LayoutInflater.from(LayoutActivity.this).inflate(R.layout.sticker_popup, null);
-        pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        pw.setFocusable(true);
-        pw.setBackgroundDrawable(new ColorDrawable(0xffffff));
-        pw.setOutsideTouchable(true);
-        pw.setAnimationStyle(R.style.Animation);
-        pw.showAtLocation(view, Gravity.BOTTOM, 0, 0);
-
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.pop_sticker);
-        GridLayoutManager mGrid = new GridLayoutManager(this, 8);
-        rv.setLayoutManager(mGrid);
-//        ScoreTeamAdapter scoreTeamAdapter = new ScoreTeamAdapter(yearList);
-//        rv.setAdapter(scoreTeamAdapter);
-        rv.setHasFixedSize(true);
-        rv.setItemViewCacheSize(32);
-        rv.setDrawingCacheEnabled(true);
-        rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        rv.setNestedScrollingEnabled(false);
-        FrameAdapter mAdapter = new FrameAdapter(LayoutActivity.this, getFrameTestData());
         rv.setAdapter(mAdapter);
+
+        rv.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, rv ,new RecyclerItemClickListener.OnItemClickListener() {
+                    public void onItemClick(View view, int position) {
+                        // First consider two picture option for now
+                        //if (position == 0) {
+                            setLayout2();
+
+                    }
+
+                    public void onLongItemClick(View view, int position) {
+//                        // do whatever
+                    }
+                })
+        );
+
     }
 
-    private ArrayList<FrameObject> getFrameTestData() {
+    public void setLayout2() {
+        Bitmap pic1 = getBitmap(patharr.get(0));
+        Bitmap pic2 = getBitmap(patharr.get(1));
+
+        Bitmap combined = combineImages(pic1, pic2);
+        img.setImageDrawable(new BitmapDrawable(getResources(), combined));
+        img.setImageDrawable(new BitmapDrawable(getResources(), combined));
+    }
+
+    public Bitmap getBitmap(String path) {
+        try {
+            Bitmap bitmap=null;
+            File f= new File(path);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            options.inSampleSize = 3;   // Bitmap we get is compressed
+
+            bitmap = BitmapFactory.decodeStream(new FileInputStream(f), null, options);
+
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Bitmap combineImages(Bitmap c, Bitmap s) {
+        Bitmap cs;
+
+        int width, height = 0;
+
+        if(c.getWidth() > s.getWidth()) {
+            width = c.getWidth() + s.getWidth();
+            height = c.getHeight();
+        } else {
+            width = s.getWidth() + s.getWidth();
+            height = c.getHeight();
+        }
+
+
+        cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        Canvas comboImage = new Canvas(cs);
+
+        comboImage.drawBitmap(c, 0f, 0f, null);
+        comboImage.drawBitmap(s, c.getWidth(), 0f, null);
+
+        return cs;
+    }
+
+
+    private ArrayList<FrameObject> getFrameTestData2() {
         ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
-        featuredFrame.add(new FrameObject("frame_pure1"));
-        featuredFrame.add(new FrameObject("frame_pure2"));
+        featuredFrame.add(new FrameObject("layout_2_1"));
+        featuredFrame.add(new FrameObject("layout_2"));
 
         return featuredFrame;
     }
+
+    private ArrayList<FrameObject> getFrameTestData3() {
+        ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
+        featuredFrame.add(new FrameObject("layout_3"));
+
+        return featuredFrame;
+    }
+
+    private ArrayList<FrameObject> getFrameTestData4() {
+        ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
+        featuredFrame.add(new FrameObject("layout_4"));
+
+        return featuredFrame;
+    }
+
+
+
 }

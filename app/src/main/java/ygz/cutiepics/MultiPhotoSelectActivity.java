@@ -37,6 +37,7 @@ public class MultiPhotoSelectActivity extends Activity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     private void showContent(Intent data) {
@@ -44,7 +45,7 @@ public class MultiPhotoSelectActivity extends Activity {
 
         Intent intent;
         if (type.equals("layout")) {
-            intent = new Intent(MultiPhotoSelectActivity.this, FrameActivity.class);
+            intent = new Intent(MultiPhotoSelectActivity.this, LayoutActivity.class);
         } else {
             intent = new Intent(MultiPhotoSelectActivity.this, OverlayActivity.class);
         }
