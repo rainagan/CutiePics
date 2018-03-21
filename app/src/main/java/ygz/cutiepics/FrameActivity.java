@@ -1,60 +1,29 @@
 package ygz.cutiepics;
-
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.SimpleAdapter;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.Toast;
-
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+
 
 /**
  * Created by Yuxiao Yu on 2018-02-01.
  */
 
 public class FrameActivity extends Activity {
-    private ImageView img;
+    private static ImageView img;
     private Drawable origin;
 
     private boolean added = false;
@@ -105,11 +74,19 @@ public class FrameActivity extends Activity {
                             addFrame(frame);
                         }
 
-                        //frame.recycle();
+                        Drawable saved_drawable = img.getDrawable();
+                        final int width = saved_drawable.getIntrinsicWidth();
+                        final int height = saved_drawable.getIntrinsicHeight();
+
+                        final Bitmap saved_bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                        saved_drawable.draw(new Canvas(saved_bitmap));
+
+                        photoModel.setmPhoto(saved_bitmap);
+
                     }
 
                     public void onLongItemClick(View view, int position) {
-//                        // do whatever
+                        // do nothing
                     }
                 })
         );
@@ -130,11 +107,9 @@ public class FrameActivity extends Activity {
         array[1] = new BitmapDrawable(getResources(), frame_bm);
         LayerDrawable layer = new LayerDrawable(array);
         img.setImageDrawable(layer);
-        //image_bm.recycle();
-        //frame_bm.recycle();
     }
 
-    // This is a helper function copied from on line
+    // This is a helper function copied from online
     public Bitmap resize(Bitmap bm, int w, int h)
     {
 
@@ -168,6 +143,11 @@ public class FrameActivity extends Activity {
         //featuredFrame.add(new FrameObject("frame_pure1"));
 
         return featuredFrame;
+    }
+
+    public void saveImg(View view) {
+        Intent intent = new Intent(FrameActivity.this, SavePhoto.class);
+        startActivity(intent);
     }
 }
 
