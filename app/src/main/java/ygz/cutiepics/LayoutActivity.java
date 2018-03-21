@@ -1,6 +1,7 @@
 package ygz.cutiepics;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -46,6 +47,7 @@ public class LayoutActivity extends Activity {
         Bundle captured = getIntent().getExtras();
         String[] temparr = (String[]) captured.get("photos");
         patharr = Arrays.asList(temparr);
+        picNum = patharr.size();
 
         // For the recycler view part, layout will reuse the code of frame
         RecyclerView rv = (RecyclerView) findViewById(R.id.frame_view);
@@ -68,8 +70,21 @@ public class LayoutActivity extends Activity {
                     public void onItemClick(View view, int position) {
                         // First consider two picture option for now
                         //if (position == 0) {
-                            setLayout2();
+                        //setLayout2();
+                        Bitmap combined = useLayout(position);
 
+                        if (combined == null) {
+                            Log.d("Error", "position now is "+position);
+                            return;
+                        }
+
+                        img.setImageDrawable(new BitmapDrawable(getResources(), combined));
+                        //img.setImageDrawable(new BitmapDrawable(getResources(), combined));
+
+
+                        BitmapDrawable frame_origin = (BitmapDrawable) img.getDrawable();
+                        Bitmap saved_bitmap = frame_origin.getBitmap();
+                        photoModel.setmPhoto(saved_bitmap);
                     }
 
                     public void onLongItemClick(View view, int position) {
@@ -80,6 +95,17 @@ public class LayoutActivity extends Activity {
 
     }
 
+    private Bitmap useLayout(int position) {
+        if (picNum == 2 && position == 0) {
+            Bitmap pic1 = getBitmap(patharr.get(0));
+            Bitmap pic2 = getBitmap(patharr.get(1));
+            Layout_Two layout = new Layout_Two();
+            return layout.combineImages(pic1, pic2);
+        }
+        return null;
+    }
+
+    /*
     public void setLayout2() {
         Bitmap pic1 = getBitmap(patharr.get(0));
         Bitmap pic2 = getBitmap(patharr.get(1));
@@ -88,6 +114,7 @@ public class LayoutActivity extends Activity {
         img.setImageDrawable(new BitmapDrawable(getResources(), combined));
         img.setImageDrawable(new BitmapDrawable(getResources(), combined));
     }
+    */
 
     public Bitmap getBitmap(String path) {
         try {
@@ -106,7 +133,7 @@ public class LayoutActivity extends Activity {
             return null;
         }
     }
-
+/*
     public Bitmap combineImages(Bitmap c, Bitmap s) {
         Bitmap cs;
 
@@ -130,7 +157,7 @@ public class LayoutActivity extends Activity {
 
         return cs;
     }
-
+*/
 
     private ArrayList<FrameObject> getFrameTestData2() {
         ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
@@ -154,6 +181,9 @@ public class LayoutActivity extends Activity {
         return featuredFrame;
     }
 
-
+    public void saveImg(View view) {
+        Intent intent = new Intent(LayoutActivity.this, SavePhoto.class);
+        startActivity(intent);
+    }
 
 }
