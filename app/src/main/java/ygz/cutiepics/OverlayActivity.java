@@ -3,6 +3,7 @@ package ygz.cutiepics;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -40,19 +41,6 @@ public class OverlayActivity extends Activity {
 
         setContentView(R.layout.activity_overlay);
 
-        handler = new Handler() {
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    // done with seekBar
-                    case 1:
-                        Toast.makeText(OverlayActivity.this, "Exposure "+Integer.toString(prog), Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-
         img1 = (ImageView) findViewById(R.id.overlayImg1);
         img2 = (ImageView) findViewById(R.id.overlayImg2);
 
@@ -69,14 +57,14 @@ public class OverlayActivity extends Activity {
         Uri tempUri2 = Uri.parse(temp2);
         img2.setImageURI(tempUri2);
 
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        seekBar = findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
 
-        radGroup = (RadioGroup) findViewById(R.id.radGroup);
+        radGroup = findViewById(R.id.radGroup);
         radGroup.setOnCheckedChangeListener(radGroupListener);
 
-        rad1 = (RadioButton) findViewById(R.id.overlayBut1);
-        rad2 = (RadioButton) findViewById(R.id.overlayBut2);
+        rad1 = findViewById(R.id.overlayBut1);
+        rad2 = findViewById(R.id.overlayBut2);
     }
 
     SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
@@ -93,12 +81,7 @@ public class OverlayActivity extends Activity {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             // when the user last touches the seekbar
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    handler.sendEmptyMessage(1);
-                }
-            }).start();
+            Toast.makeText(OverlayActivity.this, "Exposure " + Integer.toString(prog), Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -107,13 +90,7 @@ public class OverlayActivity extends Activity {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             RadioButton radBut = (RadioButton) findViewById(checkedId);
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    handler.sendMessage();
-//                }
-//            })
-            Toast.makeText(OverlayActivity.this, "You selected "+radBut.getText(), Toast.LENGTH_SHORT);
+            Toast.makeText(OverlayActivity.this, "You selected " + radBut.getText(), Toast.LENGTH_SHORT);
         }
     };
 }
