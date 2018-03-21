@@ -43,6 +43,10 @@ public class FrameActivity extends Activity {
         Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
         img.setImageURI(uriFromPath);
 
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) img.getDrawable();
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        photoModel.setmPhoto(bitmap);
+
         origin = img.getDrawable();
 
         final RecyclerView rv = (RecyclerView) findViewById(R.id.frame_view);

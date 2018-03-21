@@ -22,9 +22,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -104,11 +102,10 @@ public class EmailPasswordActivity extends BaseActivity implements
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            UserModel um = new UserModel(user.getEmail());
                             updateUI(user);
                             String username = usernameFromEmail(user.getEmail());
                             // add user to server
-                            writeNewUser(user.getUid(),username,user.getEmail(),"");
+                            writeNewUser(user.getUid(),user.getEmail(),"");
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -143,8 +140,6 @@ public class EmailPasswordActivity extends BaseActivity implements
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-//                            updateUI(user);
-                            UserModel um = new UserModel(user.getEmail());
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -248,8 +243,8 @@ public class EmailPasswordActivity extends BaseActivity implements
         }
     }
 
-    private void writeNewUser(String userId, String name, String email, String photo) {
-        User user = new User(name, email, photo);
+    private void writeNewUser(String userId, String email, String photo) {
+        User user = new User(email, photo);
 
         mDatabase.child("users").child(userId).setValue(user);
     }

@@ -24,7 +24,7 @@
         app:layout_constraintVertical_bias="0.182" />
 
     <Button
-        android:id="@+id/searchBut"
+        android:id="@+id/addBut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -33,7 +33,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/my_button"
         android:backgroundTint="@color/colorLightPink"
-        android:text="Search"
+        android:text="Add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.971"
