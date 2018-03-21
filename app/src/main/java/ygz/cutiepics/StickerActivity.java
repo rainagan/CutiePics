@@ -45,6 +45,8 @@ import java.util.List;
 
 public class StickerActivity extends Activity {
     private ImageView img;
+
+    private int add_pos = -1;
     private String mCurrentPath;
     private PopupWindow pw;
 //    private ProductViewHolder ProductViewHolder;
@@ -161,22 +163,36 @@ public class StickerActivity extends Activity {
                     public void onItemClick(View view, int position) {
                         ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
                         ImageView temp = pvh.getEmoji();
+                        boolean added = pvh.checkAdded();
+
                         BitmapDrawable emoji_BD = (BitmapDrawable) temp.getDrawable();
                         Bitmap emoji_Bitmap = emoji_BD.getBitmap();
 
                         String out = "Emoji height now is "+emoji_Bitmap.getHeight()+" and width is "+emoji_Bitmap.getWidth();
                         Log.d("Debug", out);
 
+                        Drawable origin_drawable = img.getDrawable();
 
                         //Right now, stickers can be clicked and show up on image, but cannot be removed.
                         //need new functionality to remove the emoji.
+
+                        if (added == true) {
+                            Log.d("Debug", "The sticker is added already");
+                            pvh.setAdded(false);
+                            img.setImageDrawable(origin_drawable);
+                            return;
+                        }
+
+
                         if (position!= RecyclerView.NO_POSITION){
-                            Drawable origin_drawable = img.getDrawable();
+                            pvh.setAdded(true);
+                            add_pos = position;
 //                          Drawable emoji_drawable = temp.getDrawable();
 //                          Bitmap origin_bm = ((BitmapDrawable)origin_drawable).getBitmap();
                             Bitmap emoji_bm = resize(emoji_Bitmap, 50, 50);
                             out = "Emoji after resize height now is "+emoji_bm.getHeight()+" and width is "+emoji_bm.getWidth();
                             Log.d("Debug", out);
+
 
                             Drawable[] array = new Drawable[2];
                             array[0] = origin_drawable;
@@ -223,6 +239,12 @@ public class StickerActivity extends Activity {
     private ArrayList<ProductObject> getProductTestData() {
         ArrayList<ProductObject> featuredProducts = new ArrayList<ProductObject>();
         featuredProducts.add(new ProductObject("strawberry"));
+        featuredProducts.add(new ProductObject("sweetpotato"));
+        featuredProducts.add(new ProductObject("donut"));
+        featuredProducts.add(new ProductObject("drumstick"));
+        featuredProducts.add(new ProductObject("blueheart"));
+        featuredProducts.add(new ProductObject("cardheart"));
+
         featuredProducts.add(new ProductObject("happyface"));
         featuredProducts.add(new ProductObject("happy"));
         featuredProducts.add(new ProductObject("politesmile"));
