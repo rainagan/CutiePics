@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    private Button sticker, frame, layout, doubleExpose;
+    private Button sticker, frame, layout, doubleExpose, signIn;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +71,15 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, MultiPhotoSelectActivity.class);
                 intent.putExtra("type", "doubleExposure");
                 startActivity(intent);            }
+        });
+
+        signIn = (Button) findViewById(R.id.signIn);
+        signIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, EmailPasswordActivity.class);
+                startActivity(intent);
+            }
         });
     }
 

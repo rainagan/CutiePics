@@ -9,6 +9,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -38,8 +43,9 @@
         <activity android:name=".StickerActivity" />
         <activity android:name=".MultiPhotoSelectActivity" />
         <activity android:name=".FrameActivity" />
+        <activity android:name=".OverlayActivity" />
+        <activity android:name=".EmailPasswordActivity"/>
         <activity android:name=".LayoutActivity" />
         <activity android:name=".SavePhoto"></activity>
     </application>
-
 </manifest>
