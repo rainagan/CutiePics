@@ -38,6 +38,4 @@ public class FrameViewHolder extends RecyclerView.ViewHolder {
     }
     */
 
-
-
 }

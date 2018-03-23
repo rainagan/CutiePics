@@ -36,7 +36,7 @@ import java.util.List;
 public class LayoutActivity extends Activity {
     private ImageView img;
     private int picNum = 0;
-    private List<String> patharr = new ArrayList<>();;
+    private List<String> patharr = new ArrayList<>();
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -68,9 +68,7 @@ public class LayoutActivity extends Activity {
         rv.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, rv ,new RecyclerItemClickListener.OnItemClickListener() {
                     public void onItemClick(View view, int position) {
-                        // First consider two picture option for now
-                        //if (position == 0) {
-                        //setLayout2();
+
                         Bitmap combined = useLayout(position);
 
                         if (combined == null) {
@@ -79,8 +77,6 @@ public class LayoutActivity extends Activity {
                         }
 
                         img.setImageDrawable(new BitmapDrawable(getResources(), combined));
-                        //img.setImageDrawable(new BitmapDrawable(getResources(), combined));
-
 
                         BitmapDrawable frame_origin = (BitmapDrawable) img.getDrawable();
                         Bitmap saved_bitmap = frame_origin.getBitmap();
@@ -96,87 +92,32 @@ public class LayoutActivity extends Activity {
     }
 
     private Bitmap useLayout(int position) {
-        if (picNum == 2 && position == 0) {
-            Bitmap pic1 = getBitmap(patharr.get(0));
-            Bitmap pic2 = getBitmap(patharr.get(1));
-            Layout_Two layout = new Layout_Two();
-            return layout.combineImages(pic1, pic2);
-        }
-        return null;
+        LayoutTemplate layout = new LayoutTemplate();
+        layout.position = position;
+        return layout.match_temp(this.patharr, getBaseContext());  // should we use base context here?
     }
-
-    /*
-    public void setLayout2() {
-        Bitmap pic1 = getBitmap(patharr.get(0));
-        Bitmap pic2 = getBitmap(patharr.get(1));
-
-        Bitmap combined = combineImages(pic1, pic2);
-        img.setImageDrawable(new BitmapDrawable(getResources(), combined));
-        img.setImageDrawable(new BitmapDrawable(getResources(), combined));
-    }
-    */
-
-    public Bitmap getBitmap(String path) {
-        try {
-            Bitmap bitmap=null;
-            File f= new File(path);
-            BitmapFactory.Options options = new BitmapFactory.Options();
-
-            options.inPreferredConfig = Bitmap.Config.RGB_565;
-            options.inSampleSize = 3;   // Bitmap we get is compressed
-
-            bitmap = BitmapFactory.decodeStream(new FileInputStream(f), null, options);
-
-            return bitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-/*
-    public Bitmap combineImages(Bitmap c, Bitmap s) {
-        Bitmap cs;
-
-        int width, height = 0;
-
-        if(c.getWidth() > s.getWidth()) {
-            width = c.getWidth() + s.getWidth();
-            height = c.getHeight();
-        } else {
-            width = s.getWidth() + s.getWidth();
-            height = c.getHeight();
-        }
-
-
-        cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-        Canvas comboImage = new Canvas(cs);
-
-        comboImage.drawBitmap(c, 0f, 0f, null);
-        comboImage.drawBitmap(s, c.getWidth(), 0f, null);
-
-        return cs;
-    }
-*/
 
     private ArrayList<FrameObject> getFrameTestData2() {
         ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
-        featuredFrame.add(new FrameObject("layout_2_1"));
-        featuredFrame.add(new FrameObject("layout_2"));
+        featuredFrame.add(new FrameObject("layout2_1"));
+        featuredFrame.add(new FrameObject("layout2_2"));
 
         return featuredFrame;
     }
 
     private ArrayList<FrameObject> getFrameTestData3() {
         ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
-        featuredFrame.add(new FrameObject("layout_3"));
+        featuredFrame.add(new FrameObject("layout3_1"));
+        featuredFrame.add(new FrameObject("layout3_2"));
+        featuredFrame.add(new FrameObject("layout3_3"));
+        featuredFrame.add(new FrameObject("layout3_4"));
 
         return featuredFrame;
     }
 
     private ArrayList<FrameObject> getFrameTestData4() {
         ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
-        featuredFrame.add(new FrameObject("layout_4"));
+        featuredFrame.add(new FrameObject("layout4_1"));
 
         return featuredFrame;
     }
