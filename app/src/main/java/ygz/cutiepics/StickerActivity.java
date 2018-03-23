@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -18,10 +22,12 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -32,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+import android.view.View.OnTouchListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +52,8 @@ import java.util.List;
 
 public class StickerActivity extends Activity {
     private ImageView img;
+
+    private int add_pos = -1;
     private String mCurrentPath;
     private PopupWindow pw;
 //    private ProductViewHolder ProductViewHolder;
@@ -70,11 +79,12 @@ public class StickerActivity extends Activity {
     };
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stickers);
 
         img = (ImageView) findViewById(R.id.ivImage);
+        //img.setOnTouchListener(new TouchListener());
 
         Bundle captured = getIntent().getExtras();
         this.mCurrentPath = (String) captured.get("image");
@@ -90,7 +100,7 @@ public class StickerActivity extends Activity {
                 showPopupWindow();
             }
         });
-*/
+        */
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.sticker_navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
@@ -134,6 +144,110 @@ public class StickerActivity extends Activity {
         */
     }
 
+    private final class TouchListener implements OnTouchListener {
+            private PointF startPoint = new PointF();
+            private Matrix matrix = new Matrix();
+            private Matrix currentMatrix = new Matrix();
+            private int mode = 0;
+            private static final int DRAG = 1;
+            private static final int ZOOM = 2;
+            private float startDis;// 开始距离
+            private PointF midPoint;// 中间点
+
+            private float left;
+            private float top;
+            private float right;
+            private float bottom;
+            Rect rect;
+
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:// 手指压下屏幕
+                        mode = DRAG;
+                        currentMatrix.set(img.getImageMatrix());// 记录ImageView当前的移动位置
+                        startPoint.set(event.getX(), event.getY());
+
+                        float[] values = new float[9];
+                        currentMatrix.getValues(values);
+
+                        rect = ((ImageView)v).getDrawable().getBounds();
+
+                        left = values[Matrix.MTRANS_X];
+                        top = values[Matrix.MTRANS_Y];
+                        right = left + rect.width() * values[Matrix.MSCALE_X];
+                        bottom = top + rect.height() * values[Matrix.MSCALE_Y];
+
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:// 手指在屏幕移动，该 事件会不断地触发
+                        if (mode == DRAG) {
+                            float dx = event.getX() - startPoint.x;// 得到在x轴的移动距离
+                            float dy = event.getY() - startPoint.y;// 得到在y轴的移动距离
+                            matrix.set(currentMatrix);// 在没有进行移动之前的位置基础上进行移动
+
+                            if(right - left < v.getWidth()) {
+                                dx = 0;
+                            } else if (left + dx > 0 && dx > 0)
+                                dx = -left;
+                            else if (right + dx < v.getRight() && dx < 0)
+                                dx =  v.getRight() - right;
+
+
+
+                            if(bottom - top < v.getHeight()) {
+                                dy =  0;
+                            }else if (top + dy > 0 && dy > 0)
+                                dy = -top;
+                            else if (bottom + dy < v.getBottom() && dy < 0)
+                                dy = v.getBottom() - bottom;
+
+                            matrix.postTranslate(dx, dy);
+
+                        } else if (mode == ZOOM) {// 缩放
+                            float endDis = distance(event);// 结束距离
+                            if (endDis > 10f) {
+                                float scale = endDis / startDis;// 得到缩放倍数
+                                matrix.set(currentMatrix);
+                                matrix.postScale(scale, scale, midPoint.x, midPoint.y);
+                            }
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:// 手指离开屏
+                    case MotionEvent.ACTION_POINTER_UP:// 有手指离开屏幕,但屏幕还有触点（手指）
+                        mode = 0;
+                        break;
+
+                    case MotionEvent.ACTION_POINTER_DOWN:// 当屏幕上已经有触点（手指），再有一个手指压下屏幕
+                        mode = ZOOM;
+                        startDis = distance(event);
+                        if (startDis > 10f) {
+                            midPoint = mid(event);
+                            currentMatrix.set(img.getImageMatrix());// 记录ImageView当前的缩放倍数
+                        }
+                        break;
+                }
+                img.setImageMatrix(matrix);
+                return true;
+            }
+
+        }
+
+
+    public static float distance(MotionEvent event) {
+        float dx = event.getX(1) - event.getX(0);
+        float dy = event.getY(1) - event.getY(0);
+        return (float)Math.sqrt(dx * dx + dy * dy);
+        //return FloatMath.sqrt(dx * dx + dy * dy); not work with current API
+    }
+
+
+    public static PointF mid(MotionEvent event) {
+        float midX = (event.getX(1) + event.getX(0)) / 2;
+        float midY = (event.getY(1) + event.getY(0)) / 2;
+        return new PointF(midX, midY);
+    }
+
     private void showPopupWindow() {
         View view = LayoutInflater.from(StickerActivity.this).inflate(R.layout.sticker_popup, null);
         pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 480);
@@ -160,21 +274,53 @@ public class StickerActivity extends Activity {
                     @Override
                     public void onItemClick(View view, int position) {
                         ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
-                        ImageView temp = pvh.getEmoji();
-                        BitmapDrawable emoji_BD = (BitmapDrawable) temp.getDrawable();
+                        ImageView emoji_IV = pvh.getEmoji();
+                        boolean added = pvh.checkAdded();
+                        BitmapDrawable emoji_BD = (BitmapDrawable) emoji_IV.getDrawable();
                         Bitmap emoji_Bitmap = emoji_BD.getBitmap();
 
+                        //test
                         String out = "Emoji height now is "+emoji_Bitmap.getHeight()+" and width is "+emoji_Bitmap.getWidth();
                         Log.d("Debug", out);
+
+                        Drawable origin_drawable = img.getDrawable();
+                        Bitmap origin_bitmap = ((BitmapDrawable)origin_drawable).getBitmap();
+
+                        //
+                        ImageView iv = (ImageView) findViewById(R.id.ivImage);
+                        iv.setImageBitmap(emoji_Bitmap);
+                        iv.setOnTouchListener(new TouchListener());
 
 
                         //Right now, stickers can be clicked and show up on image, but cannot be removed.
                         //need new functionality to remove the emoji.
+
+                        //Create a new image bitmap and attach a brand new canvas to it
+                        Bitmap tempBitmap = Bitmap.createBitmap(origin_bitmap.getWidth(), origin_bitmap.getHeight(), Bitmap.Config.RGB_565);
+                        Canvas tempCanvas = new Canvas(tempBitmap);
+
+                        //Draw the image bitmap into the canvas
+                        tempCanvas.drawBitmap(origin_bitmap, 0, 0, null);
+                        //tempCanvas.drawBitmap(emoji_Bitmap, 10, 10, null);
+
+                        //Attach the canvas to the ImageView
+                        img.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
+
+
+                        /*
+                        //click once to add the emoji, click twice to remove the emoji
+                        if (added == true) {
+                            Log.d("Debug", "The sticker is added already");
+                            pvh.setAdded(false);
+                            img.setImageDrawable(origin_drawable);
+                            return;
+                        }
                         if (position!= RecyclerView.NO_POSITION){
-                            Drawable origin_drawable = img.getDrawable();
-//                          Drawable emoji_drawable = temp.getDrawable();
-//                          Bitmap origin_bm = ((BitmapDrawable)origin_drawable).getBitmap();
+                            pvh.setAdded(true);
+                            add_pos = position;
                             Bitmap emoji_bm = resize(emoji_Bitmap, 50, 50);
+
+                            //test
                             out = "Emoji after resize height now is "+emoji_bm.getHeight()+" and width is "+emoji_bm.getWidth();
                             Log.d("Debug", out);
 
@@ -182,9 +328,13 @@ public class StickerActivity extends Activity {
                             array[0] = origin_drawable;
                             array[1] = new BitmapDrawable(getResources(), emoji_bm);
                             LayerDrawable layer = new LayerDrawable(array);
-                            layer.setLayerInset(1, 400, 800, 250, 600);
+                            layer.setLayerInset(1, 300, 800, 300, 600);
+                            //layer.setLayerInsetBottom(1,650);
                             img.setImageDrawable(layer);
                         }
+                        */
+
+
                     }
 
                     @Override
@@ -223,6 +373,12 @@ public class StickerActivity extends Activity {
     private ArrayList<ProductObject> getProductTestData() {
         ArrayList<ProductObject> featuredProducts = new ArrayList<ProductObject>();
         featuredProducts.add(new ProductObject("strawberry"));
+        featuredProducts.add(new ProductObject("sweetpotato"));
+        featuredProducts.add(new ProductObject("donut"));
+        featuredProducts.add(new ProductObject("drumstick"));
+        featuredProducts.add(new ProductObject("blueheart"));
+        featuredProducts.add(new ProductObject("cardheart"));
+
         featuredProducts.add(new ProductObject("happyface"));
         featuredProducts.add(new ProductObject("happy"));
         featuredProducts.add(new ProductObject("politesmile"));

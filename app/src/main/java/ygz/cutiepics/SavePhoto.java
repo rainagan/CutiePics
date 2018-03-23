@@ -36,10 +36,12 @@ public class SavePhoto extends AppCompatActivity {
     public void editNext(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        photoModel.getmPhoto().recycle();
+//        photoModel.getmPhoto().recycle();
     }
 
     public void sharePhoto(View view) {
         // TODO: share photo to groups
+        Intent intent = new Intent(this, SearchUserActivity.class);
+        startActivity(intent);
     }
 }

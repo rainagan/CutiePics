@@ -11,10 +11,19 @@ import android.widget.ImageView;
 
 public class ProductViewHolder extends RecyclerView.ViewHolder {
     public  ImageView emoji;
+    private boolean added;
 
     public ProductViewHolder(View itemView) {
         super(itemView);
         emoji = (ImageView) itemView.findViewById(R.id.emoji);
+    }
+
+    public boolean checkAdded() {
+        return this.added;
+    }
+
+    public void setAdded(boolean update) {
+        this.added = update;
     }
 
     public  ImageView getEmoji() {return emoji;}

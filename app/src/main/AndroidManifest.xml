@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -47,5 +48,6 @@
         <activity android:name=".EmailPasswordActivity"/>
         <activity android:name=".LayoutActivity" />
         <activity android:name=".SavePhoto"></activity>
+        <activity android:name=".SearchUserActivity"></activity>
     </application>
 </manifest>

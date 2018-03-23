@@ -5,13 +5,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -56,12 +55,7 @@ public class ToolsActivity extends Activity {
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        cameraIntent();
-                    }
-                }, 0);
+                cameraIntent();
             }
         });
 
@@ -69,12 +63,7 @@ public class ToolsActivity extends Activity {
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        galleryIntent();
-                    }
-                }, 0);
+                galleryIntent();
             }
         });
     }
@@ -98,12 +87,7 @@ public class ToolsActivity extends Activity {
 
         if (requestCode == REQUEST_CAMERA) {
             if (resultCode == Activity.RESULT_OK) {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        onCaptureImageResult();
-                    }
-                }, 0);
+                onCaptureImageResult();
                 Intent intent;
                 if (type.equals("sticker")) {
                     intent = new Intent(ToolsActivity.this, StickerActivity.class);
@@ -115,15 +99,9 @@ public class ToolsActivity extends Activity {
             }
         } else {
             if (resultCode == Activity.RESULT_OK && data != null) {
-                // onSelectFromGalleryResult(data);
                 final Uri imageUri = data.getData();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCurrentPhotoPath = getRealPathFromURI(imageUri);
-                        returnURI(mCurrentPhotoPath);
-                    }
-                }, 0);
+                mCurrentPhotoPath = getRealPathFromURI(imageUri);
+                returnURI(mCurrentPhotoPath);
             }
         }
     }
@@ -228,4 +206,5 @@ public class ToolsActivity extends Activity {
         Intent intent = new Intent(ToolsActivity.this, MainActivity.class);
         startActivity(intent);
     }
+
 }
