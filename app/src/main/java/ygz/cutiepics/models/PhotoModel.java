@@ -1,6 +1,7 @@
 package ygz.cutiepics.models;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 /**
  * Created by yuyuxiao on 2018-03-20.
@@ -12,6 +13,7 @@ import android.graphics.Bitmap;
 
 public class PhotoModel {
     private static Bitmap mPhoto;
+    private static Uri mUri;
 
     private PhotoModel() {}
 
@@ -19,7 +21,11 @@ public class PhotoModel {
         return mPhoto;
     }
 
+    public static Uri getmUri() {return mUri;}
+
     public static void setmPhoto(Bitmap mInsertPicture) {
         mPhoto = mInsertPicture;
     }
+
+    public static void setmUri(Uri uri) {mUri = uri;}
 }

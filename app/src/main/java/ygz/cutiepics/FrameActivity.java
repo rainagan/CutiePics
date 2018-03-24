@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -31,24 +32,15 @@ public class FrameActivity extends Activity {
 
     private boolean added = false;
     private int add_pos = -1;
-    private String mCurrentPath;
-    //private PopupWindow pw;
+    private ArrayList<FrameObject> frames;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frame);
 
-        img = (ImageView) findViewById(R.id.ivImage);
-
-        Bundle captured = getIntent().getExtras();
-        this.mCurrentPath = (String) captured.get("image");
-        Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
-        img.setImageURI(uriFromPath);
-
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) img.getDrawable();
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        PhotoModel.setmPhoto(bitmap);
+        img = findViewById(R.id.ivImage);
+        img.setImageURI(PhotoModel.getmUri());
 
         origin = img.getDrawable();
 
@@ -67,12 +59,10 @@ public class FrameActivity extends Activity {
                         BitmapDrawable frame_origin = (BitmapDrawable) temp.getDrawable();
                         Bitmap frame = frame_origin.getBitmap();
 
-                        if (added == true && position == add_pos) {
-
+                        if (added && position == add_pos) {
                                 added = false;
                                 img.setImageDrawable(origin);
                                 return;
-
                         }
 
                         if (position != RecyclerView.NO_POSITION) {
@@ -97,7 +87,6 @@ public class FrameActivity extends Activity {
                     }
                 })
         );
-
     }
 
     private void addFrame(Bitmap frame) {
@@ -107,8 +96,6 @@ public class FrameActivity extends Activity {
         Bitmap image_bm = ((BitmapDrawable)image).getBitmap();
 
         Bitmap frame_bm = resize(frame, image_bm.getWidth(), image_bm.getHeight());
-
-
 
         array[0] = image;
         array[1] = new BitmapDrawable(getResources(), frame_bm);
@@ -132,9 +119,6 @@ public class FrameActivity extends Activity {
 
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
-
-        // if you want to rotate the Bitmap
-        // matrix.postRotate(45);
 
         // recreate the new Bitmap
         Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
