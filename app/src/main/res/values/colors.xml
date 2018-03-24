@@ -11,4 +11,8 @@
 
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_300">#E0E0E0</color>
+
+    <color name="orange1">#f9e7b3</color>
+    <color name="orange2">#f0ceba</color>
+    <color name="watermellon">#ff8a7e</color>
 </resources>

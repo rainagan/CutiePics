@@ -6,6 +6,6 @@
         <!--andrangelngle="270" />-->
     <corners android:radius="3dp" />
     <solid android:color="@color/colorWhite"/>
-    <stroke android:width="5px" android:color="@color/colorLightPink" />
+    <stroke android:width="2px" android:color="@color/orange1" />
 </shape>
 
