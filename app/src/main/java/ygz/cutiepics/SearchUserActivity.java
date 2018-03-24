@@ -35,7 +35,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
+
+import ygz.cutiepics.models.PhotoModel;
 
 /**
  * Created by Raina on 2018-03-20.
@@ -95,7 +96,7 @@ public class SearchUserActivity extends Activity {
         @Override
         public void onClick(View v) {
             // add permission to added users about the shared photo
-            Uri photo = getImageUri(SearchUserActivity.this, photoModel.getmPhoto());
+            Uri photo = getImageUri(SearchUserActivity.this, PhotoModel.getmPhoto());
             uploadImage(photo);
         }
     };

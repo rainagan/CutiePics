@@ -16,7 +16,6 @@ package ygz.cutiepics;
  * limitations under the License.
  */
 
-import android.*;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,7 +26,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -46,16 +44,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -64,7 +59,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 
-public class EmailPasswordActivity extends BaseActivity implements
+import ygz.cutiepics.models.User;
+
+public class LoginActivity extends BaseActivity implements
         View.OnClickListener {
 
     private static final String TAG = "EmailPassword";
@@ -159,7 +156,7 @@ public class EmailPasswordActivity extends BaseActivity implements
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -194,7 +191,7 @@ public class EmailPasswordActivity extends BaseActivity implements
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -227,12 +224,12 @@ public class EmailPasswordActivity extends BaseActivity implements
                         findViewById(R.id.verify_email_button).setEnabled(true);
 
                         if (task.isSuccessful()) {
-                            Toast.makeText(EmailPasswordActivity.this,
+                            Toast.makeText(LoginActivity.this,
                                     "Verification email sent to " + user.getEmail(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Log.e(TAG, "sendEmailVerification", task.getException());
-                            Toast.makeText(EmailPasswordActivity.this,
+                            Toast.makeText(LoginActivity.this,
                                     "Failed to send verification email.",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -313,7 +310,7 @@ public class EmailPasswordActivity extends BaseActivity implements
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(EmailPasswordActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
@@ -393,12 +390,12 @@ public class EmailPasswordActivity extends BaseActivity implements
                                 Bitmap bmp = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                                 saveImageToExternalStorage(bmp);
 
-                                Toast.makeText(EmailPasswordActivity.this, "Download successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Download successfully", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
-                                Toast.makeText(EmailPasswordActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
@@ -415,7 +412,7 @@ public class EmailPasswordActivity extends BaseActivity implements
                     }
                 }
             } else {
-                Toast.makeText(EmailPasswordActivity.this, "Upload file before downloading", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Upload file before downloading", Toast.LENGTH_LONG).show();
             }
             String result = "download " + ids.size() + " photos";
             return result;

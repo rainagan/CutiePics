@@ -6,16 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,6 +25,8 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import ygz.cutiepics.models.PhotoModel;
 
 /**
  * Created by Raina on 2018-03-18.
@@ -76,7 +74,7 @@ public class OverlayActivity extends Activity {
         Bitmap saved_bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         saved_drawable.draw(new Canvas(saved_bitmap));
 
-        photoModel.setmPhoto(saved_bitmap);
+        PhotoModel.setmPhoto(saved_bitmap);
     }
 
     SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
@@ -103,7 +101,7 @@ public class OverlayActivity extends Activity {
             Bitmap saved_bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             saved_drawable.draw(new Canvas(saved_bitmap));
 
-            photoModel.setmPhoto(saved_bitmap);
+            PhotoModel.setmPhoto(saved_bitmap);
         }
     };
 
@@ -117,7 +115,7 @@ public class OverlayActivity extends Activity {
     };
 
     public void saveImg(View view) {
-        Intent intent = new Intent(OverlayActivity.this, SavePhoto.class);
+        Intent intent = new Intent(OverlayActivity.this, SavePhotoActivity.class);
         startActivity(intent);
     }
 

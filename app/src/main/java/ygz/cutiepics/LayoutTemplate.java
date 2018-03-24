@@ -21,6 +21,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ygz.cutiepics.models.Coordinates;
+
 /**
  * Created by yuyuxiao on 2018-03-21.
  */

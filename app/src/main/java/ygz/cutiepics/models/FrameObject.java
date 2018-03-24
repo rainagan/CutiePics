@@ -1,4 +1,4 @@
-package ygz.cutiepics;
+package ygz.cutiepics.models;
 
 /**
  * Created by yuyuxiao on 2018-02-02.

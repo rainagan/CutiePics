@@ -4,20 +4,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,8 +25,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.util.List;
 import java.util.Random;
+
+import ygz.cutiepics.models.PhotoModel;
 
 /**
  * Created by yuyuxiao on 2018-03-20.
@@ -41,7 +35,7 @@ import java.util.Random;
  * This class is used for savedPhoto activity
  */
 
-public class SavePhoto extends AppCompatActivity {
+public class SavePhotoActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
@@ -56,7 +50,7 @@ public class SavePhoto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_photo);
 
-        Bitmap bmp = photoModel.getmPhoto();
+        Bitmap bmp = PhotoModel.getmPhoto();
         saveImageToGallery(bmp);
 
         database = FirebaseDatabase.getInstance();
@@ -83,12 +77,12 @@ public class SavePhoto extends AppCompatActivity {
     public void editNext(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        photoModel.getmPhoto().recycle();
+        PhotoModel.getmPhoto().recycle();
     }
 
     public void sharePhoto(View view) {
         // TODO: share photo to groups
-        Uri photo = getImageUri(SavePhoto.this, photoModel.getmPhoto());
+        Uri photo = getImageUri(SavePhotoActivity.this, PhotoModel.getmPhoto());
         uploadImageAsyncTask uiat = new uploadImageAsyncTask();
         uiat.execute(photo);
     }
@@ -113,13 +107,13 @@ public class SavePhoto extends AppCompatActivity {
 
                                 writeNewImageInfoToDB(name, url);
 
-                                Toast.makeText(SavePhoto.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SavePhotoActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(SavePhoto.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SavePhotoActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         })
                         .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {

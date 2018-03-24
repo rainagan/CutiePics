@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import java.io.File;
 import java.util.ArrayList;
 
+import ygz.cutiepics.models.FrameObject;
+import ygz.cutiepics.models.PhotoModel;
+
 
 /**
  * Created by Yuxiao Yu on 2018-02-01.
@@ -45,7 +48,7 @@ public class FrameActivity extends Activity {
 
         BitmapDrawable bitmapDrawable = (BitmapDrawable) img.getDrawable();
         Bitmap bitmap = bitmapDrawable.getBitmap();
-        photoModel.setmPhoto(bitmap);
+        PhotoModel.setmPhoto(bitmap);
 
         origin = img.getDrawable();
 
@@ -85,7 +88,7 @@ public class FrameActivity extends Activity {
                         final Bitmap saved_bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                         saved_drawable.draw(new Canvas(saved_bitmap));
 
-                        photoModel.setmPhoto(saved_bitmap);
+                        PhotoModel.setmPhoto(saved_bitmap);
 
                     }
 
@@ -150,7 +153,7 @@ public class FrameActivity extends Activity {
     }
 
     public void saveImg(View view) {
-        Intent intent = new Intent(FrameActivity.this, SavePhoto.class);
+        Intent intent = new Intent(FrameActivity.this, SavePhotoActivity.class);
         startActivity(intent);
     }
 }

@@ -17,10 +17,10 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/newAppTheme">
         <provider
@@ -45,9 +45,9 @@
         <activity android:name=".MultiPhotoSelectActivity" />
         <activity android:name=".FrameActivity" />
         <activity android:name=".OverlayActivity" />
-        <activity android:name=".EmailPasswordActivity"/>
+        <activity android:name=".LoginActivity"/>
         <activity android:name=".LayoutActivity" />
-        <activity android:name=".SavePhoto"></activity>
+        <activity android:name=".SavePhotoActivity"></activity>
         <activity android:name=".SearchUserActivity"></activity>
     </application>
 </manifest>

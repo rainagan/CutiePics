@@ -1,13 +1,13 @@
-package ygz.cutiepics;
+package ygz.cutiepics.models;
 
 /**
  * Created by Raina on 2018-02-01.
  */
 
-public class ProductObject {
+public class StickerObject {
     private String name;
 
-    public ProductObject(String name) {
+    public StickerObject(String name) {
         this.name = name;
     }
 

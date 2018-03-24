@@ -1,4 +1,4 @@
-package ygz.cutiepics;
+package ygz.cutiepics.models;
 
 import android.graphics.Bitmap;
 
@@ -10,10 +10,10 @@ import android.graphics.Bitmap;
  *
  */
 
-public class photoModel {
+public class PhotoModel {
     private static Bitmap mPhoto;
 
-    private photoModel() {}
+    private PhotoModel() {}
 
     public static Bitmap getmPhoto() {
         return mPhoto;

@@ -3,31 +3,21 @@ package ygz.cutiepics;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import ygz.cutiepics.models.FrameObject;
+import ygz.cutiepics.models.PhotoModel;
 
 /**
  * Created by Raina on 2018-02-27.
@@ -80,7 +70,7 @@ public class LayoutActivity extends Activity {
 
                         BitmapDrawable frame_origin = (BitmapDrawable) img.getDrawable();
                         Bitmap saved_bitmap = frame_origin.getBitmap();
-                        photoModel.setmPhoto(saved_bitmap);
+                        PhotoModel.setmPhoto(saved_bitmap);
                     }
 
                     public void onLongItemClick(View view, int position) {
@@ -123,7 +113,7 @@ public class LayoutActivity extends Activity {
     }
 
     public void saveImg(View view) {
-        Intent intent = new Intent(LayoutActivity.this, SavePhoto.class);
+        Intent intent = new Intent(LayoutActivity.this, SavePhotoActivity.class);
         startActivity(intent);
     }
 

@@ -1,28 +1,25 @@
 package ygz.cutiepics;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
 
+import ygz.cutiepics.models.StickerObject;
+
 /**
  * Created by Raina on 2018-02-01.
  */
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
-    private static final String TAG = ProductAdapter.class.getSimpleName();
+public class StickerAdapter extends RecyclerView.Adapter<ProductViewHolder>{
+    private static final String TAG = StickerAdapter.class.getSimpleName();
     private Context context;
-    private List<ProductObject> productList;
+    private List<StickerObject> productList;
 
-    public ProductAdapter(Context context, List<ProductObject> productList) {
+    public StickerAdapter(Context context, List<StickerObject> productList) {
         this.context = context;
         this.productList = productList;
     }
@@ -35,8 +32,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
 
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
-        ProductObject productObject = productList.get(position);
-        int imageRes = getResourceId(context, productObject.getName(), "drawable", context.getPackageName());
+        StickerObject stickerObject = productList.get(position);
+        int imageRes = getResourceId(context, stickerObject.getName(), "drawable", context.getPackageName());
         holder.emoji.setImageResource(imageRes);
     }
 
