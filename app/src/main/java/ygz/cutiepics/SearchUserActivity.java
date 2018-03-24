@@ -34,6 +34,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -46,11 +47,12 @@ public class SearchUserActivity extends Activity {
     private GridLayout selected;
 
     private FirebaseDatabase database;
-    private DatabaseReference myRef;
+    private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private FirebaseStorage storage;
     private StorageReference storageReference;
+    private StorageReference fileRef;
 
     private List<String> mUsers;
 
@@ -64,19 +66,17 @@ public class SearchUserActivity extends Activity {
         share = findViewById(R.id.shareTo);
         selected = findViewById(R.id.selectedGrid);
 
-        // Write a message to the database
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference();
+        mDatabase = database.getReference().child("images");
         mAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
+        storageReference = storage.getReference().child("images");
 
         mUsers = new ArrayList<>();
 
         add.setOnClickListener(searchOnClickListener);
 
         share.setOnClickListener(shareOnClickListener);
-
     }
 
     View.OnClickListener searchOnClickListener = new View.OnClickListener() {
@@ -100,6 +100,8 @@ public class SearchUserActivity extends Activity {
         }
     };
 
+
+
     @Override
     public void onStart() {
         super.onStart();
@@ -108,7 +110,7 @@ public class SearchUserActivity extends Activity {
     }
 
     public void searchUser(final String email) {
-        Query query = myRef.child("users").orderByChild("email").equalTo(email);
+        Query query = mDatabase.child("users").orderByChild("email").equalTo(email);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -170,12 +172,23 @@ public class SearchUserActivity extends Activity {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
-            ref.putFile(filePath)
+            Random generator = new Random();
+            int n = Integer.MAX_VALUE;
+            n = generator.nextInt(n);
+            String fname = "Image" + n;
+            fileRef = storageReference.child(fname);
+
+            fileRef.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
+
+                            String name = taskSnapshot.getMetadata().getName();
+                            String url = taskSnapshot.getDownloadUrl().toString();
+
+                            writeNewImageInfoToDB(name, url);
+
                             Toast.makeText(SearchUserActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -195,6 +208,13 @@ public class SearchUserActivity extends Activity {
                         }
                     });
         }
+    }
+
+    private void writeNewImageInfoToDB(String name, String url) {
+        UploadInfo info = new UploadInfo(name, url);
+
+        String key = mDatabase.push().getKey();
+        mDatabase.child(key).setValue(info);
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
