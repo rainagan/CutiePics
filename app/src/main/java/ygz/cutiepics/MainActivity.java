@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         sticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ToolsActivity.class);
+                Intent intent = new Intent(MainActivity.this, ChoosePhotoActivity.class);
                 intent.putExtra("type", "sticker");
                 startActivity(intent);
             }
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ToolsActivity.class);
+                Intent intent = new Intent(MainActivity.this, ChoosePhotoActivity.class);
                 intent.putExtra("type", "frame");
                 startActivity(intent);            }
         });

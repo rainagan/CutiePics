@@ -40,7 +40,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ToolsActivity" />
+        <activity android:name=".ChoosePhotoActivity" />
         <activity android:name=".StickerActivity" />
         <activity android:name=".MultiPhotoSelectActivity" />
         <activity android:name=".FrameActivity" />

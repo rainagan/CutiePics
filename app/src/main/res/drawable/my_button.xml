@@ -4,8 +4,12 @@
     <!--<gradient android:startColor="@color/colorWhite"-->
         <!--android:endColor="@color/colorLightPink"-->
         <!--andrangelngle="270" />-->
-    <corners android:radius="3dp" />
+    <!--<corners android:radius="3dp" />-->
+    <corners android:bottomRightRadius="8dp"
+        android:bottomLeftRadius="8dp"
+        android:topRightRadius="8dp"
+        android:topLeftRadius="8dp"/>
     <solid android:color="@color/colorWhite"/>
-    <stroke android:width="2px" android:color="@color/orange1" />
+    <stroke android:width="2px" android:color="@color/orange" />
 </shape>
 

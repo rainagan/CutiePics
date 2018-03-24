@@ -25,7 +25,7 @@ public class MultiPhotoSelectActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_frame2);
+        setContentView(R.layout.activity_multi_select_photo);
 
         Bundle temp = getIntent().getExtras();
         type = (String) temp.get("type");

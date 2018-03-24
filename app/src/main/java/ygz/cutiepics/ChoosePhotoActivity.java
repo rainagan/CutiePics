@@ -5,8 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -16,6 +16,7 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -30,7 +31,7 @@ import java.util.Date;
  * Created by Raina on 2018-01-25.
  */
 
-public class ToolsActivity extends Activity {
+public class ChoosePhotoActivity extends Activity {
     private Button camera, gallery;
     private int REQUEST_CAMERA = 0;
     private final int SELECT_FILE = 1;
@@ -43,7 +44,7 @@ public class ToolsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tools);
+        setContentView(R.layout.activity_choose_photo);
 
         Bundle tp = getIntent().getExtras();
         type = (String) tp.get("type");
@@ -66,6 +67,10 @@ public class ToolsActivity extends Activity {
                 galleryIntent();
             }
         });
+
+        Typeface typeface=Typeface.createFromAsset(getAssets(), "unkempt.ttf");
+        camera.setTypeface(typeface);
+        gallery.setTypeface(typeface);
     }
 
     @Override
@@ -75,7 +80,7 @@ public class ToolsActivity extends Activity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     cameraIntent();
                 } else {
-                    Toast.makeText(ToolsActivity.this, "Taking photo permision is denined", Toast.LENGTH_SHORT);
+                    Toast.makeText(ChoosePhotoActivity.this, "Taking photo permision is denined", Toast.LENGTH_SHORT);
                 }
                 break;
         }
@@ -90,9 +95,9 @@ public class ToolsActivity extends Activity {
                 onCaptureImageResult();
                 Intent intent;
                 if (type.equals("sticker")) {
-                    intent = new Intent(ToolsActivity.this, StickerActivity.class);
+                    intent = new Intent(ChoosePhotoActivity.this, StickerActivity.class);
                 } else {
-                    intent = new Intent(ToolsActivity.this, FrameActivity.class);
+                    intent = new Intent(ChoosePhotoActivity.this, FrameActivity.class);
                 }
                 intent.putExtra("image", mCurrentPhotoPath);
                 startActivity(intent);
@@ -141,7 +146,7 @@ public class ToolsActivity extends Activity {
             }
             // continue only if the File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(ToolsActivity.this, "com.example.android.fileprovider", photoFile);
+                Uri photoURI = FileProvider.getUriForFile(ChoosePhotoActivity.this, "com.example.android.fileprovider", photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(intent, REQUEST_CAMERA);
             }
@@ -189,16 +194,16 @@ public class ToolsActivity extends Activity {
     public void returnURI(String uri) {
         Intent intent;
         if (type.equals("sticker")) {
-            intent = new Intent(ToolsActivity.this, StickerActivity.class);
+            intent = new Intent(ChoosePhotoActivity.this, StickerActivity.class);
         } else {
-            intent = new Intent(ToolsActivity.this, FrameActivity.class);
+            intent = new Intent(ChoosePhotoActivity.this, FrameActivity.class);
         }
         intent.putExtra("image", mCurrentPhotoPath);
         startActivity(intent);
     }
 
     public void onBackPressed() {
-        Intent intent = new Intent(ToolsActivity.this, MainActivity.class);
+        Intent intent = new Intent(ChoosePhotoActivity.this, MainActivity.class);
         startActivity(intent);
     }
 

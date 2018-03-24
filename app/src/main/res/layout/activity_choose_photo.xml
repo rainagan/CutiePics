@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ToolsActivity">
+    android:background="@drawable/backgroud_main"
+    tools:context=".ChoosePhotoActivity">
 
     <Button
         android:id="@+id/camera"
@@ -16,9 +17,12 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/my_button"
         android:drawableStart="@drawable/ic_camera_alt_24dp"
+        android:fontFamily="@font/unkempt"
         android:paddingStart="5dp"
         android:text="Camera"
+        android:textColor="@color/darkGrey"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,9 +39,12 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/my_button"
         android:drawableStart="@drawable/ic_photo_library_24dp"
+        android:fontFamily="@font/unkempt"
         android:paddingStart="5dp"
         android:text="Gallery"
+        android:textColor="@color/darkGrey"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

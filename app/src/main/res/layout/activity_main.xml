@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/backgroud6"
+    android:background="@drawable/backgroud_main"
     tools:context=".MainActivity">
 
     <Button
@@ -12,12 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginTop="190dp"
-        android:background="@drawable/button_custom"
+        android:background="@drawable/my_button"
         android:drawableStart="@drawable/ic_filter_vintage_24dp"
         android:fontFamily="@font/unkempt"
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
-        android:text="Stickers"/>
+        android:text="STICKER"
+        android:textColor="@color/darkGrey"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/frames"
@@ -31,7 +33,9 @@
         android:fontFamily="@font/unkempt"
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
-        android:text="Frames" />
+        android:text="Frames"
+        android:textColor="@color/darkGrey"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/layouts"
@@ -45,7 +49,9 @@
         android:fontFamily="@font/unkempt"
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
-        android:text="Layouts" />
+        android:text="Layouts"
+        android:textColor="@color/darkGrey"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/doubleExposure"
@@ -59,7 +65,9 @@
         android:fontFamily="@font/unkempt"
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
-        android:text="Overlay" />
+        android:text="Overlay"
+        android:textColor="@color/darkGrey"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/signIn"

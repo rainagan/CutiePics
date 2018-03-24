@@ -84,7 +84,7 @@ public class LoginActivity extends BaseActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_emailpassword);
+        setContentView(R.layout.activity_login);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         // [START initialize_auth]
