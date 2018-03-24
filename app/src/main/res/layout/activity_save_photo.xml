@@ -9,11 +9,11 @@
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="96dp"
         android:background="@drawable/ic_saved_photo_24dp"
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
@@ -25,9 +25,10 @@
         android:id="@+id/next"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="152dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/my_button"
         android:fontFamily="@font/unkempt"
         android:onClick="editNext"
@@ -38,7 +39,9 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.822" />
 
     <Button
         android:id="@+id/share"
@@ -56,10 +59,10 @@
         android:text="Share"
         android:textColor="@color/darkGrey"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/next"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.622" />
 
 </android.support.constraint.ConstraintLayout>
