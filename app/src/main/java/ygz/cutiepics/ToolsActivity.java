@@ -131,25 +131,20 @@ public class ToolsActivity extends Activity {
         final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // ensure that htere's a camera activity to hadle the intent
         if (intent.resolveActivity(getPackageManager()) != null) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        // create the File where the photo should go
-                        photoFile = createImageFile();
-                    } catch (IOException e) {
-                        // error occurred while creating the File
-                        Log.e("IOException", "unable to create image file");
-                        e.printStackTrace();
-                    }
-                    // continue only if the File was successfully created
-                    if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(ToolsActivity.this, "com.example.android.fileprovider", photoFile);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        startActivityForResult(intent, REQUEST_CAMERA);
-                    }
-                }
-            }, 0);
+            try {
+                // create the File where the photo should go
+                photoFile = createImageFile();
+            } catch (IOException e) {
+                // error occurred while creating the File
+                Log.e("IOException", "unable to create image file");
+                e.printStackTrace();
+            }
+            // continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(ToolsActivity.this, "com.example.android.fileprovider", photoFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(intent, REQUEST_CAMERA);
+            }
         }
     }
 
