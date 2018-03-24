@@ -101,7 +101,6 @@ public class LayoutActivity extends Activity {
         featuredFrame.add(new FrameObject("layout3_2"));
         featuredFrame.add(new FrameObject("layout3_3"));
         featuredFrame.add(new FrameObject("layout3_4"));
-
         return featuredFrame;
     }
 

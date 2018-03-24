@@ -49,5 +49,9 @@
         <activity android:name=".LayoutActivity" />
         <activity android:name=".SavePhotoActivity"></activity>
         <activity android:name=".SearchUserActivity"></activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 </manifest>
