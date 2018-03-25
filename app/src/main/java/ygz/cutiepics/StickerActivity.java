@@ -25,16 +25,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-<<<<<<< HEAD
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-=======
->>>>>>> e35e3c2812d169b0c84e8325afa653605e776913
 import android.view.View.OnTouchListener;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import ygz.cutiepics.models.PhotoModel;
 import ygz.cutiepics.models.StickerObject;
 
 /**
@@ -73,16 +71,17 @@ public class StickerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stickers);
         img = (ImageView) findViewById(R.id.ivImage);
+        /*
         Bundle captured = getIntent().getExtras();
         this.mCurrentPath = (String) captured.get("image");
         Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
         img.setImageURI(uriFromPath);
+        */
+        img.setImageURI(PhotoModel.getmUri());
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.sticker_navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-<<<<<<< HEAD
-=======
 
         /*
         final RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
@@ -120,7 +119,6 @@ public class StickerActivity extends Activity {
                 })
         );
         */
->>>>>>> e35e3c2812d169b0c84e8325afa653605e776913
     }
 /*
     private final class TouchListener implements OnTouchListener {
