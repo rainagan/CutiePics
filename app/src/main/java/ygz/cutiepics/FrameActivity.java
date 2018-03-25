@@ -33,6 +33,9 @@ public class FrameActivity extends Activity {
     private boolean added = false;
     private int add_pos = -1;
 
+    Bitmap image_bm;
+    Bitmap frame_bm;
+
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -71,6 +74,9 @@ public class FrameActivity extends Activity {
                             added = true;
                             add_pos = position;
 
+                            if (PhotoModel.getmPhoto() != null) {
+                                PhotoModel.getmPhoto().recycle();
+                            }
                             // add frame to existing photo in async task
                             mAddFrameTask addFrame = new mAddFrameTask();
                             addFrame.execute(frame);
@@ -112,9 +118,9 @@ public class FrameActivity extends Activity {
             Drawable image = origin;
             Drawable[] array = new Drawable[2];
 
-            Bitmap image_bm = ((BitmapDrawable)image).getBitmap();
+            image_bm = ((BitmapDrawable)image).getBitmap();
 
-            Bitmap frame_bm = resize(bitmaps[0], image_bm.getWidth(), image_bm.getHeight());
+            frame_bm = resize(bitmaps[0], image_bm.getWidth(), image_bm.getHeight());
 
             array[0] = image;
             array[1] = new BitmapDrawable(getResources(), frame_bm);
@@ -157,6 +163,23 @@ public class FrameActivity extends Activity {
 
     }
 
+    protected void onDestroy() {
+        //android.os.Process.killProcess(android.os.Process.myPid());
+
+        super.onDestroy();
+        if(image_bm != null)
+        {
+            image_bm.recycle();
+            image_bm=null;
+        }
+
+        if(frame_bm != null) {
+            frame_bm.recycle();
+            frame_bm = null;
+        }
+
+    }
+
     private ArrayList<FrameObject> getFrameTestData() {
         ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
         featuredFrame.add(new FrameObject("frame1"));
@@ -167,8 +190,8 @@ public class FrameActivity extends Activity {
         featuredFrame.add(new FrameObject("frame6"));
         featuredFrame.add(new FrameObject("frame7"));
         featuredFrame.add(new FrameObject("frame8"));
-        //featuredFrame.add(new FrameObject("frame9"));
-        //featuredFrame.add(new FrameObject("frame10"));
+        featuredFrame.add(new FrameObject("frame10"));
+        featuredFrame.add(new FrameObject("frame9"));
         //featuredFrame.add(new FrameObject("frame11"));
         return featuredFrame;
     }
