@@ -42,13 +42,13 @@
         </activity>
         <activity android:name=".ChoosePhotoActivity" />
         <activity android:name=".StickerActivity" />
-        <activity android:name=".MultiPhotoSelectActivity" />
         <activity android:name=".FrameActivity" />
         <activity android:name=".OverlayActivity" />
         <activity android:name=".LoginActivity"/>
         <activity android:name=".LayoutActivity" />
         <activity android:name=".SavePhotoActivity"></activity>
         <activity android:name=".SearchUserActivity"></activity>
+        <activity android:name=".MultiPhotoSelectActivity"></activity>
 
         <meta-data
             android:name="preloaded_fonts"

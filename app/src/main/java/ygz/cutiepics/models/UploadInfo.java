@@ -1,4 +1,4 @@
-package ygz.cutiepics;
+package ygz.cutiepics.models;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 

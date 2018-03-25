@@ -36,7 +36,6 @@ public class OverlayActivity extends Activity {
     private SeekBar seekBar;
 
     private ImageView img;
-    //private ImageView img2;
     private Bitmap img1;
     private Bitmap img2;
 
