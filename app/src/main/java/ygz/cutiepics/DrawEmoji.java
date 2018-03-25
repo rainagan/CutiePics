@@ -57,15 +57,10 @@ class DrawEmoji extends View {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        //this.canvas = new Canvas(this.origional_bg);
-
-        //origional_bg = background.copy(background.getConfig(), true);
         canvas.drawBitmap(background, 0, 0, null);
-        /*
+        tempBitmap = pic;
         this.canvas.drawBitmap(tempBitmap.getPic(), tempBitmap.getXY(1) - tempBitmap.getPic().getWidth() / 2,
                 tempBitmap.getXY(2) - tempBitmap.getPic().getHeight() / 2, null);
-                */
     }
 
     //    	OntouchEvent
@@ -74,32 +69,42 @@ class DrawEmoji extends View {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             this.DownX = event.getX();
             this.DownY = event.getY();
+            tempBitmap = pic;
+            this.canvas.drawBitmap(tempBitmap.getPic(), tempBitmap.getXY(1) - tempBitmap.getPic().getWidth() / 2,
+                    tempBitmap.getXY(2) - tempBitmap.getPic().getWidth() / 2, null);
+            Log.d("Debug", "image is changed in case 3");
         }
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             this.X = event.getX();
             this.Y = event.getY();
+
             tempBitmap = pic;
-
-            //this.canvas = new Canvas(this.origional_bg);
-
+            /*
             this.canvas.drawBitmap(tempBitmap.getPic(), tempBitmap.getXY(1) - tempBitmap.getPic().getWidth() / 2,
-                    tempBitmap.getXY(2) - tempBitmap.getPic().getHeight() / 2, null);
-
-
-            tempBitmap = pic;
+                    tempBitmap.getXY(2) - tempBitmap.getPic().getWidth() / 2, null);
+            Log.d("Debug", "image is changed in case 3");
+            */
             if ((Math.abs(pic.getXY(1) - this.X) < pic.getPic().getWidth() / 2)
                     && (Math.abs(pic.getXY(2) - this.Y) < pic.getPic().getHeight() / 2)) {
+
+                this.canvas.drawBitmap(origional_bg, 0,0 , null );
+
                 this.canvas.drawBitmap(tempBitmap.getPic(), X - tempBitmap.getPic().getWidth() / 2,
                         Y - tempBitmap.getPic().getWidth() / 2, null);
                 pic.preX = X;
                 pic.preY = Y;
+                Log.d("Debug", "image is changed in case 1");
             } else {
                 this.canvas.drawBitmap(tempBitmap.getPic(), tempBitmap.getXY(1) - tempBitmap.getPic().getWidth() / 2,
                         tempBitmap.getXY(2) - tempBitmap.getPic().getWidth() / 2, null);
+                Log.d("Debug", "image is changed in case 2");
             }
 
+
         }
+        Log.d("Debug", "invalidate is called");
         invalidate();
+        Log.d("Debug", "invalidate is done");
         return true;
     }
 }
