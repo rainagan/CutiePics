@@ -123,8 +123,15 @@ public class SavePhotoActivity extends AppCompatActivity {
                                 double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
                                         .getTotalByteCount());
                                 progressDialog.setMessage("Uploaded "+(int)progress+"%");
+
                             }
                         });
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             return null;
         }
@@ -139,6 +146,7 @@ public class SavePhotoActivity extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
             progressDialog.setMessage(null);
             progressDialog.show();
+            progressDialog.setProgress(0);
         }
     }
 
