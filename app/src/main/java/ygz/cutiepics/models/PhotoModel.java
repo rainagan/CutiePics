@@ -14,6 +14,7 @@ import android.net.Uri;
 public class PhotoModel {
     private static Bitmap mPhoto;
     private static Uri mUri;
+    private static String[] photos;
 
     private PhotoModel() {}
 
@@ -23,9 +24,13 @@ public class PhotoModel {
 
     public static Uri getmUri() {return mUri;}
 
+    public static String[] getPhotos() {return photos;}
+
     public static void setmPhoto(Bitmap mInsertPicture) {
         mPhoto = mInsertPicture;
     }
 
     public static void setmUri(Uri uri) {mUri = uri;}
+
+    public static void setPhotos(String[] pts) {photos = pts;}
 }

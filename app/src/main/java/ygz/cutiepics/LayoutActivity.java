@@ -34,9 +34,7 @@ public class LayoutActivity extends Activity {
         setContentView(R.layout.activity_frame);
         img = (ImageView) findViewById(R.id.ivImage);
 
-        Bundle captured = getIntent().getExtras();
-        String[] temparr = (String[]) captured.get("photos");
-        patharr = Arrays.asList(temparr);
+        patharr = Arrays.asList(PhotoModel.getPhotos());
         picNum = patharr.size();
 
         // For the recycler view part, layout will reuse the code of frame
