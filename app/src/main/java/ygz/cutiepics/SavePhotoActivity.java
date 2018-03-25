@@ -81,10 +81,10 @@ public class SavePhotoActivity extends AppCompatActivity {
     }
 
     public void sharePhoto(View view) {
-        // TODO: share photo to groups
         Uri photo = getImageUri(SavePhotoActivity.this, PhotoModel.getmPhoto());
         uploadImageAsyncTask uiat = new uploadImageAsyncTask();
         uiat.execute(photo);
+        PhotoModel.getmPhoto().recycle();
     }
 
     private class uploadImageAsyncTask extends AsyncTask<Uri, String, String> {
