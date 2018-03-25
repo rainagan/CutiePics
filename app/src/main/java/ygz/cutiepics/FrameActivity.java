@@ -32,7 +32,6 @@ public class FrameActivity extends Activity {
 
     private boolean added = false;
     private int add_pos = -1;
-    private ArrayList<FrameObject> frames;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
