@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/backgroud_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -9,29 +10,23 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
+        android:gravity="center"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/plus_pink"
-        android:gravity="center_horizontal"
-        android:onClick="btnChoosePhotosClick" />
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/icon_forward"
+        android:onClick="btnChoosePhotosClick"
+        android:paddingBottom="20dp" />
 
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/backgroud_main">
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/multiSelectBtn"
+                android:layout_height="wrap_content"
                 tools:listitem="@layout/row_multiphoto_item" />
-        </android.support.design.widget.CoordinatorLayout>
     </ScrollView>
 
 </RelativeLayout>

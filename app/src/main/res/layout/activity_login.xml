@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
@@ -16,33 +17,45 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/cloud_computing" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/userEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/unkempt"
-            android:text="@string/email_fmt"
-            android:textColor="@color/darkGrey"
-            android:textStyle="bold" />
+        android:layout_height="wrap_content"
+        android:layout_weight="3">
 
         <TextView
             android:id="@+id/userPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/icon_top_margin"
             android:fontFamily="@font/unkempt"
             android:text="@string/hint_password"
             android:textColor="@color/darkGrey"
             android:textStyle="bold" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/userEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/userPassword"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="false"
+            android:layout_centerVertical="false"
+            android:fontFamily="@font/unkempt"
+            android:text="@string/email_fmt"
+            android:textColor="@color/darkGrey"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/hatIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/userEmail"
+            android:layout_toStartOf="@+id/userEmail"
+            android:rotation="315"
+            app:srcCompat="@drawable/icon_santa_hat" />
+    </RelativeLayout>
 
 
     <RelativeLayout
