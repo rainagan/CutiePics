@@ -2,8 +2,10 @@ package ygz.cutiepics;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.scrat.app.selectorlibrary.ImageSelector;
 
@@ -23,10 +25,23 @@ public class MultiPhotoSelectActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_frame2);
+        setContentView(R.layout.activity_multi_select_photo);
 
         Bundle temp = getIntent().getExtras();
         type = (String) temp.get("type");
+
+        TextView mTextView = (TextView)findViewById(R.id.textMsg);
+        String s;
+        if (type.equals("layout")) {
+            s = "Please select two to four photos >.<";
+        } else {
+            s = "Please select two photos >.<";
+        }
+        mTextView.setText(s);
+
+        TextView myTextView = (TextView) findViewById(R.id.textMsg);
+        Typeface typeface=Typeface.createFromAsset(getAssets(), "unkempt.ttf");
+        myTextView.setTypeface(typeface);
     }
 
     @Override
