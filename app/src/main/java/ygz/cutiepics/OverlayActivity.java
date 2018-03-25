@@ -50,10 +50,7 @@ public class OverlayActivity extends Activity {
 
         img = (ImageView) findViewById(R.id.overlayImg);
 
-        Bundle captured = getIntent().getExtras();
-        List<String> patharr = new ArrayList<>();
-        String[] temparr = (String[]) captured.get("photos");
-        patharr = Arrays.asList(temparr);
+        List<String> patharr = Arrays.asList(PhotoModel.getPhotos());
 
         // Get the bitmaps
         img1 = getBitmap(patharr.get(0));

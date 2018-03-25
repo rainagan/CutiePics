@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ygz.cutiepics.models.PhotoModel;
+
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 /**
@@ -61,15 +63,20 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
 
         ArrayList<String> selectedItems = imageAdapter.getCheckedItems();
 
-        Intent intent;
-        if (type.equals("layout")) {
-            intent = new Intent(MultiPhotoSelectActivity.this, LayoutActivity.class);
-        } else {
-            intent = new Intent(MultiPhotoSelectActivity.this, OverlayActivity.class);
-        }
         String[] patharray = selectedItems.toArray(new String[0]);
-        intent.putExtra("photos", patharray);
-        startActivity(intent);
+
+        if (patharray.length <= MAX_SELECT_COUNT) {
+            PhotoModel.setPhotos(patharray);
+
+            Intent intent;
+            if (type.equals("layout")) {
+                intent = new Intent(MultiPhotoSelectActivity.this, LayoutActivity.class);
+            } else {
+                intent = new Intent(MultiPhotoSelectActivity.this, OverlayActivity.class);
+            }
+//            intent.putExtra("photos", patharray);
+            startActivity(intent);
+        }
     }
 
     private void populateImagesFromGallery() {
