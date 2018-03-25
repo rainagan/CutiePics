@@ -44,7 +44,7 @@ public class FrameActivity extends Activity {
 
         origin = img.getDrawable();
 
-        final RecyclerView rv = (RecyclerView) findViewById(R.id.frame_view);
+        final RecyclerView rv = findViewById(R.id.frame_view);
         GridLayoutManager mGrid = new GridLayoutManager(this, 4);
         rv.setLayoutManager(mGrid);
         rv.setHasFixedSize(true);
@@ -62,24 +62,20 @@ public class FrameActivity extends Activity {
                         if (added && position == add_pos) {
                                 added = false;
                                 img.setImageDrawable(origin);
+
+                                mSavePhotoTask savePhoto = new mSavePhotoTask();
+                                savePhoto.execute("start");
                                 return;
                         }
 
                         if (position != RecyclerView.NO_POSITION) {
                             added = true;
                             add_pos = position;
-                            addFrame(frame);
+
+                            // add frame to existing photo in async task
+                            mAddFrameTask addFrame = new mAddFrameTask();
+                            addFrame.execute(frame);
                         }
-
-                        Drawable saved_drawable = img.getDrawable();
-                        final int width = saved_drawable.getIntrinsicWidth();
-                        final int height = saved_drawable.getIntrinsicHeight();
-
-                        final Bitmap saved_bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                        saved_drawable.draw(new Canvas(saved_bitmap));
-
-                        PhotoModel.setmPhoto(saved_bitmap);
-
                     }
 
                     public void onLongItemClick(View view, int position) {
@@ -89,18 +85,53 @@ public class FrameActivity extends Activity {
         );
     }
 
-    private void addFrame(Bitmap frame) {
-        Drawable image = origin;
-        Drawable[] array = new Drawable[2];
+    private class mSavePhotoTask extends AsyncTask<String, String, Bitmap> {
 
-        Bitmap image_bm = ((BitmapDrawable)image).getBitmap();
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            Drawable saved_drawable = img.getDrawable();
+            final int width = saved_drawable.getIntrinsicWidth();
+            final int height = saved_drawable.getIntrinsicHeight();
 
-        Bitmap frame_bm = resize(frame, image_bm.getWidth(), image_bm.getHeight());
+            final Bitmap saved_bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            saved_drawable.draw(new Canvas(saved_bitmap));
+            return saved_bitmap;
+        }
 
-        array[0] = image;
-        array[1] = new BitmapDrawable(getResources(), frame_bm);
-        LayerDrawable layer = new LayerDrawable(array);
-        img.setImageDrawable(layer);
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+
+            PhotoModel.setmPhoto(bitmap);
+        }
+    }
+
+    private class mAddFrameTask extends AsyncTask<Bitmap, String, LayerDrawable> {
+
+        @Override
+        protected LayerDrawable doInBackground(Bitmap... bitmaps) {
+            Drawable image = origin;
+            Drawable[] array = new Drawable[2];
+
+            Bitmap image_bm = ((BitmapDrawable)image).getBitmap();
+
+            Bitmap frame_bm = resize(bitmaps[0], image_bm.getWidth(), image_bm.getHeight());
+
+            array[0] = image;
+            array[1] = new BitmapDrawable(getResources(), frame_bm);
+            LayerDrawable layer = new LayerDrawable(array);
+            return layer;
+        }
+
+        @Override
+        protected void onPostExecute(LayerDrawable s) {
+            super.onPostExecute(s);
+
+            img.setImageDrawable(s);
+
+            mSavePhotoTask savePhoto = new mSavePhotoTask();
+            savePhoto.execute("start");
+        }
     }
 
     // This is a helper function copied from online
