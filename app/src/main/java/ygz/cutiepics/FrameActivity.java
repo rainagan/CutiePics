@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -31,28 +32,19 @@ public class FrameActivity extends Activity {
 
     private boolean added = false;
     private int add_pos = -1;
-    private String mCurrentPath;
-    //private PopupWindow pw;
+    private ArrayList<FrameObject> frames;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frame);
 
-        img = (ImageView) findViewById(R.id.ivImage);
-
-        Bundle captured = getIntent().getExtras();
-        this.mCurrentPath = (String) captured.get("image");
-        Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
-        img.setImageURI(uriFromPath);
-
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) img.getDrawable();
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        PhotoModel.setmPhoto(bitmap);
+        img = findViewById(R.id.ivImage);
+        img.setImageURI(PhotoModel.getmUri());
 
         origin = img.getDrawable();
 
-        final RecyclerView rv = (RecyclerView) findViewById(R.id.frame_view);
+        final RecyclerView rv = findViewById(R.id.frame_view);
         GridLayoutManager mGrid = new GridLayoutManager(this, 4);
         rv.setLayoutManager(mGrid);
         rv.setHasFixedSize(true);
@@ -67,29 +59,23 @@ public class FrameActivity extends Activity {
                         BitmapDrawable frame_origin = (BitmapDrawable) temp.getDrawable();
                         Bitmap frame = frame_origin.getBitmap();
 
-                        if (added == true && position == add_pos) {
-
+                        if (added && position == add_pos) {
                                 added = false;
                                 img.setImageDrawable(origin);
-                                return;
 
+                                mSavePhotoTask savePhoto = new mSavePhotoTask();
+                                savePhoto.execute("start");
+                                return;
                         }
 
                         if (position != RecyclerView.NO_POSITION) {
                             added = true;
                             add_pos = position;
-                            addFrame(frame);
+
+                            // add frame to existing photo in async task
+                            mAddFrameTask addFrame = new mAddFrameTask();
+                            addFrame.execute(frame);
                         }
-
-                        Drawable saved_drawable = img.getDrawable();
-                        final int width = saved_drawable.getIntrinsicWidth();
-                        final int height = saved_drawable.getIntrinsicHeight();
-
-                        final Bitmap saved_bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                        saved_drawable.draw(new Canvas(saved_bitmap));
-
-                        PhotoModel.setmPhoto(saved_bitmap);
-
                     }
 
                     public void onLongItemClick(View view, int position) {
@@ -97,23 +83,55 @@ public class FrameActivity extends Activity {
                     }
                 })
         );
-
     }
 
-    private void addFrame(Bitmap frame) {
-        Drawable image = origin;
-        Drawable[] array = new Drawable[2];
+    private class mSavePhotoTask extends AsyncTask<String, String, Bitmap> {
 
-        Bitmap image_bm = ((BitmapDrawable)image).getBitmap();
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            Drawable saved_drawable = img.getDrawable();
+            final int width = saved_drawable.getIntrinsicWidth();
+            final int height = saved_drawable.getIntrinsicHeight();
 
-        Bitmap frame_bm = resize(frame, image_bm.getWidth(), image_bm.getHeight());
+            final Bitmap saved_bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            saved_drawable.draw(new Canvas(saved_bitmap));
+            return saved_bitmap;
+        }
 
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
 
+            PhotoModel.setmPhoto(bitmap);
+        }
+    }
 
-        array[0] = image;
-        array[1] = new BitmapDrawable(getResources(), frame_bm);
-        LayerDrawable layer = new LayerDrawable(array);
-        img.setImageDrawable(layer);
+    private class mAddFrameTask extends AsyncTask<Bitmap, String, LayerDrawable> {
+
+        @Override
+        protected LayerDrawable doInBackground(Bitmap... bitmaps) {
+            Drawable image = origin;
+            Drawable[] array = new Drawable[2];
+
+            Bitmap image_bm = ((BitmapDrawable)image).getBitmap();
+
+            Bitmap frame_bm = resize(bitmaps[0], image_bm.getWidth(), image_bm.getHeight());
+
+            array[0] = image;
+            array[1] = new BitmapDrawable(getResources(), frame_bm);
+            LayerDrawable layer = new LayerDrawable(array);
+            return layer;
+        }
+
+        @Override
+        protected void onPostExecute(LayerDrawable s) {
+            super.onPostExecute(s);
+
+            img.setImageDrawable(s);
+
+            mSavePhotoTask savePhoto = new mSavePhotoTask();
+            savePhoto.execute("start");
+        }
     }
 
     // This is a helper function copied from online
@@ -132,9 +150,6 @@ public class FrameActivity extends Activity {
 
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
-
-        // if you want to rotate the Bitmap
-        // matrix.postRotate(45);
 
         // recreate the new Bitmap
         Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,

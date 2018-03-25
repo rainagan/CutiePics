@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -27,6 +29,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ygz.cutiepics.models.PhotoModel;
+
 /**
  * Created by Raina on 2018-01-25.
  */
@@ -38,7 +42,6 @@ public class ChoosePhotoActivity extends Activity {
     public final int PHOTO_GALLERY_REQUEST = 20;
     private String mCurrentPhotoPath;
     private String type;
-    private final Handler handler = new Handler();
     private File photoFile = null;
 
     @Override
@@ -52,7 +55,7 @@ public class ChoosePhotoActivity extends Activity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, SELECT_FILE);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
 
-        camera = (Button) findViewById(R.id.camera);
+        camera = findViewById(R.id.camera);
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,7 +63,7 @@ public class ChoosePhotoActivity extends Activity {
             }
         });
 
-        gallery = (Button) findViewById(R.id.gallery);
+        gallery = findViewById(R.id.gallery);
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,7 +71,7 @@ public class ChoosePhotoActivity extends Activity {
             }
         });
 
-        Typeface typeface=Typeface.createFromAsset(getAssets(), "unkempt.ttf");
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "unkempt.ttf");
         camera.setTypeface(typeface);
         gallery.setTypeface(typeface);
     }
@@ -92,45 +95,61 @@ public class ChoosePhotoActivity extends Activity {
 
         if (requestCode == REQUEST_CAMERA) {
             if (resultCode == Activity.RESULT_OK) {
-                onCaptureImageResult();
-                Intent intent;
-                if (type.equals("sticker")) {
-                    intent = new Intent(ChoosePhotoActivity.this, StickerActivity.class);
-                } else {
-                    intent = new Intent(ChoosePhotoActivity.this, FrameActivity.class);
-                }
-                intent.putExtra("image", mCurrentPhotoPath);
-                startActivity(intent);
+//                onCaptureImageResult();
+                mSavePhotoTask savePhoto = new mSavePhotoTask();
+                savePhoto.execute("start");
+
+                startNext();
             }
         } else {
             if (resultCode == Activity.RESULT_OK && data != null) {
-                final Uri imageUri = data.getData();
-                mCurrentPhotoPath = getRealPathFromURI(imageUri);
-                returnURI(mCurrentPhotoPath);
+                PhotoModel.setmUri(data.getData());
+
+                startNext();
             }
         }
     }
 
-    private void onCaptureImageResult() {
+    private class mSavePhotoTask extends AsyncTask<String, String, String> {
 
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        @Override
+        protected String doInBackground(String... strings) {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-        File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
+            File destination = new File(Environment.getExternalStorageDirectory(),
+                    System.currentTimeMillis() + ".jpg");
 
-        FileOutputStream fo;
-        try {
-            destination.createNewFile();
-            fo = new FileOutputStream(destination);
-            fo.write(bytes.toByteArray());
-            fo.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            FileOutputStream fo;
+            try {
+                destination.createNewFile();
+                fo = new FileOutputStream(destination);
+                fo.write(bytes.toByteArray());
+                fo.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            PhotoModel.setmUri(Uri.parse(mCurrentPhotoPath));
         }
     }
 
+    private void startNext() {
+        Intent intent;
+        if (type.equals("sticker")) {
+            intent = new Intent(ChoosePhotoActivity.this, StickerActivity.class);
+        } else {
+            intent = new Intent(ChoosePhotoActivity.this, FrameActivity.class);
+        }
+        startActivity(intent);
+    }
 
     private void cameraIntent() {
         final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -175,31 +194,6 @@ public class ChoosePhotoActivity extends Activity {
         intent.setType("image/*");
         intent.setDataAndType(data, "image/*");
         startActivityForResult(intent, PHOTO_GALLERY_REQUEST);
-    }
-
-    private String getRealPathFromURI(Uri contentURI) {
-        String result;
-        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) { // Source is Dropbox or other similar local file path
-            result = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
-        }
-        return result;
-    }
-
-    public void returnURI(String uri) {
-        Intent intent;
-        if (type.equals("sticker")) {
-            intent = new Intent(ChoosePhotoActivity.this, StickerActivity.class);
-        } else {
-            intent = new Intent(ChoosePhotoActivity.this, FrameActivity.class);
-        }
-        intent.putExtra("image", mCurrentPhotoPath);
-        startActivity(intent);
     }
 
     public void onBackPressed() {
