@@ -30,6 +30,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,12 +71,14 @@ public class LoginActivity extends BaseActivity implements
     private EditText mPasswordField;
     private TextView userEmail;
     private TextView userPassword;
+    private ImageView hat;
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
     // [END declare_auth]
     private DatabaseReference mDatabase;
     private StorageReference mStorage;
+    private DatabaseReference imageDB;
 
     private ProgressDialog progressDialog;
 
@@ -92,18 +95,7 @@ public class LoginActivity extends BaseActivity implements
         // [END initialize_auth]
         mStorage = FirebaseStorage.getInstance().getReference();
 
-        DatabaseReference imageDB = mDatabase.child("images");
-        imageDB.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                uids = collectImageUID((Map<String, Object>) dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        imageDB = mDatabase.child("images");
 
         progressDialog = new ProgressDialog(this);
 
@@ -112,6 +104,7 @@ public class LoginActivity extends BaseActivity implements
         mPasswordField = findViewById(R.id.field_password);
         userEmail = findViewById(R.id.userEmail);
         userPassword = findViewById(R.id.userPassword);
+        hat = findViewById(R.id.hatIcon);
 
         // Buttons
         findViewById(R.id.email_sign_in_button).setOnClickListener(this);
@@ -266,6 +259,8 @@ public class LoginActivity extends BaseActivity implements
         if (user != null) {
             userEmail.setVisibility(View.VISIBLE);
             userPassword.setVisibility(View.VISIBLE);
+            hat.setVisibility(View.VISIBLE);
+
             userEmail.setText("User Email: " + user.getEmail());
             userPassword.setText("Password: **********");
 
@@ -277,6 +272,7 @@ public class LoginActivity extends BaseActivity implements
         } else {
             userEmail.setVisibility(View.GONE);
             userPassword.setVisibility(View.GONE);
+            hat.setVisibility(View.GONE);
 
             findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
             findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
@@ -342,7 +338,7 @@ public class LoginActivity extends BaseActivity implements
             out.close();
 
             MediaScannerConnection.scanFile(this,
-                    new String[] { file.toString() }, null,
+                    new String[]{file.toString()}, null,
                     new MediaScannerConnection.OnScanCompletedListener() {
                         public void onScanCompleted(String path, Uri uri) {
                             Log.i("ExternalStorage", "Scanned " + path + ":");
@@ -373,6 +369,18 @@ public class LoginActivity extends BaseActivity implements
 
         @Override
         protected String doInBackground(ArrayList<String>[] arrayLists) {
+            imageDB.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    uids = collectImageUID((Map<String, Object>) dataSnapshot.getValue());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
             ArrayList<String> ids = arrayLists[0];
             if (mStorage != null) {
 
@@ -410,6 +418,11 @@ public class LoginActivity extends BaseActivity implements
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             } else {
                 Toast.makeText(LoginActivity.this, "Upload file before downloading", Toast.LENGTH_LONG).show();
@@ -429,6 +442,7 @@ public class LoginActivity extends BaseActivity implements
             progressDialog.setTitle("Downloading...");
             progressDialog.setMessage(null);
             progressDialog.show();
+            progressDialog.setProgress(0);
         }
     }
 }

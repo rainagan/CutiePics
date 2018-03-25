@@ -92,7 +92,6 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         }
 
         if (shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE)) {
-            //promptStoragePermission();
             showPermissionRationaleSnackBar();
         } else {
             requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, REQUEST_FOR_STORAGE_PERMISSION);

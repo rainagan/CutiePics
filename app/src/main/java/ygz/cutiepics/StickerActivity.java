@@ -253,15 +253,12 @@ public class StickerActivity extends Activity {
                         //copy image from emoji to upper screen
                         ImageView emoji_IV = pvh.getEmoji();
                         Bitmap emoji_Bitmap = ((BitmapDrawable) emoji_IV.getDrawable()).getBitmap();
-                        //Bitmap emoji_Bitmap1 = BitmapFactory.decodeResource(emoji_IV.getResources(), R.id.sticker_navigation);
-                        Bitmap bmp2 = emoji_Bitmap.copy(emoji_Bitmap.getConfig(), true);
+                        Bitmap emoji_copy_Bitmap = emoji_Bitmap.copy(emoji_Bitmap.getConfig(), true);
+                        Bitmap background_Bitmap = ((BitmapDrawable)img.getDrawable()).getBitmap();
+                        Bmp emoji_copy_Bmp = new Bmp (emoji_copy_Bitmap);
 
-                        Bitmap origin_bitmap = ((BitmapDrawable)img.getDrawable()).getBitmap();
-                        //Bitmap emoji_bitmap_copy = ((BitmapDrawable)getResources().getDrawable(R.drawable.ivImage)).getBitmap();
 
-                        Bmp bmp_emoji = new Bmp (bmp2);
-
-                        final DrawEmoji drawemoji =new DrawEmoji(getApplicationContext(), bmp_emoji);
+                        final DrawEmoji drawemoji =new DrawEmoji(getApplicationContext(), emoji_copy_Bmp, background_Bitmap);
                         drawemoji.setOnTouchListener(new OnTouchListener() {
                             @Override
                             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -342,6 +339,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new StickerObject("strawberry"));
         featuredProducts.add(new StickerObject("sweetpotato"));
         featuredProducts.add(new StickerObject("donut"));
+        /*
         featuredProducts.add(new StickerObject("drumstick"));
         featuredProducts.add(new StickerObject("blueheart"));
         featuredProducts.add(new StickerObject("cardheart"));
@@ -468,7 +466,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new StickerObject("rightpunch4"));
         featuredProducts.add(new StickerObject("rightpunch5"));
         featuredProducts.add(new StickerObject("rightpunch6"));
-        /*
+
         featuredProducts.add(new StickerObject("rock1"));
         featuredProducts.add(new StickerObject("rock2"));
         featuredProducts.add(new StickerObject("rock3"));

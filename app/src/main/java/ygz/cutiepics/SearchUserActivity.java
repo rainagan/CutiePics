@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Random;
 
 import ygz.cutiepics.models.PhotoModel;
+import ygz.cutiepics.models.UploadInfo;
 
 /**
  * Created by Raina on 2018-03-20.
