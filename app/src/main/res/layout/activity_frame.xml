@@ -19,8 +19,6 @@
         android:onClick="saveImg"
         android:textSize="24sp" />
 
-    <!-- the height of ImageView should be adjustable to different android phone -->
-    <!-- We can realize this after -->
     <ImageView
         android:id="@+id/ivImage"
         android:layout_width="wrap_content"
