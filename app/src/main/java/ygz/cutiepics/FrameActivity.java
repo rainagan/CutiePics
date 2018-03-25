@@ -160,10 +160,17 @@ public class FrameActivity extends Activity {
 
     private ArrayList<FrameObject> getFrameTestData() {
         ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
-        featuredFrame.add(new FrameObject("frame_pure2"));
-        featuredFrame.add(new FrameObject("leafframe"));
-        //featuredFrame.add(new FrameObject("frame_pure1"));
-
+        featuredFrame.add(new FrameObject("frame1"));
+        featuredFrame.add(new FrameObject("frame2"));
+        featuredFrame.add(new FrameObject("frame3"));
+        featuredFrame.add(new FrameObject("frame4"));
+        featuredFrame.add(new FrameObject("frame5"));
+        featuredFrame.add(new FrameObject("frame6"));
+        featuredFrame.add(new FrameObject("frame7"));
+        featuredFrame.add(new FrameObject("frame8"));
+        //featuredFrame.add(new FrameObject("frame9"));
+        //featuredFrame.add(new FrameObject("frame10"));
+        //featuredFrame.add(new FrameObject("frame11"));
         return featuredFrame;
     }
 
