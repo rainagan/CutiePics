@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Random;
 
 import ygz.cutiepics.models.PhotoModel;
+import ygz.cutiepics.models.UploadInfo;
 
 /**
  * Created by yuyuxiao on 2018-03-20.

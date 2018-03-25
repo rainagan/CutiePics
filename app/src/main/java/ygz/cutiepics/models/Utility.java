@@ -1,4 +1,4 @@
-package ygz.cutiepics;
+package ygz.cutiepics.models;
 
 import android.Manifest;
 import android.annotation.TargetApi;
