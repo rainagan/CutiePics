@@ -30,6 +30,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,6 +71,7 @@ public class LoginActivity extends BaseActivity implements
     private EditText mPasswordField;
     private TextView userEmail;
     private TextView userPassword;
+    private ImageView hat;
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
@@ -102,6 +104,7 @@ public class LoginActivity extends BaseActivity implements
         mPasswordField = findViewById(R.id.field_password);
         userEmail = findViewById(R.id.userEmail);
         userPassword = findViewById(R.id.userPassword);
+        hat = findViewById(R.id.hatIcon);
 
         // Buttons
         findViewById(R.id.email_sign_in_button).setOnClickListener(this);
@@ -256,6 +259,8 @@ public class LoginActivity extends BaseActivity implements
         if (user != null) {
             userEmail.setVisibility(View.VISIBLE);
             userPassword.setVisibility(View.VISIBLE);
+            hat.setVisibility(View.VISIBLE);
+
             userEmail.setText("User Email: " + user.getEmail());
             userPassword.setText("Password: **********");
 
@@ -267,6 +272,7 @@ public class LoginActivity extends BaseActivity implements
         } else {
             userEmail.setVisibility(View.GONE);
             userPassword.setVisibility(View.GONE);
+            hat.setVisibility(View.GONE);
 
             findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
             findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
