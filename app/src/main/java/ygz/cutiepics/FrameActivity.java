@@ -5,17 +5,20 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import java.io.File;
+import android.widget.PopupWindow;
 import java.util.ArrayList;
 
 import ygz.cutiepics.models.FrameObject;
@@ -33,6 +36,8 @@ public class FrameActivity extends Activity {
     private boolean added = false;
     private int add_pos = -1;
 
+    private PopupWindow pw;
+
     Bitmap image_bm;
     Bitmap frame_bm;
 
@@ -45,49 +50,6 @@ public class FrameActivity extends Activity {
         img.setImageURI(PhotoModel.getmUri());
 
         origin = img.getDrawable();
-
-        final RecyclerView rv = findViewById(R.id.frame_view);
-        GridLayoutManager mGrid = new GridLayoutManager(this, 4);
-        rv.setLayoutManager(mGrid);
-        rv.setHasFixedSize(true);
-        FrameAdapter mAdapter = new FrameAdapter(FrameActivity.this, getFrameTestData());
-        rv.setAdapter(mAdapter);
-
-        rv.addOnItemTouchListener(
-                new RecyclerItemClickListener(this, rv ,new RecyclerItemClickListener.OnItemClickListener() {
-                    public void onItemClick(View view, int position) {
-                        FrameViewHolder fvh = (FrameViewHolder) rv.findViewHolderForAdapterPosition(position);
-                        ImageView temp = fvh.getFrame();
-                        BitmapDrawable frame_origin = (BitmapDrawable) temp.getDrawable();
-                        Bitmap frame = frame_origin.getBitmap();
-
-                        if (added && position == add_pos) {
-                                added = false;
-                                img.setImageDrawable(origin);
-
-                                mSavePhotoTask savePhoto = new mSavePhotoTask();
-                                savePhoto.execute("start");
-                                return;
-                        }
-
-                        if (position != RecyclerView.NO_POSITION) {
-                            added = true;
-                            add_pos = position;
-
-                            if (PhotoModel.getmPhoto() != null) {
-                                PhotoModel.getmPhoto().recycle();
-                            }
-                            // add frame to existing photo in async task
-                            mAddFrameTask addFrame = new mAddFrameTask();
-                            addFrame.execute(frame);
-                        }
-                    }
-
-                    public void onLongItemClick(View view, int position) {
-                        // do nothing
-                    }
-                })
-        );
     }
 
     private class mSavePhotoTask extends AsyncTask<String, String, Bitmap> {
@@ -110,6 +72,8 @@ public class FrameActivity extends Activity {
             PhotoModel.setmPhoto(bitmap);
         }
     }
+
+
 
     private class mAddFrameTask extends AsyncTask<Bitmap, String, LayerDrawable> {
 
@@ -192,8 +156,68 @@ public class FrameActivity extends Activity {
         featuredFrame.add(new FrameObject("frame8"));
         featuredFrame.add(new FrameObject("frame10"));
         featuredFrame.add(new FrameObject("frame9"));
-        //featuredFrame.add(new FrameObject("frame11"));
         return featuredFrame;
+    }
+
+    public void chooseFrame(View view) {
+        showPopupWindow();
+    }
+
+    private void showPopupWindow() {
+        View view = LayoutInflater.from(FrameActivity.this).inflate(R.layout.sticker_popup, null);
+
+        pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 240);
+        pw.setFocusable(true);
+        pw.setBackgroundDrawable(new ColorDrawable(0xffffffff));
+        pw.setOutsideTouchable(true);
+        pw.setAnimationStyle(R.style.Animation);
+        pw.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+
+        final RecyclerView rv = (RecyclerView) view.findViewById(R.id.pop_sticker);
+        GridLayoutManager mGrid = new GridLayoutManager(this, 4);
+        rv.setLayoutManager(mGrid);
+        rv.setHasFixedSize(true);
+        rv.setItemViewCacheSize(24);
+        rv.setDrawingCacheEnabled(true);
+        rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        rv.setNestedScrollingEnabled(false);
+        FrameAdapter mAdapter = new FrameAdapter(FrameActivity.this, getFrameTestData());
+        rv.setAdapter(mAdapter);
+        rv.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, rv, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        FrameViewHolder fvh = (FrameViewHolder) rv.findViewHolderForAdapterPosition(position);
+                        ImageView temp = fvh.getFrame();
+                        BitmapDrawable frame_origin = (BitmapDrawable) temp.getDrawable();
+                        Bitmap frame = frame_origin.getBitmap();
+
+                        if (added && position == add_pos) {
+                            added = false;
+                            img.setImageDrawable(origin);
+
+                            mSavePhotoTask savePhoto = new mSavePhotoTask();
+                            savePhoto.execute("start");
+                            return;
+                        }
+
+                        if (position != RecyclerView.NO_POSITION) {
+                            added = true;
+                            add_pos = position;
+
+                            if (PhotoModel.getmPhoto() != null) {
+                                PhotoModel.getmPhoto().recycle();
+                            }
+                            // add frame to existing photo in async task
+                            mAddFrameTask addFrame = new mAddFrameTask();
+                            addFrame.execute(frame);
+                        }
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {}
+                })
+        );
     }
 
     public void saveImg(View view) {
