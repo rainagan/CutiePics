@@ -53,29 +53,20 @@ import ygz.cutiepics.models.StickerObject;
 public class StickerActivity extends Activity {
     private ImageView img;
     private PopupWindow pw;
+    private RecyclerView rv;
     private SeekBar seekBar1;
     private SeekBar seekBar2;
     private int prog1;
     private int prog2;
-    private int add_pos = -1;
 
-    private String mCurrentPath;
     private Bitmap origin_bitmap; // current bitmap
 
     private RelativeLayout mMainLayout;
 
-    private int imgHeight, imgWidth, imgLeft, imgTop;
     private ArrayList<CustomEdittext> texts;
 
-    private RelativeLayout.LayoutParams params;
-
-    //    private ProductViewHolder ProductViewHolder;
     private Canvas current;
     private Bitmap emoji;
-    //private int img_w;
-    //private int img_h;
-    //private int screen_w;
-    //private int screen_y;
 
     // some parameter for drawing the stickers
     private float x;
@@ -91,14 +82,16 @@ public class StickerActivity extends Activity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.nav_emoji:
-                    showPopupWindow();
+                    showPopupWindow("emoji");
                     return true;
                 case R.id.nav_sticker:
+                    showPopupWindow("sticker");
                     return true;
                 case R.id.nav_label:
+                    showPopupWindow("tag");
                     return true;
                 case R.id.nav_text:
-                    showText();
+//                    showText();
                     return true;
             }
             return false;
@@ -111,20 +104,20 @@ public class StickerActivity extends Activity {
         setContentView(R.layout.activity_stickers);
         img = (ImageView) findViewById(R.id.ivImage);
         img.setImageURI(PhotoModel.getmUri());
-        img.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//        img.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//
+//            public void onGlobalLayout() {
+//                imgHeight = img.getHeight();
+//                imgWidth = img.getWidth();
+//                imgLeft = img.getLeft();
+//                imgTop = img.getTop();
+//
+//                //don't forget to remove the listener to prevent being called again by future layout events:
+//                img.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//            }
+//        });
 
-            public void onGlobalLayout() {
-                imgHeight = img.getHeight();
-                imgWidth = img.getWidth();
-                imgLeft = img.getLeft();
-                imgTop = img.getTop();
-
-                //don't forget to remove the listener to prevent being called again by future layout events:
-                img.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
-
-        texts = new ArrayList<>();
+//        texts = new ArrayList<>();
 
         mMainLayout = findViewById(R.id.sticker_layout);
 
@@ -172,25 +165,25 @@ public class StickerActivity extends Activity {
     }
 
 
-    @SuppressLint("ResourceAsColor")
-    private void showText() {
-        mMainLayout.setOnDragListener(new MyDragListener(imgHeight, imgWidth, imgLeft, imgTop));
-
-        CustomEdittext et = new CustomEdittext(StickerActivity.this);
-
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        //You could adjust the position
-        params.topMargin = imgHeight / 2 + imgTop;
-        params.leftMargin = imgWidth / 2 + imgLeft;
-        mMainLayout.addView(et, params);
-        et.requestFocus();
-        et.setTextColor(R.color.colorWhite);
-
-        et.setOnLongClickListener(new MyLongClickListner());
-
-        texts.add(et);
-    }
+//    @SuppressLint("ResourceAsColor")
+//    private void showText() {
+//        mMainLayout.setOnDragListener(new MyDragListener(imgHeight, imgWidth, imgLeft, imgTop));
+//
+//        CustomEdittext et = new CustomEdittext(StickerActivity.this);
+//
+//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//
+//        //You could adjust the position
+//        params.topMargin = imgHeight / 2 + imgTop;
+//        params.leftMargin = imgWidth / 2 + imgLeft;
+//        mMainLayout.addView(et, params);
+//        et.requestFocus();
+//        et.setTextColor(R.color.colorWhite);
+//
+//        et.setOnLongClickListener(new MyLongClickListner());
+//
+//        texts.add(et);
+//    }
 
     public class MyLongClickListner implements View.OnLongClickListener {
 
@@ -305,7 +298,8 @@ public class StickerActivity extends Activity {
     }
 
 
-    private void showPopupWindow() {
+    private void showPopupWindow(String type) {
+        // initialize recycler view
         View view = LayoutInflater.from(StickerActivity.this).inflate(R.layout.sticker_popup, null);
         pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 240);
         pw.setFocusable(true);
@@ -314,7 +308,7 @@ public class StickerActivity extends Activity {
         pw.setAnimationStyle(R.style.Animation);
         pw.showAtLocation(view, Gravity.BOTTOM, 0, 0);
 
-        final RecyclerView rv = (RecyclerView) view.findViewById(R.id.pop_sticker);
+        final RecyclerView rv = view.findViewById(R.id.pop_sticker);
         GridLayoutManager mGrid = new GridLayoutManager(this, 8);
         rv.setLayoutManager(mGrid);
         rv.setHasFixedSize(true);
@@ -322,7 +316,14 @@ public class StickerActivity extends Activity {
         rv.setDrawingCacheEnabled(true);
         rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         rv.setNestedScrollingEnabled(false);
-        StickerAdapter mAdapter = new StickerAdapter(StickerActivity.this, getProductTestData());
+        StickerAdapter mAdapter;
+        if (type.equals("emoji")) {
+            mAdapter = new StickerAdapter(StickerActivity.this, getProductTestData());
+        } else if (type.equals("sticker")) {
+            mAdapter = new StickerAdapter(StickerActivity.this, getStickerTestData());
+        } else {
+            mAdapter = new StickerAdapter(StickerActivity.this, getTagTestData());
+        }
         rv.setAdapter(mAdapter);
         rv.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, rv, new RecyclerItemClickListener.OnItemClickListener() {
@@ -945,6 +946,40 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new StickerObject("popcorn"));
         */
         return featuredProducts;
+    }
+
+    private ArrayList<StickerObject> getStickerTestData() {
+        ArrayList<StickerObject> stickers = new ArrayList<StickerObject>();
+        stickers.add(new StickerObject("sticker_heart"));
+        stickers.add(new StickerObject("sticker_crown"));
+        stickers.add(new StickerObject("sticker_mess"));
+        stickers.add(new StickerObject("sticker_star"));
+        stickers.add(new StickerObject("sticker_cup"));
+        stickers.add(new StickerObject("sticker_cloud"));
+        stickers.add(new StickerObject("sticker_tv"));
+        stickers.add(new StickerObject("sticker_forkknife"));
+        stickers.add(new StickerObject("sticker_heart2"));
+        stickers.add(new StickerObject("sticker_heart3"));
+        stickers.add(new StickerObject("sticker_heart4"));
+        stickers.add(new StickerObject("sticker_notebook"));
+        stickers.add(new StickerObject("sticker_photo"));
+        stickers.add(new StickerObject("sticker_bag"));
+        stickers.add(new StickerObject("sticker_cream"));
+        stickers.add(new StickerObject("sticker_lip"));
+        stickers.add(new StickerObject("sticker_textbulb"));
+        stickers.add(new StickerObject("sticker_cake"));
+        stickers.add(new StickerObject("sticker_tv2"));
+        stickers.add(new StickerObject("sticker_coffee"));
+        stickers.add(new StickerObject("sticker_letter"));
+
+        return stickers;
+    }
+
+    private ArrayList<StickerObject> getTagTestData() {
+        ArrayList<StickerObject> tags = new ArrayList<StickerObject>();
+        tags.add(new StickerObject("tag_cuisine"));
+
+        return tags;
     }
 
     public void saveImg(View view) {
