@@ -65,7 +65,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
 
         String[] patharray = selectedItems.toArray(new String[0]);
 
-        if (patharray.length <= MAX_SELECT_COUNT) {
+        if (patharray.length <= MAX_SELECT_COUNT && patharray.length >= 2) {
             PhotoModel.setPhotos(patharray);
 
             Intent intent;
@@ -74,8 +74,9 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             } else {
                 intent = new Intent(MultiPhotoSelectActivity.this, OverlayActivity.class);
             }
-//            intent.putExtra("photos", patharray);
             startActivity(intent);
+        } else {
+            Toast.makeText(MultiPhotoSelectActivity.this, "You can choose only " + MAX_SELECT_COUNT + " photos max", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -155,7 +156,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
     private void initializeRecyclerView(ArrayList<String> imageUrls) {
         imageAdapter = new ImageAdapter(this, imageUrls, MAX_SELECT_COUNT);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 4);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 2);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
