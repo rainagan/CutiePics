@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import ygz.cutiepics.models.PhotoModel;
 
@@ -61,6 +62,12 @@ class DrawEmoji extends View {
         //this.background = Bitmap.createBitmap(background_width, background_height, Bitmap.Config.ARGB_8888);
         origional_bg = this.background.copy(this.background.getConfig(), true);
 
+        //this.background_width = background.getWidth();
+        //this.background_height = background.getHeight();
+        this.background_width = 320;
+        this.background_height = 450;
+        this.background = Bitmap.createBitmap(background_width, background_height, Bitmap.Config.ARGB_8888);
+        origional_bg = background.copy(background.getConfig(), true);
         this.canvas = new Canvas(this.background);
         this.canvas.drawBitmap(background, null,
                 new RectF((w-this.background.getWidth())/2, 0,
@@ -78,7 +85,7 @@ class DrawEmoji extends View {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawBitmap(background, 0, 0, null);
+        //canvas.drawBitmap(background, 0, 0, null);
         tempBitmap = pic;
 
         this.canvas.drawBitmap(tempBitmap.getPic(), tempBitmap.getXY(1) - tempBitmap.getPic().getWidth() / 2,

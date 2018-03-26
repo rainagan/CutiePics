@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ygz.cutiepics.models.PhotoModel;
+
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 /**
@@ -61,15 +63,21 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
 
         ArrayList<String> selectedItems = imageAdapter.getCheckedItems();
 
-        Intent intent;
-        if (type.equals("layout")) {
-            intent = new Intent(MultiPhotoSelectActivity.this, LayoutActivity.class);
-        } else {
-            intent = new Intent(MultiPhotoSelectActivity.this, OverlayActivity.class);
-        }
         String[] patharray = selectedItems.toArray(new String[0]);
-        intent.putExtra("photos", patharray);
-        startActivity(intent);
+
+        if (patharray.length <= MAX_SELECT_COUNT && patharray.length >= 2) {
+            PhotoModel.setPhotos(patharray);
+
+            Intent intent;
+            if (type.equals("layout")) {
+                intent = new Intent(MultiPhotoSelectActivity.this, LayoutActivity.class);
+            } else {
+                intent = new Intent(MultiPhotoSelectActivity.this, OverlayActivity.class);
+            }
+            startActivity(intent);
+        } else {
+            Toast.makeText(MultiPhotoSelectActivity.this, "You can choose only " + MAX_SELECT_COUNT + " photos max", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void populateImagesFromGallery() {
@@ -148,7 +156,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
     private void initializeRecyclerView(ArrayList<String> imageUrls) {
         imageAdapter = new ImageAdapter(this, imageUrls, MAX_SELECT_COUNT);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 4);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 2);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -144,7 +145,7 @@ public class LayoutTemplate {
             BitmapFactory.Options options = new BitmapFactory.Options();
 
             options.inPreferredConfig = Bitmap.Config.RGB_565;
-            options.inSampleSize = 3;   // Bitmap we get is compressed
+            //options.inSampleSize = 3;   // Bitmap we get is compressed
 
             bitmap = BitmapFactory.decodeStream(new FileInputStream(f), null, options);
 
@@ -328,7 +329,8 @@ public class LayoutTemplate {
     }
 
     // This function may need to be improved
-    public Bitmap scaleImage(Bitmap bm, int newWidth, int newHeight) {
+
+    private Bitmap scaleImage1(Bitmap bm, int newWidth, int newHeight) {
         if (bm == null) {
             return null;
         }
@@ -352,9 +354,68 @@ public class LayoutTemplate {
         return newbm;
     }
 
+
+    private Bitmap scaleImage(Bitmap bm, int w, int h)
+    {
+
+        Bitmap BitmapOrg = bm;
+
+        int width = BitmapOrg.getWidth();
+        int height = BitmapOrg.getHeight();
+        int newWidth = w;
+        int newHeight = h;
+
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // recreate the new Bitmap
+        Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
+                height, matrix, true);
+        return resizedBitmap;
+
+    }
+
+    /**
+     * Scales the provided bitmap to have the height and width provided.
+     * (Alternative method for scaling bitmaps
+     * since Bitmap.createScaledBitmap(...) produces bad (blocky) quality bitmaps.)
+     *
+     * @param bitmap is the bitmap to scale.
+     * @param newWidth is the desired width of the scaled bitmap.
+     * @param newHeight is the desired height of the scaled bitmap.
+     * @return the scaled bitmap.
+     */
+
+    public Bitmap scaleImage3(Bitmap bitmap, int newWidth, int newHeight) {
+        Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
+
+        float scaleX = newWidth / (float) bitmap.getWidth();
+        float scaleY = newHeight / (float) bitmap.getHeight();
+        float pivotX = 0;
+        float pivotY = 0;
+
+        Matrix scaleMatrix = new Matrix();
+        scaleMatrix.setScale(scaleX, scaleY, pivotX, pivotY);
+
+        Canvas canvas = new Canvas(scaledBitmap);
+        canvas.setMatrix(scaleMatrix);
+        canvas.drawBitmap(bitmap, 0, 0, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+        return scaledBitmap;
+    }
+
+
     protected void Draw(Canvas canvas) {
         canvas.drawColor(Color.WHITE);
         Paint paint = new Paint();
+        /*
+        Paint paint= new Paint(Paint.FILTER_BITMAP_FLAG |
+                Paint.DITHER_FLAG |
+                Paint.ANTI_ALIAS_FLAG);
+        */
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
         startDraw(canvas, paint);
@@ -372,7 +433,6 @@ public class LayoutTemplate {
     private void drawScene(Canvas canvas, Paint paint, int idx) {
         canvas.clipPath(path[idx]);
         canvas.drawColor(Color.GRAY);
-       // if (bitmapsFlag[idx]) {
 
         if (bitmaps == null) {
             Log.d("Error", "bitmaps has size "+bitmaps.length);
@@ -381,15 +441,6 @@ public class LayoutTemplate {
 
         canvas.drawBitmap(bitmaps[idx], caculateMinCoordinateX(coordinateSetList.get(idx)),
                     caculateMinCoordinateY(coordinateSetList.get(idx)), paint);
-
-        //Log.d("Debug", "Min X is "+caculateMinCoordinateX(coordinateSetList.get(idx)));
-        //Log.d("Debug", "Min Y is "+caculateMinCoordinateY(coordinateSetList.get(idx)));
-            /*
-        } else {
-            canvas.drawBitmap(bitmaps[idx], caculateMinCoordinateX(coordinateSetList.get(idx)) + pathOffset[idx][0],
-                    caculateMinCoordinateY(coordinateSetList.get(idx)) + pathOffset[idx][1], paint);
-        }
-        */
     }
 
 }
