@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
@@ -33,6 +35,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -62,7 +66,7 @@ public class SavePhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_save_photo);
 
         Bitmap bmp = PhotoModel.getmPhoto();
-        saveImageToGallery(bmp);
+        saveImageToExternalStorage(bmp);
 
         database = FirebaseDatabase.getInstance();
         mDatabase = database.getReference().child("images");
@@ -79,11 +83,36 @@ public class SavePhotoActivity extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
     }
 
+    private void saveImageToExternalStorage(Bitmap finalBitmap) {
+        String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+        File myDir = new File(root + "/CutiePics");
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = Integer.MAX_VALUE;
+        n = generator.nextInt(n);
+        String fname = "Image-" + n + ".jpg";
+        File file = new File(myDir, fname);
+        if (file.exists())
+            file.delete();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
 
-    public String saveImageToGallery(Bitmap saved) {
-        String result = MediaStore.Images.Media.insertImage(getContentResolver(), saved, "", "");
-        return result;
+            MediaScannerConnection.scanFile(this,
+                    new String[]{file.toString()}, null,
+                    new MediaScannerConnection.OnScanCompletedListener() {
+                        public void onScanCompleted(String path, Uri uri) {
+                            Log.i("ExternalStorage", "Scanned " + path + ":");
+                            Log.i("ExternalStorage", "-> uri=" + uri);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     public void editNext(View view) {
         Intent intent = new Intent(this, MainActivity.class);
