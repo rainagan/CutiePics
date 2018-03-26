@@ -322,7 +322,7 @@ public class LoginActivity extends BaseActivity implements
 
     private void saveImageToExternalStorage(Bitmap finalBitmap) {
         String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-        File myDir = new File(root + "/saved_images");
+        File myDir = new File(root + "/CutiePics");
         myDir.mkdirs();
         Random generator = new Random();
         int n = Integer.MAX_VALUE;
@@ -398,7 +398,6 @@ public class LoginActivity extends BaseActivity implements
                                 Bitmap bmp = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                                 saveImageToExternalStorage(bmp);
 
-                                Toast.makeText(LoginActivity.this, "Download successfully", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
