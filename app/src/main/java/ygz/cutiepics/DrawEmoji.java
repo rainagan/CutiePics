@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import ygz.cutiepics.models.PhotoModel;
 
@@ -15,7 +16,7 @@ import ygz.cutiepics.models.PhotoModel;
  * Created by zhaofan on 2018-03-24.
  */
 
-class DrawEmoji extends View {
+class DrawEmoji extends ImageView {
     private int background_width = 10;
     private int background_height = 10;
     //private Bitmap canvasBitmap = Bitmap.createBitmap(background_width, background_height, Bitmap.Config.ARGB_8888);
@@ -45,8 +46,10 @@ class DrawEmoji extends View {
     public DrawEmoji(Context context, Bmp pic, Bitmap background) {
         this(context);
         this.pic = pic;
-        this.background_width = background.getWidth();
-        this.background_height = background.getHeight();
+        //this.background_width = background.getWidth();
+        //this.background_height = background.getHeight();
+        this.background_width = 320;
+        this.background_height = 450;
         this.background = Bitmap.createBitmap(background_width, background_height, Bitmap.Config.ARGB_8888);
         origional_bg = background.copy(background.getConfig(), true);
         this.canvas = new Canvas(this.background);
@@ -57,7 +60,7 @@ class DrawEmoji extends View {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawBitmap(background, 0, 0, null);
+        //canvas.drawBitmap(background, 0, 0, null);
         tempBitmap = pic;
         this.canvas.drawBitmap(tempBitmap.getPic(), tempBitmap.getXY(1) - tempBitmap.getPic().getWidth() / 2,
                 tempBitmap.getXY(2) - tempBitmap.getPic().getHeight() / 2, null);
