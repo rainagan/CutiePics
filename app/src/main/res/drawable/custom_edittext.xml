@@ -1,8 +1,0 @@
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_window_focused="false" android:state_enabled="true"
-        android:drawable="@drawable/twitter_im_edittext_normal" />
-    <item android:state_window_focused="false" android:state_enabled="false"
-        android:drawable="@drawable/twitter_im_edittext_normal" />
-    <item android:state_focused="true" android:drawable="@drawable/edittext_focused" />
-    <item android:drawable="@drawable/twitter_im_edittext_normal" />
-</selector>
