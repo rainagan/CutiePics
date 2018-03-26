@@ -985,9 +985,10 @@ public class StickerActivity extends Activity {
 
     @Override
     protected void onStop() {
+        super.onStop();
+
         if (pw!=null) {
             pw.dismiss();
-            super.onStop();
         }
     }
 
