@@ -14,20 +14,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import ygz.cutiepics.models.PhotoModel;
@@ -35,7 +42,7 @@ import ygz.cutiepics.models.UploadInfo;
 
 /**
  * Created by yuyuxiao on 2018-03-20.
- *
+ * <p>
  * This class is used for savedPhoto activity
  */
 
@@ -74,7 +81,7 @@ public class SavePhotoActivity extends AppCompatActivity {
 
 
     public String saveImageToGallery(Bitmap saved) {
-        String result = MediaStore.Images.Media.insertImage(getContentResolver(), saved, "" , "");
+        String result = MediaStore.Images.Media.insertImage(getContentResolver(), saved, "", "");
         return result;
     }
 
@@ -86,6 +93,7 @@ public class SavePhotoActivity extends AppCompatActivity {
 
     public void sharePhoto(View view) {
         Uri photo = getImageUri(SavePhotoActivity.this, PhotoModel.getmPhoto());
+
         uploadImageAsyncTask uiat = new uploadImageAsyncTask();
         uiat.execute(photo);
         PhotoModel.getmPhoto().recycle();
@@ -95,15 +103,10 @@ public class SavePhotoActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Uri... uris) {
             Uri filePath = uris[0];
-            if(filePath != null) {
-                Log.d("fileName", getFileName(filePath));
-
-
-                Random generator = new Random();
-                int n = Integer.MAX_VALUE;
-                n = generator.nextInt(n);
-                String fname = "Image" + n;
+            if (filePath != null) {
+                String fname = getFileName(filePath);
                 fileRef = storageReference.child(fname);
+
 
                 fileRef.putFile(filePath)
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -120,15 +123,15 @@ public class SavePhotoActivity extends AppCompatActivity {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(SavePhotoActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SavePhotoActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         })
                         .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                         .getTotalByteCount());
-                                progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                                progressDialog.setMessage("Uploaded " + (int) progress + "%");
 
                             }
                         });
