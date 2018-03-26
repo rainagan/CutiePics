@@ -1,6 +1,9 @@
 package ygz.cutiepics;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -17,12 +20,15 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -32,6 +38,8 @@ import android.view.View.OnTouchListener;
 import java.io.File;
 import java.util.ArrayList;
 
+import ygz.cutiepics.models.CustomEdittext;
+import ygz.cutiepics.models.MyDragListener;
 import ygz.cutiepics.models.PhotoModel;
 import ygz.cutiepics.models.StickerObject;
 
@@ -43,7 +51,11 @@ public class StickerActivity extends Activity {
     private ImageView img;
     private PopupWindow pw;
     private int add_pos = -1;
-    private String mCurrentPath;
+    private RelativeLayout mMainLayout;
+
+    private int imgHeight, imgWidth, imgLeft, imgTop;
+
+    private RelativeLayout.LayoutParams params;
 //    private ProductViewHolder ProductViewHolder;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -60,6 +72,7 @@ public class StickerActivity extends Activity {
                 case R.id.nav_label:
                     return true;
                 case R.id.nav_text:
+                    showText();
                     return true;
             }
             return false;
@@ -78,6 +91,21 @@ public class StickerActivity extends Activity {
         img.setImageURI(uriFromPath);
         */
         img.setImageURI(PhotoModel.getmUri());
+        img.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            public void onGlobalLayout() {
+                imgHeight = img.getHeight();
+                imgWidth = img.getWidth();
+                imgLeft = img.getLeft();
+                imgTop = img.getTop();
+
+                //don't forget to remove the listener to prevent being called again by future layout events:
+                img.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
+        mMainLayout = findViewById(R.id.sticker_layout);
+        mMainLayout.setOnDragListener(new MyDragListener());
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.sticker_navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
@@ -120,111 +148,149 @@ public class StickerActivity extends Activity {
         );
         */
     }
-/*
-    private final class TouchListener implements OnTouchListener {
-        private PointF startPoint = new PointF();
-        private Matrix matrix = new Matrix();
-        private Matrix currentMatrix = new Matrix();
-        private int mode = 0;
-        private static final int DRAG = 1;
-        private static final int ZOOM = 2;
-        private float startDis;
-        private PointF midPoint;
-        private float left;
-        private float top;
-        private float right;
-        private float bottom;
-        Rect rect;
 
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_DOWN:
-                    mode = DRAG;
-                    currentMatrix.set(img.getImageMatrix());
-                    startPoint.set(event.getX(), event.getY());
+    @SuppressLint("ResourceAsColor")
+    private void showText() {
 
-                    float[] values = new float[9];
-                    currentMatrix.getValues(values);
+        CustomEdittext et = new CustomEdittext(StickerActivity.this);
 
-                    rect = ((ImageView)v).getDrawable().getBounds();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-                    left = values[Matrix.MTRANS_X];
-                    top = values[Matrix.MTRANS_Y];
-                    right = left + rect.width() * values[Matrix.MSCALE_X];
-                    bottom = top + rect.height() * values[Matrix.MSCALE_Y];
+        //You could adjust the position
+        params.topMargin = imgHeight / 2 + imgTop;
+        params.leftMargin = imgWidth / 2 + imgLeft;
+        mMainLayout.addView(et, params);
+        et.requestFocus();
+        et.setTextColor(R.color.colorWhite);
 
-                    break;
+        et.setOnLongClickListener(new MyLongClickListner());
+    }
 
-                case MotionEvent.ACTION_MOVE:
-                    if (mode == DRAG) {
-                        float dx = event.getX() - startPoint.x;
-                        float dy = event.getY() - startPoint.y;
-                        matrix.set(currentMatrix);
+    public class MyLongClickListner implements View.OnLongClickListener {
 
-                        if(right - left < v.getWidth()) {
-                            dx = 0;
-                        } else if (left + dx > 0 && dx > 0)
-                            dx = -left;
-                        else if (right + dx < v.getRight() && dx < 0)
-                            dx =  v.getRight() - right;
+        @Override
+        public boolean onLongClick(View v)
+        {
 
+            ClipData dragdata = ClipData.newPlainText("","");
 
+            View.DragShadowBuilder shdwbldr = new View.DragShadowBuilder(v);
 
-                        if(bottom - top < v.getHeight()) {
-                            dy =  0;
-                        }else if (top + dy > 0 && dy > 0)
-                            dy = -top;
-                        else if (bottom + dy < v.getBottom() && dy < 0)
-                            dy = v.getBottom() - bottom;
+            v.startDrag(dragdata, shdwbldr, v, 0);
+            v.setVisibility(View.INVISIBLE);
 
-                        matrix.postTranslate(dx, dy);
-
-                    } else if (mode == ZOOM) {
-                        float endDis = distance(event);
-                        if (endDis > 10f) {
-                            float scale = endDis / startDis;
-                            matrix.set(currentMatrix);
-                            matrix.postScale(scale, scale, midPoint.x, midPoint.y);
-                        }
-                    }
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_POINTER_UP:
-                    mode = 0;
-                    break;
-
-                case MotionEvent.ACTION_POINTER_DOWN:
-                    mode = ZOOM;
-                    startDis = distance(event);
-                    if (startDis > 10f) {
-                        midPoint = mid(event);
-                        currentMatrix.set(img.getImageMatrix());
-                    }
-                    break;
-            }
-            img.setImageMatrix(matrix);
             return true;
         }
 
     }
 
 
-    public static float distance(MotionEvent event) {
-        float dx = event.getX(1) - event.getX(0);
-        float dy = event.getY(1) - event.getY(0);
-        return (float)Math.sqrt(dx * dx + dy * dy);
-        //return FloatMath.sqrt(dx * dx + dy * dy); not work with current API
-    }
+    /*
+        private final class TouchListener implements OnTouchListener {
+            private PointF startPoint = new PointF();
+            private Matrix matrix = new Matrix();
+            private Matrix currentMatrix = new Matrix();
+            private int mode = 0;
+            private static final int DRAG = 1;
+            private static final int ZOOM = 2;
+            private float startDis;
+            private PointF midPoint;
+            private float left;
+            private float top;
+            private float right;
+            private float bottom;
+            Rect rect;
+
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        mode = DRAG;
+                        currentMatrix.set(img.getImageMatrix());
+                        startPoint.set(event.getX(), event.getY());
+
+                        float[] values = new float[9];
+                        currentMatrix.getValues(values);
+
+                        rect = ((ImageView)v).getDrawable().getBounds();
+
+                        left = values[Matrix.MTRANS_X];
+                        top = values[Matrix.MTRANS_Y];
+                        right = left + rect.width() * values[Matrix.MSCALE_X];
+                        bottom = top + rect.height() * values[Matrix.MSCALE_Y];
+
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (mode == DRAG) {
+                            float dx = event.getX() - startPoint.x;
+                            float dy = event.getY() - startPoint.y;
+                            matrix.set(currentMatrix);
+
+                            if(right - left < v.getWidth()) {
+                                dx = 0;
+                            } else if (left + dx > 0 && dx > 0)
+                                dx = -left;
+                            else if (right + dx < v.getRight() && dx < 0)
+                                dx =  v.getRight() - right;
 
 
-    public static PointF mid(MotionEvent event) {
-        float midX = (event.getX(1) + event.getX(0)) / 2;
-        float midY = (event.getY(1) + event.getY(0)) / 2;
-        return new PointF(midX, midY);
-    }
 
-*/
+                            if(bottom - top < v.getHeight()) {
+                                dy =  0;
+                            }else if (top + dy > 0 && dy > 0)
+                                dy = -top;
+                            else if (bottom + dy < v.getBottom() && dy < 0)
+                                dy = v.getBottom() - bottom;
+
+                            matrix.postTranslate(dx, dy);
+
+                        } else if (mode == ZOOM) {
+                            float endDis = distance(event);
+                            if (endDis > 10f) {
+                                float scale = endDis / startDis;
+                                matrix.set(currentMatrix);
+                                matrix.postScale(scale, scale, midPoint.x, midPoint.y);
+                            }
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_POINTER_UP:
+                        mode = 0;
+                        break;
+
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        mode = ZOOM;
+                        startDis = distance(event);
+                        if (startDis > 10f) {
+                            midPoint = mid(event);
+                            currentMatrix.set(img.getImageMatrix());
+                        }
+                        break;
+                }
+                img.setImageMatrix(matrix);
+                return true;
+            }
+
+        }
+
+
+        public static float distance(MotionEvent event) {
+            float dx = event.getX(1) - event.getX(0);
+            float dy = event.getY(1) - event.getY(0);
+            return (float)Math.sqrt(dx * dx + dy * dy);
+            //return FloatMath.sqrt(dx * dx + dy * dy); not work with current API
+        }
+
+
+        public static PointF mid(MotionEvent event) {
+            float midX = (event.getX(1) + event.getX(0)) / 2;
+            float midY = (event.getY(1) + event.getY(0)) / 2;
+            return new PointF(midX, midY);
+        }
+
+    */
+
     private void showPopupWindow() {
         View view = LayoutInflater.from(StickerActivity.this).inflate(R.layout.sticker_popup, null);
         pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 480);
@@ -254,11 +320,11 @@ public class StickerActivity extends Activity {
                         ImageView emoji_IV = pvh.getEmoji();
                         Bitmap emoji_Bitmap = ((BitmapDrawable) emoji_IV.getDrawable()).getBitmap();
                         Bitmap emoji_copy_Bitmap = emoji_Bitmap.copy(emoji_Bitmap.getConfig(), true);
-                        Bitmap background_Bitmap = ((BitmapDrawable)img.getDrawable()).getBitmap();
-                        Bmp emoji_copy_Bmp = new Bmp (emoji_copy_Bitmap);
+                        Bitmap background_Bitmap = ((BitmapDrawable) img.getDrawable()).getBitmap();
+                        Bmp emoji_copy_Bmp = new Bmp(emoji_copy_Bitmap);
 
 
-                        final DrawEmoji drawemoji =new DrawEmoji(getApplicationContext(), emoji_copy_Bmp, background_Bitmap);
+                        final DrawEmoji drawemoji = new DrawEmoji(getApplicationContext(), emoji_copy_Bmp, background_Bitmap);
                         drawemoji.setOnTouchListener(new OnTouchListener() {
                             @Override
                             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -271,7 +337,7 @@ public class StickerActivity extends Activity {
                         //ImageView emoji_copy =(ImageView)findViewById(R.id.ivImage);
                         //emoji_copy.setImageBitmap(bmp2);
 
-                        RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.sticker_layout);
+                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.sticker_layout);
 
                         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -301,15 +367,15 @@ public class StickerActivity extends Activity {
                     }
 
                     @Override
-                    public void onLongItemClick(View view, int position) {}
+                    public void onLongItemClick(View view, int position) {
+                    }
                 })
         );
     }
 
 
     // This is a helper function copied from on line
-    public Bitmap resize(Bitmap bm, int w, int h)
-    {
+    public Bitmap resize(Bitmap bm, int w, int h) {
 
         Bitmap BitmapOrg = bm;
 
@@ -932,6 +998,12 @@ public class StickerActivity extends Activity {
         */
         return featuredProducts;
     }
+
+    public void saveImg(View view) {
+        Intent intent = new Intent(StickerActivity.this, SavePhotoActivity.class);
+        startActivity(intent);
+    }
+
 
     @Override
     protected void onStop() {
