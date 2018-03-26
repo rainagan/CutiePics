@@ -2,11 +2,13 @@ package ygz.cutiepics;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -32,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 import android.view.View.OnTouchListener;
 
@@ -50,14 +53,28 @@ import ygz.cutiepics.models.StickerObject;
 public class StickerActivity extends Activity {
     private ImageView img;
     private PopupWindow pw;
+    private SeekBar seekBar;
+    private float prog;
     private int add_pos = -1;
+
+    private String mCurrentPath;
+    private Bitmap origin_bitmap; // current bitmap
+
     private RelativeLayout mMainLayout;
 
     private int imgHeight, imgWidth, imgLeft, imgTop;
     private ArrayList<CustomEdittext> texts;
 
     private RelativeLayout.LayoutParams params;
+
 //    private ProductViewHolder ProductViewHolder;
+    private Canvas current;
+    private Bitmap emoji;
+    private int img_w;
+    private int img_h;
+    private int screen_w;
+    private int screen_y;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -114,43 +131,48 @@ public class StickerActivity extends Activity {
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        /*
-        final RecyclerView rv = (RecyclerView) findViewById(R.id.pop_sticker);
-        GridLayoutManager mGrid = new GridLayoutManager(this, 8);
-        rv.setLayoutManager(mGrid);
-        rv.setHasFixedSize(true);
-        rv.setItemViewCacheSize(32);
-        rv.setDrawingCacheEnabled(true);
-        rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        rv.setNestedScrollingEnabled(false);
-        StickerAdapter mAdapter = new StickerAdapter(StickerActivity.this, getProductTestData());
-        rv.setAdapter(mAdapter);
-        rv.addOnItemTouchListener(
-                new RecyclerItemClickListener(this, rv ,new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        if(position != RecyclerView.NO_POSITION){
-                            FrameLayout stickerPhoto = (FrameLayout) findViewById(R.id.stickerPhoto);
+        seekBar = findViewById(R.id.scaler);
+        seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
 
-                            ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
-                            ImageView temp = pvh.getEmoji();
-                            Drawable drawable = temp.getDrawable();
 
-                            ImageView image = new ImageView(StickerActivity.this);
-                            LinearLayout.LayoutParams centerParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                            centerParams.gravity=Gravity.CENTER;
-                            image.setLayoutParams(centerParams);
-                            image.setBackground(drawable);
-                            stickerPhoto.addView(image);
-                        }
-                    }
+        BitmapDrawable drawable_origin = (BitmapDrawable) img.getDrawable();
+        origin_bitmap = drawable_origin.getBitmap();
 
-                    @Override public void onLongItemClick(View view, int position) {
-                        // do whatever
-                    }
-                })
-        );
-        */
+
+        img.setOnTouchListener(new OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (emoji == null) {
+                    return false;
+                }
+
+                float x = event.getX();
+                float y = event.getY();
+
+                Log.d("Debug", "Touch location is x: "+x+" and y: "+y);
+
+                Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
+
+                //current = Bitmap.createBitmap((int) width, (int) height,Bitmap.Config.ARGB_8888);
+                current = new Canvas(new_bitmap);
+                Paint paint = new Paint();
+
+                x = (float) dip2px(img.getContext(), x)*2;
+                y = (float) dip2px(img.getContext(), y)*2;
+                current.drawBitmap(emoji, x - emoji.getWidth()/2, y-emoji.getHeight()/2, null);
+
+                //Log.d("Debug", "Size of canvas is x: "+current.getWidth()+" and y: "+current.getHeight());
+                Log.d("Debug", "Real Location of emoji is x: "+x+" and y: "+y);
+                //Log.d("Debug", "Size of screen is x: "+screen_w+" and y: "+screen_y);
+                img.setImageBitmap(new_bitmap);
+                PhotoModel.setmPhoto(new_bitmap);
+                return true;
+            }
+        });
+
     }
+
 
     @SuppressLint("ResourceAsColor")
     private void showText() {
@@ -190,96 +212,40 @@ public class StickerActivity extends Activity {
 
     }
 
+    public static int dip2px(Context context, float dipValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
+    }
 
-    /*
-        private final class TouchListener implements OnTouchListener {
-            private PointF startPoint = new PointF();
-            private Matrix matrix = new Matrix();
-            private Matrix currentMatrix = new Matrix();
-            private int mode = 0;
-            private static final int DRAG = 1;
-            private static final int ZOOM = 2;
-            private float startDis;
-            private PointF midPoint;
-            private float left;
-            private float top;
-            private float right;
-            private float bottom;
-            Rect rect;
-
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_DOWN:
-                        mode = DRAG;
-                        currentMatrix.set(img.getImageMatrix());
-                        startPoint.set(event.getX(), event.getY());
-
-                        float[] values = new float[9];
-                        currentMatrix.getValues(values);
-
-                        rect = ((ImageView)v).getDrawable().getBounds();
-
-                        left = values[Matrix.MTRANS_X];
-                        top = values[Matrix.MTRANS_Y];
-                        right = left + rect.width() * values[Matrix.MSCALE_X];
-                        bottom = top + rect.height() * values[Matrix.MSCALE_Y];
-
-                        break;
-
-                    case MotionEvent.ACTION_MOVE:
-                        if (mode == DRAG) {
-                            float dx = event.getX() - startPoint.x;
-                            float dy = event.getY() - startPoint.y;
-                            matrix.set(currentMatrix);
-
-                            if(right - left < v.getWidth()) {
-                                dx = 0;
-                            } else if (left + dx > 0 && dx > 0)
-                                dx = -left;
-                            else if (right + dx < v.getRight() && dx < 0)
-                                dx =  v.getRight() - right;
-
-
-
-                            if(bottom - top < v.getHeight()) {
-                                dy =  0;
-                            }else if (top + dy > 0 && dy > 0)
-                                dy = -top;
-                            else if (bottom + dy < v.getBottom() && dy < 0)
-                                dy = v.getBottom() - bottom;
-
-                            matrix.postTranslate(dx, dy);
-
-                        } else if (mode == ZOOM) {
-                            float endDis = distance(event);
-                            if (endDis > 10f) {
-                                float scale = endDis / startDis;
-                                matrix.set(currentMatrix);
-                                matrix.postScale(scale, scale, midPoint.x, midPoint.y);
-                            }
-                        }
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_POINTER_UP:
-                        mode = 0;
-                        break;
-
-                    case MotionEvent.ACTION_POINTER_DOWN:
-                        mode = ZOOM;
-                        startDis = distance(event);
-                        if (startDis > 10f) {
-                            midPoint = mid(event);
-                            currentMatrix.set(img.getImageMatrix());
-                        }
-                        break;
-                }
-                img.setImageMatrix(matrix);
-                return true;
-            }
-
+    SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
+            prog = progress;
+            // TODO: draw the new bitmap
         }
 
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            // when the user first touches the seekbar
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            // when the user last touches the seekbar
+            Toast.makeText(StickerActivity.this, "Exposure " + Float.toString(prog), Toast.LENGTH_SHORT).show();
+
+            /*
+            Drawable saved_drawable = img.getDrawable();
+            int width = saved_drawable.getIntrinsicWidth();
+            int height = saved_drawable.getIntrinsicHeight();
+
+            Bitmap saved_bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            saved_drawable.draw(new Canvas(saved_bitmap));
+
+            PhotoModel.setmPhoto(saved_bitmap);
+            */
+        }
+    };
 
         public static float distance(MotionEvent event) {
             float dx = event.getX(1) - event.getX(0);
@@ -295,7 +261,6 @@ public class StickerActivity extends Activity {
             return new PointF(midX, midY);
         }
 
-    */
 
     private void showPopupWindow() {
         View view = LayoutInflater.from(StickerActivity.this).inflate(R.layout.sticker_popup, null);
@@ -322,54 +287,30 @@ public class StickerActivity extends Activity {
                     public void onItemClick(View view, int position) {
                         ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
 
+
                         //copy image from emoji to upper screen
                         ImageView emoji_IV = pvh.getEmoji();
-                        Bitmap emoji_Bitmap = ((BitmapDrawable) emoji_IV.getDrawable()).getBitmap();
-                        Bitmap emoji_copy_Bitmap = emoji_Bitmap.copy(emoji_Bitmap.getConfig(), true);
-                        Bitmap background_Bitmap = ((BitmapDrawable) img.getDrawable()).getBitmap();
-                        Bmp emoji_copy_Bmp = new Bmp(emoji_copy_Bitmap);
 
+                        emoji = ((BitmapDrawable) emoji_IV.getDrawable()).getBitmap();
+                        Log.d("Debug", "Size of emoji is w: " + emoji.getWidth() + " and h: " + emoji.getHeight());
+                        //Bitmap emoji_copy_Bitmap = emoji_Bitmap.copy(emoji_Bitmap.getConfig(), true);
 
-                        final DrawEmoji drawemoji = new DrawEmoji(getApplicationContext(), emoji_copy_Bmp, background_Bitmap);
-                        drawemoji.setOnTouchListener(new OnTouchListener() {
-                            @Override
-                            public boolean onTouch(View view, MotionEvent motionEvent) {
-                                drawemoji.onTouchEvent(motionEvent);
-                                return true;
-                            }
-                        });
+                        Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
 
-                        //ImageView emoji_copy = new ImageView(getApplicationContext());
-                        //ImageView emoji_copy =(ImageView)findViewById(R.id.ivImage);
-                        //emoji_copy.setImageBitmap(bmp2);
+                        //current = Bitmap.createBitmap((int) width, (int) height,Bitmap.Config.ARGB_8888);
+                        current = new Canvas(new_bitmap);
+                        Paint paint = new Paint();
+                        current.drawBitmap(emoji, 300, 300, paint);
 
-                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.sticker_layout);
+                        img.setImageBitmap(new_bitmap);
+                        PhotoModel.setmPhoto(new_bitmap);
+                        img_w = current.getWidth();
+                        img_h = current.getHeight();
 
-                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                RelativeLayout.LayoutParams.WRAP_CONTENT
-                        );
+                        screen_w = img.getMeasuredHeight();
+                        screen_y = img.getMeasuredWidth();
 
-                        //layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                        //((ViewGroup)drawemoji.getParent()).removeView(drawemoji);
-                        relativeLayout.addView(drawemoji, layoutParams);
-                        //emoji_copy.setOnTouchListener(new TouchListener());
-
-                        //final ImageView iv = (ImageView) findViewById(R.id.ivImage);
-                        //iv.setImageBitmap(emoji_Bitmap);
-
-                        /*
-                        //Create a new image bitmap and attach a brand new canvas to it
-                        Bitmap tempBitmap = Bitmap.createBitmap(origin_bitmap.getWidth(), origin_bitmap.getHeight(), Bitmap.Config.RGB_565);
-                        Canvas tempCanvas = new Canvas(tempBitmap);
-                        //Draw the image bitmap into the canvas
-                        tempCanvas.drawBitmap(origin_bitmap, 0, 0, null);
-                        tempCanvas.drawBitmap(bmp2, 10, 10, null);
-                        //Attach the canvas to the ImageView
-                        img.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
-                        */
+                        pw.dismiss();
                     }
 
                     @Override
