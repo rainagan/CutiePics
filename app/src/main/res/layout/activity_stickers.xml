@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sticker_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/background_image"
+    android:orientation="vertical"
     tools:context=".StickerActivity">
 
     <Button
@@ -19,12 +19,12 @@
         android:onClick="saveImg"
         android:textSize="24sp" />
 
-    <android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="380dp"
         android:layout_width="380dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/save_photo"
         android:orientation="vertical">
 
         <ImageView

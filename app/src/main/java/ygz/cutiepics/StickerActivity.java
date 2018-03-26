@@ -63,6 +63,7 @@ public class StickerActivity extends Activity {
     private RelativeLayout mMainLayout;
 
     private int imgHeight, imgWidth, imgLeft, imgTop;
+    private ArrayList<CustomEdittext> texts;
 
     private RelativeLayout.LayoutParams params;
 
@@ -106,14 +107,6 @@ public class StickerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stickers);
         img = (ImageView) findViewById(R.id.ivImage);
-
-        /*
-        Bundle captured = getIntent().getExtras();
-        this.mCurrentPath = (String) captured.get("image");
-        Uri uriFromPath = Uri.fromFile(new File(mCurrentPath));
-        img.setImageURI(uriFromPath);
-        */
-
         img.setImageURI(PhotoModel.getmUri());
         img.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
@@ -128,8 +121,16 @@ public class StickerActivity extends Activity {
             }
         });
 
+        img.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+
+        texts = new ArrayList<>();
+
         mMainLayout = findViewById(R.id.sticker_layout);
-        mMainLayout.setOnDragListener(new MyDragListener());
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.sticker_navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
@@ -170,6 +171,7 @@ public class StickerActivity extends Activity {
 
     @SuppressLint("ResourceAsColor")
     private void showText() {
+        mMainLayout.setOnDragListener(new MyDragListener(imgHeight, imgWidth, imgLeft, imgTop));
 
         CustomEdittext et = new CustomEdittext(StickerActivity.this);
 
@@ -183,6 +185,8 @@ public class StickerActivity extends Activity {
         et.setTextColor(R.color.colorWhite);
 
         et.setOnLongClickListener(new MyLongClickListner());
+
+        texts.add(et);
     }
 
     public class MyLongClickListner implements View.OnLongClickListener {
@@ -975,8 +979,10 @@ public class StickerActivity extends Activity {
 
     @Override
     protected void onStop() {
-        pw.dismiss();
-        super.onStop();
+        if (pw!=null) {
+            pw.dismiss();
+            super.onStop();
+        }
     }
 }
 
