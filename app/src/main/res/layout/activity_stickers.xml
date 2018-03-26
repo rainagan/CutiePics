@@ -62,8 +62,8 @@
         android:layout_above="@+id/sticker_navigation"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="14dp"
-        android:max="100"
-        android:progress="50" />
+        android:max="360"
+        android:progress="180" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/sticker_navigation"

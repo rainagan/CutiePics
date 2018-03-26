@@ -53,8 +53,10 @@ import ygz.cutiepics.models.StickerObject;
 public class StickerActivity extends Activity {
     private ImageView img;
     private PopupWindow pw;
-    private SeekBar seekBar;
-    private int prog;
+    private SeekBar seekBar1;
+    private SeekBar seekBar2;
+    private int prog1;
+    private int prog2;
     private int add_pos = -1;
 
     private String mCurrentPath;
@@ -79,6 +81,7 @@ public class StickerActivity extends Activity {
     private float x;
     private float y;
     private float scaler;
+    private float rotate;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -136,10 +139,17 @@ public class StickerActivity extends Activity {
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        seekBar = findViewById(R.id.scaler);
-        seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
-        prog = 50;
-        scaler = (float) prog / 50;
+        seekBar1 = findViewById(R.id.scaler);
+        seekBar1.setOnSeekBarChangeListener(seekBarChangeListener1);
+
+        seekBar2 = findViewById(R.id.rotater);
+        seekBar2.setOnSeekBarChangeListener(seekBarChangeListener2);
+
+        prog1 = 50;
+        scaler = (float) prog1 / 50;
+
+        prog2 = 180;
+        rotate = (float) prog2 - 180;
 
         BitmapDrawable drawable_origin = (BitmapDrawable) img.getDrawable();
         origin_bitmap = drawable_origin.getBitmap();
@@ -212,11 +222,11 @@ public class StickerActivity extends Activity {
         return (int) (dipValue * scale + 0.5f);
     }
 
-    SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+    SeekBar.OnSeekBarChangeListener seekBarChangeListener1 = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
-            prog = progress;
-            scaler = prog / 50.f;
+            prog1 = progress;
+            scaler = prog1 / 50.f;
             drawView(false);
         }
 
@@ -228,27 +238,36 @@ public class StickerActivity extends Activity {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             // when the user last touches the seekbar
-            scaler = prog / 50.f;
-            Toast.makeText(StickerActivity.this, "Exposure " + Float.toString(scaler), Toast.LENGTH_SHORT).show();
+            scaler = prog1 / 50.f;
+            Toast.makeText(StickerActivity.this, "Scale " + Float.toString(scaler), Toast.LENGTH_SHORT).show();
             drawView(true);
         }
     };
 
-/*
-    public void drawView(boolean save) {
-        Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
 
-        //current = Bitmap.createBitmap((int) width, (int) height,Bitmap.Config.ARGB_8888);
-        current = new Canvas(new_bitmap);
-        //Paint paint = new Paint();
-        current.drawBitmap(emoji, x - emoji.getWidth()/2, y-emoji.getHeight()/2, null);
-        img.setImageBitmap(new_bitmap);
+    SeekBar.OnSeekBarChangeListener seekBarChangeListener2 = new SeekBar.OnSeekBarChangeListener() {
 
-        if (save) {
-            PhotoModel.setmPhoto(new_bitmap);
+        @Override
+        public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
+            prog2 = progress;
+            rotate = (float) prog2 - 180;
+            drawView(false);
         }
-    }
-*/
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            // when the user first touches the seekbar
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            // when the user last touches the seekbar
+            rotate = (float) prog2 - 180;
+            Toast.makeText(StickerActivity.this, "Rotate " + Float.toString(rotate), Toast.LENGTH_SHORT).show();
+            drawView(true);
+        }
+    };
+
     public void drawView(boolean save) {
         if (emoji == null) {
             return;
@@ -258,23 +277,18 @@ public class StickerActivity extends Activity {
 
 
         current = new Canvas(new_bitmap);
-        //current.save();
 
-        //current.drawBitmap(emoji, x - emoji.getWidth()/2, y-emoji.getHeight()/2, null);
-
-        Matrix matrix = new Matrix();
-        //matrix.setScale(1.0f * scaler, 1.0f * scaler);
-        //matrix.preRotate(45, (float) WIDTH / 2, (float) HEIGHT / 2);
-        matrix.postScale(scaler, scaler);
         int tempw = emoji.getWidth();
         int temph = emoji.getHeight();
+        Matrix matrix = new Matrix();
 
-        Log.d("Debug", "Scaler in drawView is "+scaler);
-        //Bitmap bmp2 = Bitmap.createBitmap(emoji, 0, 0,
-                //emoji.getWidth(), emoji.getHeight(), matrix, true);
+        matrix.postScale(scaler, scaler);
+        Bitmap tmp = Bitmap.createBitmap(emoji, 0, 0, tempw, temph, matrix, true);
+        matrix.preRotate(rotate, tmp.getWidth()/2, tmp.getHeight()/2);
+        tmp = null;
 
         Bitmap bmp2 = Bitmap.createBitmap(emoji, 0, 0, tempw, temph, matrix, true);
-        current.drawBitmap(bmp2, x - bmp2.getWidth()/2, y-bmp2.getHeight()/2, null);
+        current.drawBitmap(bmp2, x - bmp2.getWidth()/2, y - bmp2.getHeight()/2, null);
 
         img.setImageBitmap(new_bitmap);
 
@@ -343,33 +357,6 @@ public class StickerActivity extends Activity {
                     }
                 })
         );
-    }
-
-
-    // This is a helper function copied from on line
-    public Bitmap resize(Bitmap bm, int w, int h) {
-
-        Bitmap BitmapOrg = bm;
-
-        int width = BitmapOrg.getWidth();
-        int height = BitmapOrg.getHeight();
-        int newWidth = w;
-        int newHeight = h;
-
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // if you want to rotate the Bitmap
-        // matrix.postRotate(45);
-
-        // recreate the new Bitmap
-        Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
-                height, matrix, true);
-        return resizedBitmap;
-
     }
 
     private ArrayList<StickerObject> getProductTestData() {
@@ -982,6 +969,22 @@ public class StickerActivity extends Activity {
         if (pw!=null) {
             pw.dismiss();
             super.onStop();
+        }
+    }
+
+    protected void onDestroy() {
+        //android.os.Process.killProcess(android.os.Process.myPid());
+
+        super.onDestroy();
+        if(origin_bitmap != null)
+        {
+            origin_bitmap.recycle();
+            origin_bitmap=null;
+        }
+
+        if(emoji != null) {
+            emoji.recycle();
+            emoji = null;
         }
     }
 }
