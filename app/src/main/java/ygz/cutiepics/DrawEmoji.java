@@ -18,8 +18,12 @@ import ygz.cutiepics.models.PhotoModel;
  * Created by zhaofan on 2018-03-24.
  */
 
-class DrawEmoji extends View {
 
+//cutome DrawEmoji
+//Unused Libiary
+
+
+class DrawEmoji extends View {
     private Bitmap background;  // Store the latest canvas Bitmap
     private Bmp tempBitmap = null;
     //private Canvas canvas = new Canvas(canvasBitmap);
