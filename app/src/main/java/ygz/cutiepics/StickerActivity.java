@@ -1,6 +1,5 @@
 package ygz.cutiepics;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ClipData;
@@ -8,13 +7,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,14 +17,12 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -38,11 +31,9 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 import android.view.View.OnTouchListener;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import ygz.cutiepics.models.CustomEdittext;
-import ygz.cutiepics.models.MyDragListener;
 import ygz.cutiepics.models.PhotoModel;
 import ygz.cutiepics.models.StickerObject;
 
@@ -53,11 +44,11 @@ import ygz.cutiepics.models.StickerObject;
 public class StickerActivity extends Activity {
     private ImageView img;
     private PopupWindow pw;
-    private RecyclerView rv;
     private SeekBar seekBar1;
     private SeekBar seekBar2;
     private int prog1;
     private int prog2;
+    private EditText mEditText;     // for adding text to photo
 
     private Bitmap origin_bitmap; // current bitmap
 
@@ -66,7 +57,7 @@ public class StickerActivity extends Activity {
     private ArrayList<CustomEdittext> texts;
 
     private Canvas current;
-    private Bitmap emoji;
+    private Bitmap sticker;
 
     // some parameter for drawing the stickers
     private float x;
@@ -91,7 +82,12 @@ public class StickerActivity extends Activity {
                     showPopupWindow("tag");
                     return true;
                 case R.id.nav_text:
-//                    showText();
+                    // initialize a new EditText
+                    mEditText = new EditText(StickerActivity.this);
+                    mEditText.setText("Test");
+                    mEditText.setTextColor(getResources().getColor(R.color.colorWhite));
+
+                    drawView(true, "text");
                     return true;
             }
             return false;
@@ -102,26 +98,12 @@ public class StickerActivity extends Activity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stickers);
-        img = (ImageView) findViewById(R.id.ivImage);
+        img = findViewById(R.id.ivImage);
         img.setImageURI(PhotoModel.getmUri());
-//        img.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//
-//            public void onGlobalLayout() {
-//                imgHeight = img.getHeight();
-//                imgWidth = img.getWidth();
-//                imgLeft = img.getLeft();
-//                imgTop = img.getTop();
-//
-//                //don't forget to remove the listener to prevent being called again by future layout events:
-//                img.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//            }
-//        });
-
-//        texts = new ArrayList<>();
 
         mMainLayout = findViewById(R.id.sticker_layout);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.sticker_navigation);
+        BottomNavigationView navigation = findViewById(R.id.sticker_navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -130,6 +112,8 @@ public class StickerActivity extends Activity {
 
         seekBar2 = findViewById(R.id.rotater);
         seekBar2.setOnSeekBarChangeListener(seekBarChangeListener2);
+
+        updateUI();
 
         prog1 = 50;
         scaler = (float) prog1 / 50;
@@ -145,7 +129,7 @@ public class StickerActivity extends Activity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (emoji == null) {
+                if (sticker == null) {
                     return false;
                 }
 
@@ -157,33 +141,12 @@ public class StickerActivity extends Activity {
                 x = (float) dip2px(img.getContext(), tempx)*2;
                 y = (float) dip2px(img.getContext(), tempy)*2;
                 //current.drawBitmap(emoji, x - emoji.getWidth()/2, y-emoji.getHeight()/2, null);
-                drawView(true);
+                drawView(true, "sticker");
                 return true;
             }
         });
 
     }
-
-
-//    @SuppressLint("ResourceAsColor")
-//    private void showText() {
-//        mMainLayout.setOnDragListener(new MyDragListener(imgHeight, imgWidth, imgLeft, imgTop));
-//
-//        CustomEdittext et = new CustomEdittext(StickerActivity.this);
-//
-//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//
-//        //You could adjust the position
-//        params.topMargin = imgHeight / 2 + imgTop;
-//        params.leftMargin = imgWidth / 2 + imgLeft;
-//        mMainLayout.addView(et, params);
-//        et.requestFocus();
-//        et.setTextColor(R.color.colorWhite);
-//
-//        et.setOnLongClickListener(new MyLongClickListner());
-//
-//        texts.add(et);
-//    }
 
     public class MyLongClickListner implements View.OnLongClickListener {
 
@@ -213,7 +176,7 @@ public class StickerActivity extends Activity {
         public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
             prog1 = progress;
             scaler = prog1 / 50.f;
-            drawView(false);
+            drawView(false, "sticker");
         }
 
         @Override
@@ -226,10 +189,9 @@ public class StickerActivity extends Activity {
             // when the user last touches the seekbar
             scaler = prog1 / 50.f;
             Toast.makeText(StickerActivity.this, "Scale " + Float.toString(scaler), Toast.LENGTH_SHORT).show();
-            drawView(true);
+            drawView(true, "sticker");
         }
     };
-
 
     SeekBar.OnSeekBarChangeListener seekBarChangeListener2 = new SeekBar.OnSeekBarChangeListener() {
 
@@ -237,7 +199,7 @@ public class StickerActivity extends Activity {
         public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
             prog2 = progress;
             rotate = (float) prog2 - 180;
-            drawView(false);
+            drawView(false, "sticker");
         }
 
         @Override
@@ -250,36 +212,68 @@ public class StickerActivity extends Activity {
             // when the user last touches the seekbar
             rotate = (float) prog2 - 180;
             Toast.makeText(StickerActivity.this, "Rotate " + Float.toString(rotate), Toast.LENGTH_SHORT).show();
-            drawView(true);
+            drawView(true, "sticker");
         }
     };
 
-    public void drawView(boolean save) {
-        if (emoji == null) {
-            return;
-        }
+    public void drawView(boolean save, String type) {
+        if (type.equals("sticker")) {
+            if (sticker == null) {
+                return;
+            }
 
-        Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
+            Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
 
+            current = new Canvas(new_bitmap);
 
-        current = new Canvas(new_bitmap);
+            int tempw = sticker.getWidth();
+            int temph = sticker.getHeight();
+            Matrix matrix = new Matrix();
 
-        int tempw = emoji.getWidth();
-        int temph = emoji.getHeight();
-        Matrix matrix = new Matrix();
+            matrix.postScale(scaler, scaler);
+            Bitmap tmp = Bitmap.createBitmap(sticker, 0, 0, tempw, temph, matrix, true);
+            matrix.preRotate(rotate, tmp.getWidth() / 2, tmp.getHeight() / 2);
+            tmp = null;
 
-        matrix.postScale(scaler, scaler);
-        Bitmap tmp = Bitmap.createBitmap(emoji, 0, 0, tempw, temph, matrix, true);
-        matrix.preRotate(rotate, tmp.getWidth()/2, tmp.getHeight()/2);
-        tmp = null;
+            Bitmap bmp2 = Bitmap.createBitmap(sticker, 0, 0, tempw, temph, matrix, true);
+            current.drawBitmap(bmp2, x - bmp2.getWidth() / 2, y - bmp2.getHeight() / 2, null);
 
-        Bitmap bmp2 = Bitmap.createBitmap(emoji, 0, 0, tempw, temph, matrix, true);
-        current.drawBitmap(bmp2, x - bmp2.getWidth()/2, y - bmp2.getHeight()/2, null);
+            img.setImageBitmap(new_bitmap);
 
-        img.setImageBitmap(new_bitmap);
+            if (save) {
+                PhotoModel.setmPhoto(new_bitmap);
+            }
+        } else {
+            if (mEditText == null) {
+                return;
+            }
 
-        if (save) {
-            PhotoModel.setmPhoto(new_bitmap);
+            Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
+
+            current = new Canvas(new_bitmap);
+
+            mEditText.measure(0,0);
+            int tempw = mEditText.getMeasuredWidth();
+            int temph = mEditText.getMeasuredHeight();
+            Matrix matrix = new Matrix();
+
+            matrix.postScale(scaler, scaler);
+
+            // convert mEditText to bitmap
+            mEditText.setCursorVisible(false);
+            mEditText.buildDrawingCache();
+            Bitmap tmp = Bitmap.createBitmap(mEditText.getDrawingCache(), 0, 0, tempw, temph, matrix, true);
+            matrix.preRotate(rotate, tmp.getWidth() / 2, tmp.getHeight() / 2);
+            tmp = null;
+
+            Bitmap bmp2 = Bitmap.createBitmap(mEditText.getDrawingCache(), 0, 0, tempw, temph, matrix, true);
+            current.drawBitmap(bmp2, x - bmp2.getWidth() / 2, y - bmp2.getHeight() / 2, null);
+
+            img.setImageBitmap(new_bitmap);
+
+            if (save) {
+                PhotoModel.setmPhoto(new_bitmap);
+            }
         }
     }
 
@@ -329,20 +323,21 @@ public class StickerActivity extends Activity {
                 new RecyclerItemClickListener(this, rv, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        ProductViewHolder pvh = (ProductViewHolder) rv.findViewHolderForAdapterPosition(position);
+                        StickerViewHolder svh = (StickerViewHolder) rv.findViewHolderForAdapterPosition(position);
 
-
-                        //copy image from emoji to upper screen
-                        ImageView emoji_IV = pvh.getEmoji();
-                        emoji = ((BitmapDrawable) emoji_IV.getDrawable()).getBitmap();
+                        //copy image from sticker to upper screen
+                        ImageView sticker_IV = svh.getEmoji();
+                        sticker = ((BitmapDrawable) sticker_IV.getDrawable()).getBitmap();
 
                         Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
                         current = new Canvas(new_bitmap);
 
                         x = (float) 0.5 * current.getWidth();
                         y = (float) 0.5 * current.getHeight();
-                        drawView(true);
-                        Log.d("Debug", "Size of the sticker is w: "+emoji.getWidth()+" h: "+emoji.getHeight());
+                        drawView(true, "sticker");
+                        updateUI();
+
+                        Log.d("Debug", "Size of the sticker is w: "+sticker.getWidth()+" h: "+sticker.getHeight());
                         pw.dismiss();
                     }
 
@@ -990,9 +985,10 @@ public class StickerActivity extends Activity {
 
     @Override
     protected void onStop() {
+        super.onStop();
+
         if (pw!=null) {
             pw.dismiss();
-            super.onStop();
         }
     }
 
@@ -1006,9 +1002,19 @@ public class StickerActivity extends Activity {
             origin_bitmap=null;
         }
 
-        if(emoji != null) {
-            emoji.recycle();
-            emoji = null;
+        if(sticker != null) {
+            sticker.recycle();
+            sticker = null;
+        }
+    }
+
+    private void updateUI() {
+        if (sticker == null && mEditText == null) {
+            seekBar1.setVisibility(View.GONE);
+            seekBar2.setVisibility(View.GONE);
+        } else {
+            seekBar1.setVisibility(View.VISIBLE);
+            seekBar2.setVisibility(View.VISIBLE);
         }
     }
 }
