@@ -31,7 +31,7 @@ import ygz.cutiepics.models.PhotoModel;
 
 public class LayoutActivity extends Activity {
     private ImageView img;
-    private int picNum = 0;
+    //private int picNum = 0;
     private PopupWindow pw;
     private List<String> patharr = new ArrayList<>();
 
@@ -42,7 +42,7 @@ public class LayoutActivity extends Activity {
         img = (ImageView) findViewById(R.id.ivImage);
 
         patharr = Arrays.asList(PhotoModel.getPhotos());
-        picNum = patharr.size();
+        //picNum = patharr.size();
     }
 
     private Bitmap useLayout(int position) {
