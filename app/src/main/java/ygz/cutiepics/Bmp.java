@@ -14,19 +14,16 @@ class Bmp{
     float preY = 0;
     Bitmap pic = null;
 
-    //    	构造器
     public Bmp(Bitmap pic){
         this.pic = pic;
     }
 
-    //    	构造器
     public Bmp(Bitmap pic, float preX, float preY){
         this(pic);
         this.preX = preX + pic.getWidth();
         this.preY = preY + pic.getHeight();
     }
 
-    //    	return X and Y
     public float getXY(int i){
         if(i == 1){
             return this.preX;
@@ -37,9 +34,7 @@ class Bmp{
         return (Float) null;
     }
 
-    //    	getPicture
-    public Bitmap getPic()
-    {
+    public Bitmap getPic() {
         return this.pic;
     }
 }

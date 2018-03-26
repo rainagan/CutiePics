@@ -45,6 +45,7 @@ public class StickerActivity extends Activity {
     private int add_pos = -1;
     private String mCurrentPath;
 //    private ProductViewHolder ProductViewHolder;
+    //private Bitmap background_Bitmap;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -253,12 +254,24 @@ public class StickerActivity extends Activity {
                         //copy image from emoji to upper screen
                         ImageView emoji_IV = pvh.getEmoji();
                         Bitmap emoji_Bitmap = ((BitmapDrawable) emoji_IV.getDrawable()).getBitmap();
-                        Bitmap emoji_copy_Bitmap = emoji_Bitmap.copy(emoji_Bitmap.getConfig(), true);
-                        Bitmap background_Bitmap = ((BitmapDrawable)img.getDrawable()).getBitmap();
-                        Bmp emoji_copy_Bmp = new Bmp (emoji_copy_Bitmap);
 
+                        Bitmap emoji_copy_Bitmap = emoji_Bitmap.copy(emoji_Bitmap.getConfig(), true);
+
+                        Bitmap background_Bitmap = ((BitmapDrawable)img.getDrawable()).getBitmap();
+
+                        Bmp emoji_copy_Bmp = new Bmp (emoji_copy_Bitmap,100f, 100f);
+                        //Log.d("Debug", "background.getWidth is " + background_Bitmap.getWidth());
+                        //Log.d("Debug", "background.getHeight is " + background_Bitmap.getHeight());
+
+                        background_Bitmap = Bitmap.createBitmap(background_Bitmap.getWidth(), background_Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+                        //final Canvas tempCanvas = new Canvas(background_Bitmap);
+
+
+                        //View current_view = getApplicationContext();
+                        //setContentView(new DrawEmoji(getApplicationContext()));
 
                         final DrawEmoji drawemoji =new DrawEmoji(getApplicationContext(), emoji_copy_Bmp, background_Bitmap);
+                        //setContentView(drawemoji);
                         drawemoji.setOnTouchListener(new OnTouchListener() {
                             @Override
                             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -270,6 +283,7 @@ public class StickerActivity extends Activity {
                         //ImageView emoji_copy = new ImageView(getApplicationContext());
                         //ImageView emoji_copy =(ImageView)findViewById(R.id.ivImage);
                         //emoji_copy.setImageBitmap(bmp2);
+
 
                         RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.sticker_layout);
 
