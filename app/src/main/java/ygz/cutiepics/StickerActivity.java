@@ -314,7 +314,7 @@ public class StickerActivity extends Activity {
 
     private void showPopupWindow() {
         View view = LayoutInflater.from(StickerActivity.this).inflate(R.layout.sticker_popup, null);
-        pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 480);
+        pw = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 240);
         pw.setFocusable(true);
         pw.setBackgroundDrawable(new ColorDrawable(0xffffffff));
         pw.setOutsideTouchable(true);
