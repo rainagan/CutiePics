@@ -9,11 +9,11 @@ import android.widget.ImageView;
  * Created by Raina on 2018-02-01.
  */
 
-public class ProductViewHolder extends RecyclerView.ViewHolder {
+public class StickerViewHolder extends RecyclerView.ViewHolder {
     public  ImageView emoji;
     private boolean added;
 
-    public ProductViewHolder(View itemView) {
+    public StickerViewHolder(View itemView) {
         super(itemView);
         emoji = (ImageView) itemView.findViewById(R.id.emoji);
     }
