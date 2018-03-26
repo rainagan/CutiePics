@@ -7,8 +7,13 @@ import android.graphics.Matrix;
  * Created by zhaofan on 2018-03-24.
  */
 
+    //cutome BMP with preX and preX
+    //Unused Libiary
+
     //pic:the Bitmap to draw
-    //preX,preY: the X and Y
+    //preX,preX: the X and Y
+
+
 class Bmp{
     float preX = 0;
     float preY = 0;
