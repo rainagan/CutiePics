@@ -156,6 +156,7 @@ public class FrameActivity extends Activity {
         featuredFrame.add(new FrameObject("frame8"));
         featuredFrame.add(new FrameObject("frame10"));
         featuredFrame.add(new FrameObject("frame9"));
+        featuredFrame.add(new FrameObject("frame11"));
         return featuredFrame;
     }
 
