@@ -116,13 +116,6 @@ public class StickerActivity extends Activity {
             }
         });
 
-        img.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return false;
-            }
-        });
-
         texts = new ArrayList<>();
 
         mMainLayout = findViewById(R.id.sticker_layout);
