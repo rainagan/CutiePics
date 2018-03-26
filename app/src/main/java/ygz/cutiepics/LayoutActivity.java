@@ -55,6 +55,7 @@ public class LayoutActivity extends Activity {
         ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
         featuredFrame.add(new FrameObject("layout2_1"));
         featuredFrame.add(new FrameObject("layout2_2"));
+        featuredFrame.add(new FrameObject("layout2_3"));
 
         return featuredFrame;
     }
@@ -65,12 +66,15 @@ public class LayoutActivity extends Activity {
         featuredFrame.add(new FrameObject("layout3_2"));
         featuredFrame.add(new FrameObject("layout3_3"));
         featuredFrame.add(new FrameObject("layout3_4"));
+        featuredFrame.add(new FrameObject("layout3_5"));
+        featuredFrame.add(new FrameObject("layout3_6"));
         return featuredFrame;
     }
 
     private ArrayList<FrameObject> getFrameTestData4() {
         ArrayList<FrameObject> featuredFrame = new ArrayList<FrameObject>();
         featuredFrame.add(new FrameObject("layout4_1"));
+        featuredFrame.add(new FrameObject("layout4_2"));
 
         return featuredFrame;
     }
