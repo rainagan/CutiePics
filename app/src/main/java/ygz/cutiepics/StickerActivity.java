@@ -54,7 +54,7 @@ public class StickerActivity extends Activity {
     private ImageView img;
     private PopupWindow pw;
     private SeekBar seekBar;
-    private float prog;
+    private int prog;
     private int add_pos = -1;
 
     private String mCurrentPath;
@@ -69,10 +69,15 @@ public class StickerActivity extends Activity {
 //    private ProductViewHolder ProductViewHolder;
     private Canvas current;
     private Bitmap emoji;
-    private int img_w;
-    private int img_h;
-    private int screen_w;
-    private int screen_y;
+    //private int img_w;
+    //private int img_h;
+    //private int screen_w;
+    //private int screen_y;
+
+    // some parameter for drawing the stickers
+    private float x;
+    private float y;
+    private float scaler;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -132,7 +137,8 @@ public class StickerActivity extends Activity {
 
         seekBar = findViewById(R.id.scaler);
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
-
+        prog = 50;
+        scaler = (float) prog / 50;
 
         BitmapDrawable drawable_origin = (BitmapDrawable) img.getDrawable();
         origin_bitmap = drawable_origin.getBitmap();
@@ -146,26 +152,15 @@ public class StickerActivity extends Activity {
                     return false;
                 }
 
-                float x = event.getX();
-                float y = event.getY();
+                float tempx = event.getX();
+                float tempy = event.getY();
 
                 Log.d("Debug", "Touch location is x: "+x+" and y: "+y);
 
-                Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
-
-                //current = Bitmap.createBitmap((int) width, (int) height,Bitmap.Config.ARGB_8888);
-                current = new Canvas(new_bitmap);
-                Paint paint = new Paint();
-
-                x = (float) dip2px(img.getContext(), x)*2;
-                y = (float) dip2px(img.getContext(), y)*2;
-                current.drawBitmap(emoji, x - emoji.getWidth()/2, y-emoji.getHeight()/2, null);
-
-                //Log.d("Debug", "Size of canvas is x: "+current.getWidth()+" and y: "+current.getHeight());
-                Log.d("Debug", "Real Location of emoji is x: "+x+" and y: "+y);
-                //Log.d("Debug", "Size of screen is x: "+screen_w+" and y: "+screen_y);
-                img.setImageBitmap(new_bitmap);
-                PhotoModel.setmPhoto(new_bitmap);
+                x = (float) dip2px(img.getContext(), tempx)*2;
+                y = (float) dip2px(img.getContext(), tempy)*2;
+                //current.drawBitmap(emoji, x - emoji.getWidth()/2, y-emoji.getHeight()/2, null);
+                drawView(true);
                 return true;
             }
         });
@@ -217,7 +212,8 @@ public class StickerActivity extends Activity {
         @Override
         public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
             prog = progress;
-            // TODO: draw the new bitmap
+            scaler = prog / 50.f;
+            drawView(false);
         }
 
         @Override
@@ -228,20 +224,60 @@ public class StickerActivity extends Activity {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             // when the user last touches the seekbar
-            Toast.makeText(StickerActivity.this, "Exposure " + Float.toString(prog), Toast.LENGTH_SHORT).show();
-
-            /*
-            Drawable saved_drawable = img.getDrawable();
-            int width = saved_drawable.getIntrinsicWidth();
-            int height = saved_drawable.getIntrinsicHeight();
-
-            Bitmap saved_bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            saved_drawable.draw(new Canvas(saved_bitmap));
-
-            PhotoModel.setmPhoto(saved_bitmap);
-            */
+            scaler = prog / 50.f;
+            Toast.makeText(StickerActivity.this, "Exposure " + Float.toString(scaler), Toast.LENGTH_SHORT).show();
+            drawView(true);
         }
     };
+
+/*
+    public void drawView(boolean save) {
+        Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
+
+        //current = Bitmap.createBitmap((int) width, (int) height,Bitmap.Config.ARGB_8888);
+        current = new Canvas(new_bitmap);
+        //Paint paint = new Paint();
+        current.drawBitmap(emoji, x - emoji.getWidth()/2, y-emoji.getHeight()/2, null);
+        img.setImageBitmap(new_bitmap);
+
+        if (save) {
+            PhotoModel.setmPhoto(new_bitmap);
+        }
+    }
+*/
+    public void drawView(boolean save) {
+        if (emoji == null) {
+            return;
+        }
+
+        Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
+
+
+        current = new Canvas(new_bitmap);
+        //current.save();
+
+        //current.drawBitmap(emoji, x - emoji.getWidth()/2, y-emoji.getHeight()/2, null);
+
+        Matrix matrix = new Matrix();
+        //matrix.setScale(1.0f * scaler, 1.0f * scaler);
+        //matrix.preRotate(45, (float) WIDTH / 2, (float) HEIGHT / 2);
+        matrix.postScale(scaler, scaler);
+        int tempw = emoji.getWidth();
+        int temph = emoji.getHeight();
+
+        Log.d("Debug", "Scaler in drawView is "+scaler);
+        //Bitmap bmp2 = Bitmap.createBitmap(emoji, 0, 0,
+                //emoji.getWidth(), emoji.getHeight(), matrix, true);
+
+        Bitmap bmp2 = Bitmap.createBitmap(emoji, 0, 0, tempw, temph, matrix, true);
+        current.drawBitmap(bmp2, x - bmp2.getWidth()/2, y-bmp2.getHeight()/2, null);
+
+        img.setImageBitmap(new_bitmap);
+
+        if (save) {
+            PhotoModel.setmPhoto(new_bitmap);
+        }
+    }
 
         public static float distance(MotionEvent event) {
             float dx = event.getX(1) - event.getX(0);
@@ -286,26 +322,15 @@ public class StickerActivity extends Activity {
 
                         //copy image from emoji to upper screen
                         ImageView emoji_IV = pvh.getEmoji();
-
                         emoji = ((BitmapDrawable) emoji_IV.getDrawable()).getBitmap();
-                        Log.d("Debug", "Size of emoji is w: " + emoji.getWidth() + " and h: " + emoji.getHeight());
-                        //Bitmap emoji_copy_Bitmap = emoji_Bitmap.copy(emoji_Bitmap.getConfig(), true);
 
                         Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
-
-                        //current = Bitmap.createBitmap((int) width, (int) height,Bitmap.Config.ARGB_8888);
                         current = new Canvas(new_bitmap);
-                        Paint paint = new Paint();
-                        current.drawBitmap(emoji, 300, 300, paint);
 
-                        img.setImageBitmap(new_bitmap);
-                        PhotoModel.setmPhoto(new_bitmap);
-                        img_w = current.getWidth();
-                        img_h = current.getHeight();
-
-                        screen_w = img.getMeasuredHeight();
-                        screen_y = img.getMeasuredWidth();
-
+                        x = (float) 0.5 * current.getWidth();
+                        y = (float) 0.5 * current.getHeight();
+                        drawView(true);
+                        Log.d("Debug", "Size of the sticker is w: "+emoji.getWidth()+" h: "+emoji.getHeight());
                         pw.dismiss();
                     }
 
