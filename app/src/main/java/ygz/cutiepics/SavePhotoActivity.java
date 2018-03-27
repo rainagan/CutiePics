@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +61,8 @@ public class SavePhotoActivity extends AppCompatActivity {
     private StorageReference fileRef;
     private ProgressDialog progressDialog;
 
+    private Button back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +78,16 @@ public class SavePhotoActivity extends AppCompatActivity {
         storageReference = storage.getReference().child("images");
 
         progressDialog = new ProgressDialog(this);
+
+//        back = findViewById(R.id.save_photo);
+//        back.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(SavePhotoActivity.this, MainActivity.class);
+//                startActivity(intent);
+//                PhotoModel.getmPhoto().recycle();
+//            }
+//        });
     }
 
     public void onStart() {

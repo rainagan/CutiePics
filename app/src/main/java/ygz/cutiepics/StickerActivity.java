@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -123,6 +124,13 @@ public class StickerActivity extends Activity {
 
         seekBar2 = findViewById(R.id.rotater);
         seekBar2.setOnSeekBarChangeListener(seekBarChangeListener2);
+
+        TextView sLabel = findViewById(R.id.scaler_label);
+        TextView rLabel = findViewById(R.id.rotater_label);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "unkempt.ttf");
+        sLabel.setTypeface(typeface);
+        rLabel.setTypeface(typeface);
+
 
         updateUI();
 
@@ -481,7 +489,7 @@ public class StickerActivity extends Activity {
     private ArrayList<StickerObject> getProductTestData() {
         ArrayList<StickerObject> featuredProducts = new ArrayList<StickerObject>();
         featuredProducts.add(new StickerObject("strawberry"));
-        featuredProducts.add(new StickerObject("sweetpotato"));
+//        featuredProducts.add(new StickerObject("sweetpotato"));
         featuredProducts.add(new StickerObject("donut"));
         featuredProducts.add(new StickerObject("drumstick"));
         featuredProducts.add(new StickerObject("blueheart"));
@@ -490,7 +498,6 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new StickerObject("happy"));
         featuredProducts.add(new StickerObject("politesmile"));
         featuredProducts.add(new StickerObject("bigsmile"));
-        /*
         featuredProducts.add(new StickerObject("bigsmile2"));
         featuredProducts.add(new StickerObject("bigsmile3"));
         featuredProducts.add(new StickerObject("bigsmile4"));
@@ -1069,7 +1076,6 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new StickerObject("pudding"));
         featuredProducts.add(new StickerObject("honey"));
         featuredProducts.add(new StickerObject("popcorn"));
-        */
         return featuredProducts;
     }
 
