@@ -423,7 +423,6 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new StickerObject("strawberry"));
         featuredProducts.add(new StickerObject("sweetpotato"));
         featuredProducts.add(new StickerObject("donut"));
-        /*
         featuredProducts.add(new StickerObject("drumstick"));
         featuredProducts.add(new StickerObject("blueheart"));
         featuredProducts.add(new StickerObject("cardheart"));
@@ -431,6 +430,7 @@ public class StickerActivity extends Activity {
         featuredProducts.add(new StickerObject("happy"));
         featuredProducts.add(new StickerObject("politesmile"));
         featuredProducts.add(new StickerObject("bigsmile"));
+        /*
         featuredProducts.add(new StickerObject("bigsmile2"));
         featuredProducts.add(new StickerObject("bigsmile3"));
         featuredProducts.add(new StickerObject("bigsmile4"));
@@ -1036,6 +1036,11 @@ public class StickerActivity extends Activity {
         stickers.add(new StickerObject("sticker_tv2"));
         stickers.add(new StickerObject("sticker_coffee"));
         stickers.add(new StickerObject("sticker_letter"));
+        stickers.add(new StickerObject("mailcarrierbird"));
+        stickers.add(new StickerObject("cutesmileyface"));
+        stickers.add(new StickerObject("cloudwithrainbow"));
+        stickers.add(new StickerObject("warningbananaskin"));
+        stickers.add(new StickerObject("rabbits"));
 
         return stickers;
     }
@@ -1043,6 +1048,10 @@ public class StickerActivity extends Activity {
     private ArrayList<StickerObject> getTagTestData() {
         ArrayList<StickerObject> tags = new ArrayList<StickerObject>();
         tags.add(new StickerObject("tag_cuisine"));
+        tags.add(new StickerObject("dontloveny"));
+        tags.add(new StickerObject("what3"));
+        tags.add(new StickerObject("warningsign"));
+        tags.add(new StickerObject("linuxpenguin"));
 
         return tags;
     }
