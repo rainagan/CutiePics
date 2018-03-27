@@ -221,6 +221,7 @@ public class StickerActivity extends Activity {
             Log.d("Debug", "View location before scale is x: " + v.getX() + " and y: " + v.getX());
             x = (float) dip2px(v.getContext(), v.getX()) * 2;
             y = (float) dip2px(v.getContext(), v.getY()) * 2;
+
             drawView(true, "text");
             updateUI();
             return true;
@@ -350,7 +351,7 @@ public class StickerActivity extends Activity {
             */
             Bitmap bmp2 = Bitmap.createBitmap(mEditText.getDrawingCache(), 0, 0, tempw, temph, matrix, true);
             Log.d("Debug", "View location after scale is x: " + x + " and y: " + y);
-
+            sticker = bmp2;
             //overlay two bitmaps and added to canvas
             //The text will be saved, but the location of the text box cannot be changed
             Bitmap bmp_overlay = Bitmap.createBitmap(overlay_bitmaps(origin_bitmap,bmp2, bmp2.getWidth(), bmp2.getHeight()),
