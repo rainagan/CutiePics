@@ -147,8 +147,8 @@ public class StickerActivity extends Activity {
                 float tempx = event.getX();
                 float tempy = event.getY();
 
-                x = (float) dip2px(img.getContext(), tempx)*2;
-                y = (float) dip2px(img.getContext(), tempy)*2;
+                x = (float) dip2px(img.getContext(), tempx) * 2;
+                y = (float) dip2px(img.getContext(), tempy) * 2;
                 //current.drawBitmap(emoji, x - emoji.getWidth()/2, y-emoji.getHeight()/2, null);
                 drawView(true, "sticker");
                 return true;
@@ -181,35 +181,40 @@ public class StickerActivity extends Activity {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         //You could adjust the position
-        params.topMargin = imgHeight / 2 + imgTop;
-        params.leftMargin = imgWidth / 2 + imgLeft;
+        //adjust the position: above the imageView
+        //adjusted in order to save the photo
+        //params.topMargin = imgHeight/2 + imgTop;
+        params.topMargin = 0;
+        params.leftMargin = imgWidth/4 + imgLeft;
         mMainLayout.addView(et, params);
         et.requestFocus();
 
-        et.setTextColor(getResources().getColor(R.color.colorWhite));
+        et.setTextColor(getResources().getColor(R.color.colorAccent));
         et.setBackground(null);
         PhotoModel.setmPhoto(origin_bitmap);
         et.setOnLongClickListener(new MyLongClickListener());
+
     }
 
     public class MyLongClickListener implements View.OnLongClickListener {
 
         @Override
-        public boolean onLongClick(View v)
-        {
-            ClipData dragdata = ClipData.newPlainText("","");
+        public boolean onLongClick(View v) {
+            ClipData dragdata = ClipData.newPlainText("", "");
 
             View.DragShadowBuilder shdwbldr = new View.DragShadowBuilder(v);
 
-            v.startDrag(dragdata, shdwbldr, v, 0);
-            v.setVisibility(View.INVISIBLE);
+            //v.startDrag(dragdata, shdwbldr, v, 0);
+            //v.setVisibility(View.INVISIBLE);
+            v.setVisibility(View.VISIBLE);
 
             mEditText = (EditText) v;
             //Log.d("Debug", "Size of pic is x: "+origin_bitmap.getWidth()+" and y: "+origin_bitmap.getHeight());
-            Log.d("Debug", "View location before scale is x: "+v.getX()+" and y: "+v.getX());
-            x = (float) dip2px(v.getContext(), v.getX())*2;
-            y = (float) dip2px(v.getContext(), v.getY())*2;
+            Log.d("Debug", "View location before scale is x: " + v.getX() + " and y: " + v.getX());
+            x = (float) dip2px(v.getContext(), v.getX()) * 2;
+            y = (float) dip2px(v.getContext(), v.getY()) * 2;
             drawView(true, "text");
+            updateUI();
             return true;
         }
 
@@ -298,24 +303,24 @@ public class StickerActivity extends Activity {
                 Log.d("Error", "mEditText is null");
                 return;
             } else {
-                Log.d("Debug", "Text now is "+mEditText.getText().toString());
+                Log.d("Debug", "Text now is " + mEditText.getText().toString());
             }
 
             Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
 
             current = new Canvas(new_bitmap);
 
-            mEditText.measure(0,0);
+            mEditText.measure(0, 0);
             int tempw = mEditText.getMeasuredWidth();
             int temph = mEditText.getMeasuredHeight();
 
             // tempw and temph after transforming to px
-            int tempw0 = dip2px(mEditText.getContext(), (float)tempw);
-            int temph0 = dip2px(mEditText.getContext(), (float)temph);
+            int tempw0 = dip2px(mEditText.getContext(), (float) tempw);
+            int temph0 = dip2px(mEditText.getContext(), (float) temph);
 
-            Log.d("Debug", "Text size after transform is x: "+tempw0+" and y: "+temph0);
+            Log.d("Debug", "Text size after transform is x: " + tempw0 + " and y: " + temph0);
             Matrix matrix = new Matrix();
-            scaler = (float) tempw0/tempw;
+            scaler = (float) tempw0 / tempw;
             matrix.postScale(scaler, scaler);
 
             // convert mEditText to bitmap
@@ -336,21 +341,35 @@ public class StickerActivity extends Activity {
                  probably is related to the layout
             */
             Bitmap bmp2 = Bitmap.createBitmap(mEditText.getDrawingCache(), 0, 0, tempw, temph, matrix, true);
-            Log.d("Debug", "View location after scale is x: "+x+" and y: "+y);
-            current.drawBitmap(bmp2, x - bmp2.getWidth(), y - bmp2.getHeight(), null);
-            //current.drawBitmap(bmp2, 50, 50, null);
-            //img.setImageBitmap(new_bitmap);
+            Log.d("Debug", "View location after scale is x: " + x + " and y: " + y);
 
+            //overlay two bitmaps and added to canvas
+            //The text will be saved, but the location of the text box cannot be changed
+            Bitmap bmp_overlay = Bitmap.createBitmap(overlay(origin_bitmap,bmp2, bmp2.getWidth(), bmp2.getHeight()),
+                    0, 0, origin_bitmap.getWidth(), origin_bitmap.getHeight(), new Matrix(), true);
+            current.drawBitmap(bmp_overlay, 0, 0, null);
+
+            //current.drawBitmap(bmp2, x - bmp2.getWidth(), y - bmp2.getHeight(), null);
+            //current.drawBitmap(bmp2, 50, 50, null);
+            img.setImageBitmap(new_bitmap);
             if (save) {
                 PhotoModel.setmPhoto(new_bitmap);
             }
         }
     }
 
+    public static Bitmap overlay(Bitmap bmp1, Bitmap bmp2, float left, float top ) {
+        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawBitmap(bmp1, new Matrix(), null);
+        canvas.drawBitmap(bmp2, left, top, null);
+        return bmOverlay;
+    }
+
     public static float distance(MotionEvent event) {
         float dx = event.getX(1) - event.getX(0);
         float dy = event.getY(1) - event.getY(0);
-        return (float)Math.sqrt(dx * dx + dy * dy);
+        return (float) Math.sqrt(dx * dx + dy * dy);
         //return FloatMath.sqrt(dx * dx + dy * dy); not work with current API
     }
 
@@ -407,7 +426,7 @@ public class StickerActivity extends Activity {
                         drawView(true, "sticker");
                         updateUI();
 
-                        Log.d("Debug", "Size of the sticker is w: "+sticker.getWidth()+" h: "+sticker.getHeight());
+                        Log.d("Debug", "Size of the sticker is w: " + sticker.getWidth() + " h: " + sticker.getHeight());
                         pw.dismiss();
                     }
 
@@ -417,6 +436,47 @@ public class StickerActivity extends Activity {
                 })
         );
     }
+
+    public void saveImg(View view) {
+        Intent intent = new Intent(StickerActivity.this, SavePhotoActivity.class);
+        startActivity(intent);
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (pw != null) {
+            pw.dismiss();
+        }
+    }
+
+    protected void onDestroy() {
+        //android.os.Process.killProcess(android.os.Process.myPid());
+
+        super.onDestroy();
+        if (origin_bitmap != null) {
+            origin_bitmap.recycle();
+            origin_bitmap = null;
+        }
+
+        if (sticker != null) {
+            sticker.recycle();
+            sticker = null;
+        }
+    }
+
+    private void updateUI() {
+        if (sticker == null && mEditText == null) {
+            seekBar1.setVisibility(View.GONE);
+            seekBar2.setVisibility(View.GONE);
+        } else {
+            seekBar1.setVisibility(View.VISIBLE);
+            seekBar2.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     private ArrayList<StickerObject> getProductTestData() {
         ArrayList<StickerObject> featuredProducts = new ArrayList<StickerObject>();
@@ -1056,44 +1116,4 @@ public class StickerActivity extends Activity {
         return tags;
     }
 
-    public void saveImg(View view) {
-        Intent intent = new Intent(StickerActivity.this, SavePhotoActivity.class);
-        startActivity(intent);
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (pw!=null) {
-            pw.dismiss();
-        }
-    }
-
-    protected void onDestroy() {
-        //android.os.Process.killProcess(android.os.Process.myPid());
-
-        super.onDestroy();
-        if(origin_bitmap != null)
-        {
-            origin_bitmap.recycle();
-            origin_bitmap=null;
-        }
-
-        if(sticker != null) {
-            sticker.recycle();
-            sticker = null;
-        }
-    }
-
-    private void updateUI() {
-        if (sticker == null && mEditText == null) {
-            seekBar1.setVisibility(View.GONE);
-            seekBar2.setVisibility(View.GONE);
-        } else {
-            seekBar1.setVisibility(View.VISIBLE);
-            seekBar2.setVisibility(View.VISIBLE);
-        }
-    }
 }
