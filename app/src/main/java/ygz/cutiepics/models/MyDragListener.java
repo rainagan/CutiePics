@@ -12,28 +12,15 @@ import android.widget.RelativeLayout;
 public class MyDragListener implements View.OnDragListener {
 
     private RelativeLayout.LayoutParams params;
-    private int imgHeight;
-    private int imgWidth;
-    private int imgLeft;
-    private int imgTop;
-    private int imgRight;
-    private int imgBottom;
-
-    public MyDragListener(int height, int width, int left, int top) {
-        this.imgHeight = height;
-        this.imgWidth = width;
-        this.imgLeft = left;
-        this.imgTop = top;
-        this.imgRight = imgLeft + imgWidth;
-        this.imgBottom = imgTop + imgHeight;
-    }
 
     @Override
-    public boolean onDrag(View v, DragEvent event) {
+    public boolean onDrag(View v, DragEvent event)
+    {
         View view = (View) event.getLocalState();
 
 
-        switch (event.getAction()) {
+        switch(event.getAction())
+        {
             case DragEvent.ACTION_DRAG_STARTED:
 
                 params = (RelativeLayout.LayoutParams) view.getLayoutParams();
@@ -45,16 +32,16 @@ public class MyDragListener implements View.OnDragListener {
 
                 break;
 
-            case DragEvent.ACTION_DRAG_EXITED:
+            case DragEvent.ACTION_DRAG_EXITED :
 
                 break;
 
-            case DragEvent.ACTION_DRAG_LOCATION:
-                x = (int) event.getX();
-                y = (int) event.getY();
+            case DragEvent.ACTION_DRAG_LOCATION  :
+                x=  (int) event.getX();
+                y =  (int) event.getY();
                 break;
 
-            case DragEvent.ACTION_DRAG_ENDED:
+            case DragEvent.ACTION_DRAG_ENDED   :
 
                 break;
 
@@ -62,40 +49,19 @@ public class MyDragListener implements View.OnDragListener {
 
                 x = (int) event.getX();
                 y = (int) event.getY();
-
-                if (!checkBound(x - 100, y - 30)) {
-                    if (x < imgLeft) {
-                        x = imgLeft+100;
-                    }
-                    if (x > imgRight) {
-                        x = imgRight;
-                    }
-                    if (y < imgTop) {
-                        y = imgTop+30;
-                    }
-                    if (y > imgBottom) {
-                        y = imgBottom;
-                    }
-                }
-
-                params.leftMargin = x - 100;
-                params.topMargin = y - 30;
+                //params.leftMargin = x - 100;
+                //params.topMargin = y - 30;
+                params.leftMargin = x-50;
+                params.topMargin = y-30;
 
                 view.setLayoutParams(params);
                 view.setVisibility(View.VISIBLE);
 
                 break;
-            default:
-                break;
+            default: break;
         }
         return true;
     }
 
-    public boolean checkBound(int x, int y) {
-        if (x >= imgLeft && x <= imgRight && y >= imgTop && y <= imgBottom) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+
 }

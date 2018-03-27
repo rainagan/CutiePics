@@ -6,16 +6,20 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,17 +27,20 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View.OnTouchListener;
 
 import java.util.ArrayList;
 
 import ygz.cutiepics.models.CustomEdittext;
+import ygz.cutiepics.models.MyDragListener;
 import ygz.cutiepics.models.PhotoModel;
 import ygz.cutiepics.models.StickerObject;
 
@@ -52,8 +59,6 @@ public class StickerActivity extends Activity {
 
     private Bitmap origin_bitmap; // current bitmap
 
-    private RelativeLayout mMainLayout;
-
     private ArrayList<CustomEdittext> texts;
 
     private Canvas current;
@@ -64,6 +69,11 @@ public class StickerActivity extends Activity {
     private float y;
     private float scaler;
     private float rotate;
+
+    // parameters for adding customizing text to photo
+    private RelativeLayout mMainLayout;
+    private int imgHeight, imgWidth, imgLeft, imgTop;
+    private RelativeLayout.LayoutParams params;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -83,11 +93,12 @@ public class StickerActivity extends Activity {
                     return true;
                 case R.id.nav_text:
                     // initialize a new EditText
-                    mEditText = new EditText(StickerActivity.this);
-                    mEditText.setText("Test");
-                    mEditText.setTextColor(getResources().getColor(R.color.colorWhite));
+                    //mEditText = new EditText(StickerActivity.this);
+                    //mEditText.setText("Test");
+                    //mEditText.setTextColor(getResources().getColor(R.color.colorWhite));
 
-                    drawView(true, "text");
+                    //drawView(true, "text");
+                    showText();
                     return true;
             }
             return false;
@@ -116,7 +127,7 @@ public class StickerActivity extends Activity {
         updateUI();
 
         prog1 = 50;
-        scaler = (float) prog1 / 50;
+        scaler = (float) prog1 / 50 + 1.0f;
 
         prog2 = 180;
         rotate = (float) prog2 - 180;
@@ -136,8 +147,6 @@ public class StickerActivity extends Activity {
                 float tempx = event.getX();
                 float tempy = event.getY();
 
-                Log.d("Debug", "Touch location is x: "+x+" and y: "+y);
-
                 x = (float) dip2px(img.getContext(), tempx)*2;
                 y = (float) dip2px(img.getContext(), tempy)*2;
                 //current.drawBitmap(emoji, x - emoji.getWidth()/2, y-emoji.getHeight()/2, null);
@@ -146,14 +155,48 @@ public class StickerActivity extends Activity {
             }
         });
 
+        img.setImageURI(PhotoModel.getmUri());
+        img.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            public void onGlobalLayout() {
+                imgHeight = img.getHeight();
+                imgWidth = img.getWidth();
+                imgLeft = img.getLeft();
+                imgTop = img.getTop();
+
+                //don't forget to remove the listener to prevent being called again by future layout events:
+                img.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
+        mMainLayout = findViewById(R.id.sticker_layout);
+        mMainLayout.setOnDragListener(new MyDragListener());
+
     }
 
-    public class MyLongClickListner implements View.OnLongClickListener {
+    private void showText() {
+
+        CustomEdittext et = new CustomEdittext(StickerActivity.this);
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        //You could adjust the position
+        params.topMargin = imgHeight / 2 + imgTop;
+        params.leftMargin = imgWidth / 2 + imgLeft;
+        mMainLayout.addView(et, params);
+        et.requestFocus();
+
+        et.setTextColor(getResources().getColor(R.color.colorWhite));
+        et.setBackground(null);
+        PhotoModel.setmPhoto(origin_bitmap);
+        et.setOnLongClickListener(new MyLongClickListener());
+    }
+
+    public class MyLongClickListener implements View.OnLongClickListener {
 
         @Override
         public boolean onLongClick(View v)
         {
-
             ClipData dragdata = ClipData.newPlainText("","");
 
             View.DragShadowBuilder shdwbldr = new View.DragShadowBuilder(v);
@@ -161,6 +204,12 @@ public class StickerActivity extends Activity {
             v.startDrag(dragdata, shdwbldr, v, 0);
             v.setVisibility(View.INVISIBLE);
 
+            mEditText = (EditText) v;
+            //Log.d("Debug", "Size of pic is x: "+origin_bitmap.getWidth()+" and y: "+origin_bitmap.getHeight());
+            Log.d("Debug", "View location before scale is x: "+v.getX()+" and y: "+v.getX());
+            x = (float) dip2px(v.getContext(), v.getX())*2;
+            y = (float) dip2px(v.getContext(), v.getY())*2;
+            drawView(true, "text");
             return true;
         }
 
@@ -175,7 +224,7 @@ public class StickerActivity extends Activity {
         @Override
         public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
             prog1 = progress;
-            scaler = prog1 / 50.f;
+            scaler = prog1 / 50.f + 1.0f;
             drawView(false, "sticker");
         }
 
@@ -187,7 +236,7 @@ public class StickerActivity extends Activity {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             // when the user last touches the seekbar
-            scaler = prog1 / 50.f;
+            scaler = prog1 / 50.f + 1.0f;
             Toast.makeText(StickerActivity.this, "Scale " + Float.toString(scaler), Toast.LENGTH_SHORT).show();
             drawView(true, "sticker");
         }
@@ -229,14 +278,15 @@ public class StickerActivity extends Activity {
             int tempw = sticker.getWidth();
             int temph = sticker.getHeight();
             Matrix matrix = new Matrix();
-
             matrix.postScale(scaler, scaler);
             Bitmap tmp = Bitmap.createBitmap(sticker, 0, 0, tempw, temph, matrix, true);
             matrix.preRotate(rotate, tmp.getWidth() / 2, tmp.getHeight() / 2);
             tmp = null;
 
             Bitmap bmp2 = Bitmap.createBitmap(sticker, 0, 0, tempw, temph, matrix, true);
-            current.drawBitmap(bmp2, x - bmp2.getWidth() / 2, y - bmp2.getHeight() / 2, null);
+
+            // Here the position is more like hard. A lot needs to be improved in this point
+            current.drawBitmap(bmp2, x - bmp2.getWidth() / 2 - 200, y - bmp2.getHeight() / 2, null);
 
             img.setImageBitmap(new_bitmap);
 
@@ -245,7 +295,10 @@ public class StickerActivity extends Activity {
             }
         } else {
             if (mEditText == null) {
+                Log.d("Error", "mEditText is null");
                 return;
+            } else {
+                Log.d("Debug", "Text now is "+mEditText.getText().toString());
             }
 
             Bitmap new_bitmap = origin_bitmap.copy(origin_bitmap.getConfig(), true);
@@ -255,21 +308,38 @@ public class StickerActivity extends Activity {
             mEditText.measure(0,0);
             int tempw = mEditText.getMeasuredWidth();
             int temph = mEditText.getMeasuredHeight();
-            Matrix matrix = new Matrix();
 
+            // tempw and temph after transforming to px
+            int tempw0 = dip2px(mEditText.getContext(), (float)tempw);
+            int temph0 = dip2px(mEditText.getContext(), (float)temph);
+
+            Log.d("Debug", "Text size after transform is x: "+tempw0+" and y: "+temph0);
+            Matrix matrix = new Matrix();
+            scaler = (float) tempw0/tempw;
             matrix.postScale(scaler, scaler);
 
             // convert mEditText to bitmap
             mEditText.setCursorVisible(false);
             mEditText.buildDrawingCache();
+            if (mEditText.getDrawingCache() == null) {
+                Log.d("Error", "Can't get bitmap from text view");
+                return;
+            }
+
             Bitmap tmp = Bitmap.createBitmap(mEditText.getDrawingCache(), 0, 0, tempw, temph, matrix, true);
+
             matrix.preRotate(rotate, tmp.getWidth() / 2, tmp.getHeight() / 2);
             tmp = null;
 
+            /*
+             The location calculation needs to be improved
+                 probably is related to the layout
+            */
             Bitmap bmp2 = Bitmap.createBitmap(mEditText.getDrawingCache(), 0, 0, tempw, temph, matrix, true);
-            current.drawBitmap(bmp2, x - bmp2.getWidth() / 2, y - bmp2.getHeight() / 2, null);
-
-            img.setImageBitmap(new_bitmap);
+            Log.d("Debug", "View location after scale is x: "+x+" and y: "+y);
+            current.drawBitmap(bmp2, x - bmp2.getWidth(), y - bmp2.getHeight(), null);
+            //current.drawBitmap(bmp2, 50, 50, null);
+            //img.setImageBitmap(new_bitmap);
 
             if (save) {
                 PhotoModel.setmPhoto(new_bitmap);
