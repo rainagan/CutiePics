@@ -353,7 +353,7 @@ public class StickerActivity extends Activity {
 
             //overlay two bitmaps and added to canvas
             //The text will be saved, but the location of the text box cannot be changed
-            Bitmap bmp_overlay = Bitmap.createBitmap(overlay(origin_bitmap,bmp2, bmp2.getWidth(), bmp2.getHeight()),
+            Bitmap bmp_overlay = Bitmap.createBitmap(overlay_bitmaps(origin_bitmap,bmp2, bmp2.getWidth(), bmp2.getHeight()),
                     0, 0, origin_bitmap.getWidth(), origin_bitmap.getHeight(), new Matrix(), true);
             current.drawBitmap(bmp_overlay, 0, 0, null);
 
@@ -366,7 +366,7 @@ public class StickerActivity extends Activity {
         }
     }
 
-    public static Bitmap overlay(Bitmap bmp1, Bitmap bmp2, float left, float top ) {
+    public static Bitmap overlay_bitmaps(Bitmap bmp1, Bitmap bmp2, float left, float top ) {
         Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(bmp1, new Matrix(), null);
