@@ -57,6 +57,8 @@ public class StickerActivity extends Activity {
     private int prog1;
     private int prog2;
     private EditText mEditText;     // for adding text to photo
+    private TextView sLabel;
+    private TextView rLabel;
 
     private Bitmap origin_bitmap; // current bitmap
 
@@ -125,12 +127,11 @@ public class StickerActivity extends Activity {
         seekBar2 = findViewById(R.id.rotater);
         seekBar2.setOnSeekBarChangeListener(seekBarChangeListener2);
 
-        TextView sLabel = findViewById(R.id.scaler_label);
-        TextView rLabel = findViewById(R.id.rotater_label);
+        sLabel = findViewById(R.id.scaler_label);
+        rLabel = findViewById(R.id.rotater_label);
         Typeface typeface = Typeface.createFromAsset(getAssets(), "unkempt.ttf");
         sLabel.setTypeface(typeface);
         rLabel.setTypeface(typeface);
-
 
         updateUI();
 
@@ -421,6 +422,8 @@ public class StickerActivity extends Activity {
                 new RecyclerItemClickListener(this, rv, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        updateUI();
+
                         StickerViewHolder svh = (StickerViewHolder) rv.findViewHolderForAdapterPosition(position);
 
                         //copy image from sticker to upper screen
@@ -445,47 +448,6 @@ public class StickerActivity extends Activity {
                 })
         );
     }
-
-    public void saveImg(View view) {
-        Intent intent = new Intent(StickerActivity.this, SavePhotoActivity.class);
-        startActivity(intent);
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (pw != null) {
-            pw.dismiss();
-        }
-    }
-
-    protected void onDestroy() {
-        //android.os.Process.killProcess(android.os.Process.myPid());
-
-        super.onDestroy();
-        if (origin_bitmap != null) {
-            origin_bitmap.recycle();
-            origin_bitmap = null;
-        }
-
-        if (sticker != null) {
-            sticker.recycle();
-            sticker = null;
-        }
-    }
-
-    private void updateUI() {
-        if (sticker == null && mEditText == null) {
-            seekBar1.setVisibility(View.GONE);
-            seekBar2.setVisibility(View.GONE);
-        } else {
-            seekBar1.setVisibility(View.VISIBLE);
-            seekBar2.setVisibility(View.VISIBLE);
-        }
-    }
-
 
     private ArrayList<StickerObject> getProductTestData() {
         ArrayList<StickerObject> featuredProducts = new ArrayList<StickerObject>();
@@ -1123,4 +1085,50 @@ public class StickerActivity extends Activity {
         return tags;
     }
 
+    public void saveImg(View view) {
+        Intent intent = new Intent(StickerActivity.this, SavePhotoActivity.class);
+        startActivity(intent);
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (pw!=null) {
+            pw.dismiss();
+        }
+    }
+
+    protected void onDestroy() {
+        //android.os.Process.killProcess(android.os.Process.myPid());
+
+        super.onDestroy();
+        if(origin_bitmap != null)
+        {
+            origin_bitmap.recycle();
+            origin_bitmap=null;
+        }
+
+        if(sticker != null) {
+            sticker.recycle();
+            sticker = null;
+        }
+    }
+
+    private void updateUI() {
+        if (sticker == null && mEditText == null) {
+            seekBar1.setVisibility(View.GONE);
+            seekBar2.setVisibility(View.GONE);
+
+            sLabel.setVisibility(View.GONE);
+            rLabel.setVisibility(View.GONE);
+        } else {
+            seekBar1.setVisibility(View.VISIBLE);
+            seekBar2.setVisibility(View.VISIBLE);
+
+            sLabel.setVisibility(View.VISIBLE);
+            rLabel.setVisibility(View.VISIBLE);
+        }
+    }
 }
