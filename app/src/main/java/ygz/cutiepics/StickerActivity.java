@@ -57,6 +57,8 @@ public class StickerActivity extends Activity {
     private int prog1;
     private int prog2;
     private EditText mEditText;     // for adding text to photo
+    private TextView sLabel;
+    private TextView rLabel;
 
     private Bitmap origin_bitmap; // current bitmap
 
@@ -125,8 +127,8 @@ public class StickerActivity extends Activity {
         seekBar2 = findViewById(R.id.rotater);
         seekBar2.setOnSeekBarChangeListener(seekBarChangeListener2);
 
-        TextView sLabel = findViewById(R.id.scaler_label);
-        TextView rLabel = findViewById(R.id.rotater_label);
+        sLabel = findViewById(R.id.scaler_label);
+        rLabel = findViewById(R.id.rotater_label);
         Typeface typeface = Typeface.createFromAsset(getAssets(), "unkempt.ttf");
         sLabel.setTypeface(typeface);
         rLabel.setTypeface(typeface);
@@ -1097,9 +1099,15 @@ public class StickerActivity extends Activity {
         if (sticker == null && mEditText == null) {
             seekBar1.setVisibility(View.GONE);
             seekBar2.setVisibility(View.GONE);
+
+            sLabel.setVisibility(View.GONE);
+            rLabel.setVisibility(View.GONE);
         } else {
             seekBar1.setVisibility(View.VISIBLE);
             seekBar2.setVisibility(View.VISIBLE);
+
+            sLabel.setVisibility(View.VISIBLE);
+            rLabel.setVisibility(View.VISIBLE);
         }
     }
 }
