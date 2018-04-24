@@ -129,7 +129,7 @@ public class SavePhotoActivity extends AppCompatActivity {
     public void editNext(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        PhotoModel.getmPhoto().recycle();
+//        PhotoModel.getmPhoto().recycle();
     }
 
     public void sharePhoto(View view) {
@@ -137,7 +137,7 @@ public class SavePhotoActivity extends AppCompatActivity {
 
         uploadImageAsyncTask uiat = new uploadImageAsyncTask();
         uiat.execute(photo);
-        PhotoModel.getmPhoto().recycle();
+//        PhotoModel.getmPhoto().recycle();
     }
 
     private class uploadImageAsyncTask extends AsyncTask<Uri, String, String> {

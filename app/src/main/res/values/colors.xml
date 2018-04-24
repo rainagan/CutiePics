@@ -15,4 +15,7 @@
 
     <color name="orange">#f9e7b3</color>
     <color name="watermelon">#ff8a7e</color>
+
+    <color name="button_focused">#ffd584</color>
+    <color name="button_pressed">#fdbc40</color>
 </resources>

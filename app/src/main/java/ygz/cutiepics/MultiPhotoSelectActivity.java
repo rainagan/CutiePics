@@ -156,7 +156,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
     private void initializeRecyclerView(ArrayList<String> imageUrls) {
         imageAdapter = new ImageAdapter(this, imageUrls, MAX_SELECT_COUNT);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 2);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 3);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
