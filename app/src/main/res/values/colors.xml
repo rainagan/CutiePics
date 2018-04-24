@@ -18,4 +18,7 @@
 
     <color name="button_focused">#ffd584</color>
     <color name="button_pressed">#fdbc40</color>
+
+    <color name="login_page_btn_focused">#e8c5c2</color>
+    <color name="login_page_btn_pressed">#e2afac</color>
 </resources>
