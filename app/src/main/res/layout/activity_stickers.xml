@@ -15,7 +15,7 @@
         android:layout_height="46dp"
         android:layout_alignParentEnd="true"
         android:layout_gravity="right"
-        android:background="@drawable/icon_save"
+        android:background="@drawable/save_button"
         android:onClick="saveImg"
         android:textSize="24sp" />
 

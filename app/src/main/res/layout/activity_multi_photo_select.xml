@@ -10,10 +10,10 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/icon_forward"
+        android:background="@drawable/forward_button"
+        android:gravity="center"
         android:onClick="btnChoosePhotosClick"
         android:paddingBottom="20dp" />
 
@@ -22,11 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/row_multiphoto_item" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/row_multiphoto_item" />
     </ScrollView>
 
 </RelativeLayout>
