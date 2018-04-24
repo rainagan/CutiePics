@@ -77,6 +77,6 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="12dp"
         android:layout_marginStart="17dp"
-        android:background="@drawable/icon_account" />
+        android:background="@drawable/account_button" />
 </RelativeLayout>
 
