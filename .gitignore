@@ -121,6 +121,13 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+# Editor directories and files
+.idea
+.vs
+.vscode
+*.suo
+*.ntvs*
+
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
