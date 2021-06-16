@@ -8,10 +8,10 @@
 4. combine 2 to 4 photos and modify their layout<br />  
 ![alt text](https://github.com/rainagan/CutiePics/blob/master/others/layout.gif "two photos layout")
 5. overlay 2 photos<br /> 
-![alt text](https://github.com/rainagan/CutiePics/blob/master/others/overlay.gif "overlay")
+![alt text](https://github.com/rainagan/CutiePics/blob/master/others/overlay.gif "overlay")<br />  
 Photos that have been uploaded are stored in Google Firebase, and users need to register before they can share photos.<br />
 ![alt text](https://github.com/rainagan/CutiePics/blob/master/others/download.gif "download")
-![alt text](https://github.com/rainagan/CutiePics/blob/master/others/log%20out.gif "log out")
+![alt text](https://github.com/rainagan/CutiePics/blob/master/others/log%20out.gif "log out")<br />  
 This is a photo editing app create under University of Waterloo CS 446.
 
 
